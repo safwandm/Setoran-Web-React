@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "header": "MTR001",
+    "type": "Honda Vario 2023",
+    "status": "Budi Santoso",
+    "target": "Available",
+    "limit": "Rp 85.000/day",
+    "reviewer": "15"
+  },
+  {
+    "id": 2,
+    "header": "MTR002",
+    "type": "Yamaha NMAX 2022",
+    "status": "Rini Wulandari",
+    "target": "For Rent",
+    "limit": "Rp 150.000/day",
+    "reviewer": "22"
+  },
+  {
+    "id": 3,
+    "header": "MTR003",
+    "type": "Honda PCX 2023",
+    "status": "Siti Rahayu",
+    "target": "Under Construction",
+    "limit": "Rp 125.000/day",
+    "reviewer": "8"
+  },
+  {
+    "id": 4,
+    "header": "MTR004",
+    "type": "Yamaha Aerox 2024",
+    "status": "Agus Wijaya",
+    "target": "Available",
+    "limit": "Rp 135.000/day",
+    "reviewer": "18"
+  },
+  {
+    "id": 5,
+    "header": "MTR005",
+    "type": "Honda Scoopy 2023",
+    "status": "Eko Prasetyo",
+    "target": "For Rent",
+    "limit": "Rp 90.000/day",
+    "reviewer": "25"
+  },
+  {
+    "id": 6,
+    "header": "MTR006",
+    "type": "Yamaha R15 2023",
+    "status": "Yanti Susanti",
+    "target": "Available",
+    "limit": "Rp 175.000/day",
+    "reviewer": "12"
+  },
+  {
+    "id": 7,
+    "header": "MTR007",
+    "type": "Honda CBR 2024",
+    "status": "Hendra Gunawan",
+    "target": "Inactive",
+    "limit": "Rp 200.000/day",
+    "reviewer": "5"
+  },
+  {
+    "id": 8,
+    "header": "MTR008",
+    "type": "Yamaha MT-15 2023",
+    "status": "Nina Maulida",
+    "target": "For Rent",
+    "limit": "Rp 165.000/day",
+    "reviewer": "16"
+  },
+  {
+    "id": 9,
+    "header": "MTR009",
+    "type": "Honda ADV 2024",
+    "status": "Joko Widodo",
+    "target": "Available",
+    "limit": "Rp 145.000/day",
+    "reviewer": "28"
+  },
+  {
+    "id": 10,
+    "header": "MTR010",
+    "type": "Yamaha XSR 2023",
+    "status": "Sri Wahyuni",
+    "target": "Under Construction",
+    "limit": "Rp 180.000/day",
+    "reviewer": "9"
+  },
+  {
+    "id": 11,
+    "header": "MTR011",
+    "type": "Honda CRF 2024",
+    "status": "Dodi Sudrajat",
+    "target": "Available",
+    "limit": "Rp 190.000/day",
+    "reviewer": "20"
+  },
+  {
+    "id": 12,
+    "header": "MTR012",
+    "type": "Yamaha Fino 2023",
+    "status": "Lisa Permata",
+    "target": "For Rent",
+    "limit": "Rp 95.000/day",
+    "reviewer": "30"
+  },
+  {
+    "id": 13,
+    "header": "MTR013",
+    "type": "Honda Beat 2024",
+    "status": "Rudi Hartono",
+    "target": "Available",
+    "limit": "Rp 80.000/day",
+    "reviewer": "35"
+  },
+  {
+    "id": 14,
+    "header": "MTR014",
+    "type": "Yamaha Lexi 2023",
+    "status": "Dewi Safitri",
+    "target": "For Rent",
+    "limit": "Rp 110.000/day",
+    "reviewer": "24"
+  },
+  {
+    "id": 15,
+    "header": "MTR015",
+    "type": "Honda Genio 2024",
+    "status": "Bambang Kusuma",
+    "target": "Under Construction",
+    "limit": "Rp 100.000/day",
+    "reviewer": "11"
+  },
+  {
+    "id": 16,
+    "header": "MTR016",
+    "type": "Yamaha Gear 2023",
+    "status": "Rani Widya",
+    "target": "Available",
+    "limit": "Rp 85.000/day",
+    "reviewer": "27"
+  },
+  {
+    "id": 17,
+    "header": "MTR017",
+    "type": "Honda Revo 2024",
+    "status": "Surya Darma",
+    "target": "For Rent",
+    "limit": "Rp 75.000/day",
+    "reviewer": "32"
+  },
+  {
+    "id": 18,
+    "header": "MTR018",
+    "type": "Yamaha Jupiter 2023",
+    "status": "Maya Sari",
+    "target": "Inactive",
+    "limit": "Rp 80.000/day",
+    "reviewer": "14"
+  },
+  {
+    "id": 19,
+    "header": "MTR019",
+    "type": "Honda Supra 2024",
+    "status": "Arief Rahman",
+    "target": "Available",
+    "limit": "Rp 95.000/day",
+    "reviewer": "21"
+  },
+  {
+    "id": 20,
+    "header": "MTR020",
+    "type": "Yamaha Vixion 2023",
+    "status": "Siska Dewi",
+    "target": "For Rent",
+    "limit": "Rp 155.000/day",
+    "reviewer": "19"
+  }
+]
