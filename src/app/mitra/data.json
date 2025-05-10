@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "header": "PTR001",
+    "type": "Budi Santoso",
+    "status": "Active",
+    "target": "12",
+    "limit": "10",
+    "reviewer": "Paid"
+  },
+  {
+    "id": 2,
+    "header": "PTR002",
+    "type": "Rini Wulandari",
+    "status": "Active",
+    "target": "25",
+    "limit": "20",
+    "reviewer": "In Process"
+  },
+  {
+    "id": 3,
+    "header": "PTR003",
+    "type": "Siti Rahayu",
+    "status": "Blocked",
+    "target": "8",
+    "limit": "0",
+    "reviewer": "Failed"
+  },
+  {
+    "id": 4,
+    "header": "PTR004",
+    "type": "Agus Wijaya",
+    "status": "Active",
+    "target": "15",
+    "limit": "13",
+    "reviewer": "Paid"
+  },
+  {
+    "id": 5,
+    "header": "PTR005",
+    "type": "Eko Prasetyo",
+    "status": "Not Active",
+    "target": "5",
+    "limit": "0",
+    "reviewer": "Failed"
+  },
+  {
+    "id": 6,
+    "header": "PTR006",
+    "type": "Yanti Susanti",
+    "status": "Active",
+    "target": "30",
+    "limit": "28",
+    "reviewer": "Waiting for Payment"
+  },
+  {
+    "id": 7,
+    "header": "PTR007",
+    "type": "Hendra Gunawan",
+    "status": "Active",
+    "target": "18",
+    "limit": "15",
+    "reviewer": "Paid"
+  },
+  {
+    "id": 8,
+    "header": "PTR008",
+    "type": "Nina Maulida",
+    "status": "Active",
+    "target": "22",
+    "limit": "20",
+    "reviewer": "In Process"
+  },
+  {
+    "id": 9,
+    "header": "PTR009",
+    "type": "Joko Widodo",
+    "status": "Not Active",
+    "target": "10",
+    "limit": "0",
+    "reviewer": "Failed"
+  },
+  {
+    "id": 10,
+    "header": "PTR010",
+    "type": "Sri Wahyuni",
+    "status": "Active",
+    "target": "28",
+    "limit": "25",
+    "reviewer": "Paid"
+  },
+  {
+    "id": 11,
+    "header": "PTR011",
+    "type": "Dodi Sudrajat",
+    "status": "Blocked",
+    "target": "7",
+    "limit": "0",
+    "reviewer": "Failed"
+  },
+  {
+    "id": 12,
+    "header": "PTR012",
+    "type": "Lisa Permata",
+    "status": "Active",
+    "target": "20",
+    "limit": "18",
+    "reviewer": "Waiting for Payment"
+  },
+  {
+    "id": 13,
+    "header": "PTR013",
+    "type": "Rudi Hartono",
+    "status": "Active",
+    "target": "15",
+    "limit": "12",
+    "reviewer": "In Process"
+  },
+  {
+    "id": 14,
+    "header": "PTR014",
+    "type": "Dewi Safitri",
+    "status": "Active",
+    "target": "25",
+    "limit": "22",
+    "reviewer": "Paid"
+  },
+  {
+    "id": 15,
+    "header": "PTR015",
+    "type": "Bambang Kusuma",
+    "status": "Not Active",
+    "target": "12",
+    "limit": "0",
+    "reviewer": "Failed"
+  },
+  {
+    "id": 16,
+    "header": "PTR016",
+    "type": "Rani Widya",
+    "status": "Active",
+    "target": "17",
+    "limit": "15",
+    "reviewer": "Paid"
+  },
+  {
+    "id": 17,
+    "header": "PTR017",
+    "type": "Surya Darma",
+    "status": "Active",
+    "target": "23",
+    "limit": "20",
+    "reviewer": "In Process"
+  },
+  {
+    "id": 18,
+    "header": "PTR018",
+    "type": "Maya Sari",
+    "status": "Blocked",
+    "target": "9",
+    "limit": "0",
+    "reviewer": "Failed"
+  },
+  {
+    "id": 19,
+    "header": "PTR019",
+    "type": "Arief Rahman",
+    "status": "Active",
+    "target": "28",
+    "limit": "25",
+    "reviewer": "Waiting for Payment"
+  },
+  {
+    "id": 20,
+    "header": "PTR020",
+    "type": "Siska Dewi",
+    "status": "Active",
+    "target": "21",
+    "limit": "18",
+    "reviewer": "Paid"
+  }
+]
