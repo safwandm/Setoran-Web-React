@@ -108,12 +108,12 @@ import {
 
 export const schema = z.object({
   id: z.number(),
-  header: z.string(),
-  type: z.string(),
+  transactionId: z.string(),
+  userName: z.string(),
+  mitraName: z.string(),
+  motorName: z.string(),
+  rentalDate: z.string(),
   status: z.string(),
-  target: z.string(),
-  limit: z.string(),
-  reviewer: z.string(),
 })
 
 // Create a separate component for the drag handle
@@ -169,7 +169,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "header",
+    accessorKey: "trnasactionId",
     header: () => <div className="w-30 text-left">Transaction ID</div>,
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />
@@ -177,55 +177,55 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "type",
+    accessorKey: "userName",
     header: () => <div className="w-30 text-left">User Name</div>,
   
     cell: ({ row }) => (
       <div className="w-4">
-          {row.original.type}
+          {row.original.userName}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "mitraName",
+    header: () => <div className="w-30 text-left">Mitra Name</div>,
+    cell: ({ row }) => (
+      <div className="w-8">
+          {row.original.mitraName}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "motorName",
+    header: () => <div className="w-30 text-left">Motor Name</div>,
+    cell: ({ row }) => (
+      <div className="w-8">
+          {row.original.motorName}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "rentalDate",
+    header: () => <div className="w-30 text-left">Rental Date</div>,
+    cell: ({ row }) => (
+      <div className="w-8">
+          {row.original.rentalDate}
       </div>
     ),
   },
   {
     accessorKey: "status",
-    header: () => <div className="w-30 text-left">Mitra Name</div>,
-    cell: ({ row }) => (
-      <div className="w-8">
-          {row.original.status}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "target",
-    header: () => <div className="w-30 text-left">Motorbike </div>,
-    cell: ({ row }) => (
-      <div className="w-8">
-          {row.original.target}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "limit",
-    header: () => <div className="w-30 text-left">Rental Date</div>,
-    cell: ({ row }) => (
-      <div className="w-8">
-          {row.original.limit}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "reviewer",
     header: () => <div className="w-full text text-left">Status</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.reviewer === "Success" ? (
+        {row.original.status === "Success" ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : row.original.reviewer === "Failed" ? (
+        ) : row.original.status === "Failed" ? (
           <IconArrowsCross className="dark:fill-red-400" />
         ) : (
           <IconLoader className="animate-spin text-muted-foreground" />
         )}
-        {row.original.reviewer}
+        {row.original.status}
       </Badge>
     ),
   },
@@ -625,12 +625,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.header}
+          {item.transactionId}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.header}</DrawerTitle>
+          <DrawerTitle>{item.transactionId}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -696,12 +696,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.header} />
+              <Input id="header" defaultValue={item.transactionId} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.type}>
+                <Select defaultValue={item.userName}>
                   <SelectTrigger id="type" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
@@ -727,7 +727,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="status">Status</Label>
-                <Select defaultValue={item.status}>
+                <Select defaultValue={item.mitraName}>
                   <SelectTrigger id="status" className="w-full">
                     <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
@@ -742,16 +742,16 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={item.target} />
+                <Input id="target" defaultValue={item.motorName} />
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={item.limit} />
+                <Input id="limit" defaultValue={item.rentalDate} />
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <Label htmlFor="reviewer">Reviewer</Label>
-              <Select defaultValue={item.reviewer}>
+              <Select defaultValue={item.status}>
                 <SelectTrigger id="reviewer" className="w-full">
                   <SelectValue placeholder="Select a reviewer" />
                 </SelectTrigger>

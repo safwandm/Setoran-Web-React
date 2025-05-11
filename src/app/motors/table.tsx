@@ -109,12 +109,12 @@ import {
 
 export const schema = z.object({
   id: z.number(),
-  header: z.string(),
-  type: z.string(),
+  motorId: z.string(),
+  motorName: z.string(),
+  mitraName: z.string(),
   status: z.string(),
-  target: z.string(),
-  limit: z.string(),
-  reviewer: z.string(),
+  price: z.string(),
+  rented: z.string(),
 })
 
 // Create a separate component for the drag handle
@@ -170,64 +170,64 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "header",
-    header: () => <div className="w-20 text-left">Motor</div>,
+    accessorKey: "motorId",
+    header: () => <div className="w-20 text-left">Motor ID</div>,
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />
     },
     enableHiding: false,
   },
   {
-    accessorKey: "type",
-    header: () => <div className="w-30 text-left">Motor</div>,
+    accessorKey: "motorName",
+    header: () => <div className="w-30 text-left">Motor Name</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.type}
+          {row.original.motorName}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "mitraName",
+    header: () => <div className="w-30 text-left">Mitra Name</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.mitraName}
       </div>
     ),
   },
   {
     accessorKey: "status",
-    header: () => <div className="w-30 text-left">Mitra Name</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.status}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "target",
     header: () => <div className="w-30 text-left">Status</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.target === "Available" ? (
+        {row.original.status === "Available" ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-blue-400" />
-        ) : row.original.target === "For Rent" ? (
+        ) : row.original.status === "For Rent" ? (
           <IconUser className="" />
-        ) : row.original.target === "Under Construction" ? (
+        ) : row.original.status === "Under Construction" ? (
           <IconBuildingWarehouse className=" text-muted-foreground" />
         ):
         <IconCircleCheckFilled className=" text-muted-foreground" />
         }
-        {row.original.target}
+        {row.original.status}
       </Badge>
     ),
   },
   {
-    accessorKey: "limit",
+    accessorKey: "price",
     header: () => <div className="w-30 text-left">Price</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.limit}
+          {row.original.price}
       </div>
     ),
   },
   {
-    accessorKey: "reviewer",
-    header: "Rental",
+    accessorKey: "rented",
+    header: "Rented",
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.reviewer}
+          {row.original.rented}
       </div>
     ),
   },
@@ -580,12 +580,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.header}
+          {item.motorId}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.header}</DrawerTitle>
+          <DrawerTitle>{item.motorId}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -651,12 +651,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.header} />
+              <Input id="header" defaultValue={item.motorId} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.type}>
+                <Select defaultValue={item.motorName}>
                   <SelectTrigger id="type" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
@@ -697,16 +697,16 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={item.target} />
+                <Input id="target" defaultValue={item.status} />
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={item.limit} />
+                <Input id="limit" defaultValue={item.price} />
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <Label htmlFor="reviewer">Reviewer</Label>
-              <Select defaultValue={item.reviewer}>
+              <Select defaultValue={item.rented}>
                 <SelectTrigger id="reviewer" className="w-full">
                   <SelectValue placeholder="Select a reviewer" />
                 </SelectTrigger>

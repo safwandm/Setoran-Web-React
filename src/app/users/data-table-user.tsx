@@ -111,12 +111,12 @@ import {
 
 export const schema = z.object({
   id: z.number(),
-  header: z.string(),
-  type: z.string(),
+  userId: z.string(),
+  userName: z.string(),
   status: z.string(),
-  target: z.string(),
-  limit: z.string(),
-  reviewer: z.string(),
+  registration: z.string(),
+  verification: z.string(),
+  transaction: z.string(),
 })
 
 // Create a separate component for the drag handle
@@ -172,7 +172,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "header",
+    accessorKey: "userId",
     header: "User ID",
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />
@@ -180,12 +180,12 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "type",
+    accessorKey: "userName",
     header: "Name",
   
     cell: ({ row }) => (
       <div className="w-">
-          {row.original.type}
+          {row.original.userName}
       </div>
     ),
   },
@@ -206,36 +206,36 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    accessorKey: "target",
+    accessorKey: "registration",
     header: () => <div className="w-full text-left">Registration </div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.target}
+          {row.original.registration}
       </div>
     ),
   },
   {
-    accessorKey: "limit",
+    accessorKey: "verification",
     header: () => <div className="w-10 text-left">Verification</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.limit === "Verified" ? (
+        {row.original.verification === "Verified" ? (
           <IconCircleCheckFilled className="fill-blue-500 dark:fill-blue-400" />
-        ) : row.original.limit === "Canceled" ? (
+        ) : row.original.verification === "Canceled" ? (
           <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
         ) : (
           <IconLoader className="animate-spin text-muted-foreground" />
         )}
-        {row.original.limit}
+        {row.original.verification}
       </Badge>
     ),
   },
   {
-    accessorKey: "reviewer",
+    accessorKey: "transaction",
     header: () => <div className="text-left">Transaction</div>,
     cell: ({ row }) => (
       <div className="w-4">
-          {row.original.reviewer}
+          {row.original.transaction}
       </div>
     ),
   },
@@ -635,12 +635,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.header}
+          {item.userId}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.header}</DrawerTitle>
+          <DrawerTitle>{item.userId}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -706,12 +706,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.header} />
+              <Input id="header" defaultValue={item.userId} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.type}>
+                <Select defaultValue={item.userName}>
                   <SelectTrigger id="type" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
@@ -752,16 +752,16 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={item.target} />
+                <Input id="target" defaultValue={item.registration} />
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={item.limit} />
+                <Input id="limit" defaultValue={item.verification} />
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <Label htmlFor="reviewer">Reviewer</Label>
-              <Select defaultValue={item.reviewer}>
+              <Select defaultValue={item.transaction}>
                 <SelectTrigger id="reviewer" className="w-full">
                   <SelectValue placeholder="Select a reviewer" />
                 </SelectTrigger>
