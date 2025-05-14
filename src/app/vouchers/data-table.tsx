@@ -22,6 +22,7 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import {
   IconChevronDown,
+  IconSearch,
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
@@ -381,39 +382,17 @@ export function DataTableVoucher({
           <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
         </TabsList>
         <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
-                <IconChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="relative">
+            <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                   placeholder="Search by Id .."
+                   value={(table.getColumn("voucherCode")?.getFilterValue() as string) ?? ""}
+                   onChange={(event) =>
+                      table.getColumn("voucherCode")?.setFilterValue(event.target.value)
+                    }
+                    className="h-9 w-[150px] lg:w-[250px] pl-8"
+                />                
+            </div>
           <Button variant="outline" size="sm">
             <IconPlus />
             <span className="hidden lg:inline">Add Section</span>

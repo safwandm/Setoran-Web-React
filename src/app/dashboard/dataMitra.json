@@ -1,0 +1,182 @@
+[
+    {
+      "id": 1,
+      "mitraId": "PTR001",
+      "mitraName": "Budi Santoso",
+      "status": "Active",
+      "registered": "3 motors",
+      "available": "2 motors",
+      "payment": "Paid"
+    },
+    {
+      "id": 2,
+      "mitraId": "PTR002",
+      "mitraName": "Rini Wulandari",
+      "status": "Active",
+      "registered": "5 motors",
+      "available": "4 motors",
+      "payment": "In Process"
+    },
+    {
+      "id": 3,
+      "mitraId": "PTR003",
+      "mitraName": "Siti Rahayu",
+      "status": "Blocked",
+      "registered": "2 motors",
+      "available": "0 motor",
+      "payment": "Failed"
+    },
+    {
+      "id": 4,
+      "mitraId": "PTR004",
+      "mitraName": "Agus Wijaya",
+      "status": "Active",
+      "registered": "4 motors",
+      "available": "3 motors",
+      "payment": "Paid"
+    },
+    {
+      "id": 5,
+      "mitraId": "PTR005",
+      "mitraName": "Eko Prasetyo",
+      "status": "Not Active",
+      "registered": "2 motors",
+      "available": "0 motor",
+      "payment": "Failed"
+    },
+    {
+      "id": 6,
+      "mitraId": "PTR006",
+      "mitraName": "Yanti Susanti",
+      "status": "Active",
+      "registered": "5 motors",
+      "available": "5 motors",
+      "payment": "Waiting for Payment"
+    },
+    {
+      "id": 7,
+      "mitraId": "PTR007",
+      "mitraName": "Hendra Gunawan",
+      "status": "Active",
+      "registered": "4 motors",
+      "available": "3 motors",
+      "payment": "Paid"
+    },
+    {
+      "id": 8,
+      "mitraId": "PTR008",
+      "mitraName": "Nina Maulida",
+      "status": "Active",
+      "registered": "3 motors",
+      "available": "2 motors",
+      "payment": "In Process"
+    },
+    {
+      "id": 9,
+      "mitraId": "PTR009",
+      "mitraName": "Joko Widodo",
+      "status": "Not Active",
+      "registered": "2 motors",
+      "available": "0 motor",
+      "payment": "Failed"
+    },
+    {
+      "id": 10,
+      "mitraId": "PTR010",
+      "mitraName": "Sri Wahyuni",
+      "status": "Active",
+      "registered": "5 motors",
+      "available": "4 motors",
+      "payment": "Paid"
+    },
+    {
+      "id": 11,
+      "mitraId": "PTR011",
+      "mitraName": "Dodi Sudrajat",
+      "status": "Blocked",
+      "registered": "1 motor",
+      "available": "0 motor",
+      "payment": "Failed"
+    },
+    {
+      "id": 12,
+      "mitraId": "PTR012",
+      "mitraName": "Lisa Permata",
+      "status": "Active",
+      "registered": "4 motors",
+      "available": "3 motors",
+      "payment": "Waiting for Payment"
+    },
+    {
+      "id": 13,
+      "mitraId": "PTR013",
+      "mitraName": "Rudi Hartono",
+      "status": "Active",
+      "registered": "3 motors",
+      "available": "2 motors",
+      "payment": "In Process"
+    },
+    {
+      "id": 14,
+      "mitraId": "PTR014",
+      "mitraName": "Dewi Safitri",
+      "status": "Active",
+      "registered": "5 motors",
+      "available": "4 motors",
+      "payment": "Paid"
+    },
+    {
+      "id": 15,
+      "mitraId": "PTR015",
+      "mitraName": "Bambang Kusuma",
+      "status": "Not Active",
+      "registered": "2 motors",
+      "available": "0 motor",
+      "payment": "Failed"
+    },
+    {
+      "id": 16,
+      "mitraId": "PTR016",
+      "mitraName": "Rani Widya",
+      "status": "Active",
+      "registered": "4 motors",
+      "available": "3 motors",
+      "payment": "Paid"
+    },
+    {
+      "id": 17,
+      "mitraId": "PTR017",
+      "mitraName": "Surya Darma",
+      "status": "Active",
+      "registered": "5 motors",
+      "available": "4 motors",
+      "payment": "In Process"
+    },
+    {
+      "id": 18,
+      "mitraId": "PTR018",
+      "mitraName": "Maya Sari",
+      "status": "Blocked",
+      "registered": "1 motor",
+      "available": "0 motor",
+      "payment": "Failed"
+    },
+    {
+      "id": 19,
+      "mitraId": "PTR019",
+      "mitraName": "Arief Rahman",
+      "status": "Active",
+      "registered": "5 motors",
+      "available": "5 motors",
+      "payment": "Waiting for Payment"
+    },
+    {
+      "id": 20,
+      "mitraId": "PTR020",
+      "mitraName": "Siska Dewi",
+      "status": "Active",
+      "registered": "4 motors",
+      "available": "3 motors",
+      "payment": "Paid"
+    }
+  ]

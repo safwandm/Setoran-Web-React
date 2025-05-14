@@ -24,6 +24,7 @@ import {
   IconBan,
   IconArrowsCross,
   IconChevronDown,
+  IconSearch,
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
@@ -360,63 +361,27 @@ export function DataTableUser({
       defaultValue="outline"
       className="w-full flex-col justify-start gap-6"
     >
-      <div className="flex items-center justify-between px-4 lg:px-6">
-        <Label htmlFor="view-selector" className="sr-only">
-          View
-        </Label>
+       <div className="flex items-center justify-between px-4 lg:px-6">
         <Select defaultValue="outline">
-          <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
-            size="sm"
-            id="view-selector"
-          >
-            <SelectValue placeholder="Select a view" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="outline">Outline</SelectItem>
-            <SelectItem value="past-performance">Past Performance</SelectItem>
-          </SelectContent>
         </Select>
-        {/* <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="outline">Users</TabsTrigger>
-          <TabsTrigger value="past-performance">
-            Mitra <Badge variant="secondary">3</Badge>
-          </TabsTrigger>
-        </TabsList> */}
-        <div className="flex items-center gap-2 ml-auto">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
-                <IconChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+         <div className="flex items-center">
+            <Select defaultValue="outline">
+            </Select>
+          </div>
+        <div className="flex items-center">
+          <div className="ml-auto">
+            <div className="relative">
+              <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+              placeholder="Search by Id .."
+              value={(table.getColumn("userId")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("userId")?.setFilterValue(event.target.value)
+              }
+              className="h-9 w-[150px] lg:w-[250px] pl-8"
+            />
+            </div>
+          </div>
         </div>
       </div>
       <TabsContent

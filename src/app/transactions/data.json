@@ -3,7 +3,7 @@
     "id": 1,
     "transactionId": "TRX4521",
     "userName": "Ahmad Setiawan",
-    "mitraName": "Budi Santoso",
+    "returnDate": "March 19, 2024",
     "motorName": "Honda Vario 2023",
     "rentalDate": "March 15, 2024",
     "status": "Success"
@@ -12,7 +12,7 @@
     "id": 2,
     "transactionId": "TRX7890",
     "userName": "Dewi Putri",
-    "mitraName": "Rini Wulandari",
+    "returnDate": "February 26, 2024",
     "motorName": "Yamaha NMAX 2022",
     "rentalDate": "February 22, 2024",
     "status": "Pending"
@@ -21,7 +21,7 @@
     "id": 3,
     "transactionId": "TRX3456",
     "userName": "Rizki Pratama",
-    "mitraName": "Siti Rahayu",
+    "returnDate": "April 11, 2024",
     "motorName": "Honda PCX 2023",
     "rentalDate": "April 05, 2024",
     "status": "Failed"
@@ -30,7 +30,7 @@
     "id": 4,
     "transactionId": "TRX9012",
     "userName": "Maya Indah",
-    "mitraName": "Agus Wijaya",
+    "returnDate": "March 23, 2024",
     "motorName": "Yamaha Aerox 2024",
     "rentalDate": "March 18, 2024",
     "status": "Success"
@@ -39,7 +39,7 @@
     "id": 5,
     "transactionId": "TRX6789",
     "userName": "Dian Kusuma",
-    "mitraName": "Eko Prasetyo",
+    "returnDate": "March 5, 2024",
     "motorName": "Honda Scoopy 2023",
     "rentalDate": "February 28, 2024",
     "status": "Pending"
@@ -48,7 +48,7 @@
     "id": 6,
     "transactionId": "TRX2345",
     "userName": "Aditya Nugroho",
-    "mitraName": "Yanti Susanti",
+    "returnDate": "March 16, 2024",
     "motorName": "Yamaha R15 2023",
     "rentalDate": "March 10, 2024",
     "status": "Success"
@@ -57,7 +57,7 @@
     "id": 7,
     "transactionId": "TRX8901",
     "userName": "Sari Wijaya",
-    "mitraName": "Hendra Gunawan",
+    "returnDate": "April 17, 2024",
     "motorName": "Honda CBR 2024",
     "rentalDate": "April 12, 2024",
     "status": "Pending"
@@ -66,7 +66,7 @@
     "id": 8,
     "transactionId": "TRX5678",
     "userName": "Bambang Sutrisno",
-    "mitraName": "Nina Maulida",
+    "returnDate": "March 30, 2024",
     "motorName": "Yamaha MT-15 2023",
     "rentalDate": "March 25, 2024",
     "status": "Failed"
@@ -75,7 +75,7 @@
     "id": 9,
     "transactionId": "TRX1234",
     "userName": "Rina Fitriani",
-    "mitraName": "Joko Widodo",
+    "returnDate": "April 14, 2024",
     "motorName": "Honda ADV 2024",
     "rentalDate": "April 08, 2024",
     "status": "Success"
@@ -84,7 +84,7 @@
     "id": 10,
     "transactionId": "TRX7654",
     "userName": "Irfan Hakim",
-    "mitraName": "Sri Wahyuni",
+    "returnDate": "April 4, 2024",
     "motorName": "Yamaha XSR 2023",
     "rentalDate": "March 30, 2024",
     "status": "Pending"
@@ -93,7 +93,7 @@
     "id": 11,
     "transactionId": "TRX4321",
     "userName": "Putri Handayani",
-    "mitraName": "Dodi Sudrajat",
+    "returnDate": "April 20, 2024",
     "motorName": "Honda CRF 2024",
     "rentalDate": "April 15, 2024",
     "status": "Success"
@@ -102,7 +102,7 @@
     "id": 12,
     "transactionId": "TRX8765",
     "userName": "Wawan Setiadi",
-    "mitraName": "Lisa Permata",
+    "returnDate": "March 25, 2024",
     "motorName": "Yamaha Fino 2023",
     "rentalDate": "March 20, 2024",
     "status": "Failed"
@@ -111,7 +111,7 @@
     "id": 13,
     "transactionId": "TRX2109",
     "userName": "Ani Yulianti",
-    "mitraName": "Rudi Hartono",
+    "returnDate": "April 27, 2024",
     "motorName": "Honda Beat 2024",
     "rentalDate": "April 22, 2024",
     "status": "Pending"
@@ -120,7 +120,7 @@
     "id": 14,
     "transactionId": "TRX6543",
     "userName": "Gunawan Prasetyo",
-    "mitraName": "Dewi Safitri",
+    "returnDate": "April 2, 2024",
     "motorName": "Yamaha Lexi 2023",
     "rentalDate": "March 28, 2024",
     "status": "Success"
@@ -129,7 +129,7 @@
     "id": 15,
     "transactionId": "TRX9876",
     "userName": "Lina Mariana",
-    "mitraName": "Bambang Kusuma",
+    "returnDate": "April 8, 2024",
     "motorName": "Honda Genio 2024",
     "rentalDate": "April 03, 2024",
     "status": "Failed"
@@ -138,7 +138,7 @@
     "id": 16,
     "transactionId": "TRX3210",
     "userName": "Hadi Sutanto",
-    "mitraName": "Rani Widya",
+    "returnDate": "March 20, 2024",
     "motorName": "Yamaha Gear 2023",
     "rentalDate": "March 15, 2024",
     "status": "Pending"
@@ -147,7 +147,7 @@
     "id": 17,
     "transactionId": "TRX7432",
     "userName": "Eva Melinda",
-    "mitraName": "Surya Darma",
+    "returnDate": "April 23, 2024",
     "motorName": "Honda Revo 2024",
     "rentalDate": "April 18, 2024",
     "status": "Success"
@@ -156,7 +156,7 @@
     "id": 18,
     "transactionId": "TRX5432",
     "userName": "Tono Wijaya",
-    "mitraName": "Maya Sari",
+    "returnDate": "March 27, 2024",
     "motorName": "Yamaha Jupiter 2023",
     "rentalDate": "March 22, 2024",
     "status": "Failed"
@@ -165,7 +165,7 @@
     "id": 19,
     "transactionId": "TRX8901",
     "userName": "Diana Putri",
-    "mitraName": "Arief Rahman",
+    "returnDate": "April 30, 2024",
     "motorName": "Honda Supra 2024",
     "rentalDate": "April 25, 2024",
     "status": "Pending"
@@ -174,7 +174,7 @@
     "id": 20,
     "transactionId": "TRX6789",
     "userName": "Rudi Hermawan",
-    "mitraName": "Siska Dewi",
+    "returnDate": "April 5, 2024",
     "motorName": "Yamaha Vixion 2023",
     "rentalDate": "March 31, 2024",
     "status": "Success"

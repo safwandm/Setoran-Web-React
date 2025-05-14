@@ -4,6 +4,8 @@ import { ChartAreaDashboard } from "./chart-area-dashboard"
 import { SectionCardsDasboard } from "./section-cards-dashboard"
 // import { SiteHeader } from "@/components/site-header"
 import { IconBell } from "@tabler/icons-react"
+import dataMitra from "./dataMitra.json"
+import type { MitraType } from "./mitra-table"
 import {
   SidebarInset,
   SidebarProvider,
@@ -17,6 +19,7 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
 export default function Page() {
+  const typedMitraData = dataMitra as MitraType[]
   return (
     <SidebarProvider
       style={
@@ -26,6 +29,7 @@ export default function Page() {
         } as React.CSSProperties
       }
     >
+     
       <AppSidebar variant="inset" />
       <SidebarInset>
         <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -39,9 +43,7 @@ export default function Page() {
             <div className="ml-auto flex items-center gap-2">
               <Button variant="ghost" asChild size="lg" className="hidden sm:flex">
                 <a
-                  href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-                  rel="noopener noreferrer"
-                  target="_blank"
+                  href="/notifications"
                   className="dark:text-foreground"
                 >
                   <IconBell className= "w-10 h-10" />
@@ -57,7 +59,8 @@ export default function Page() {
               <div className="px-4 lg:px-6">
                 <ChartAreaDashboard />
               </div>
-              <DataTableDashboard data={data} />
+              {/* <DataTableDashboard data={data} /> */}
+              <DataTableDashboard data={data} mitraData={typedMitraData} />
             </div>
           </div>
         </div>
