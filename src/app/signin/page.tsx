@@ -33,6 +33,9 @@ export default function SignInForm() {
       window.dispatchEvent(new Event("access_token_updated"));
       setIsLoading(false);
       router.push("/dashboard"); 
+    }).catch(err => {
+      setError("Incorrect credentials");
+      setIsLoading(false);
     })
   };
 
