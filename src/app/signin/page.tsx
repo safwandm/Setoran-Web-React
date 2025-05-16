@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ApiService from "@/lib/api-client/wrapper";
 
 export default function SignInForm() {
   const router = useRouter();
@@ -11,6 +12,8 @@ export default function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  let apiService = ApiService.getInstance()
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!emailOrUsername || !password) {
@@ -19,16 +22,20 @@ export default function SignInForm() {
     }
     setError("");
     setIsLoading(true);
-    setTimeout(() => {
+
+    apiService.setoranApi.loginPost({
+      loginRequest: {
+        email: emailOrUsername,
+        password: password
+      }
+    }).then(res => {
+      localStorage.setItem("access_token", res.accessToken!)
+      window.dispatchEvent(new Event("access_token_updated"));
       setIsLoading(false);
       router.push("/dashboard"); 
-    }, 1000);
+    })
   };
-  
 
-  const handleSignUpRedirect = () => {
-    router.push("/signup");
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -64,16 +71,16 @@ export default function SignInForm() {
           {isLoading ? "Signing in..." : "Sign In"}
         </button>
 
-        <div className="w-full text-center text-sm">
+        {/* <div className="w-full text-center text-sm">
           Don’t have an account?{" "}
           <button
             type="button"
-            onClick={handleSignUpRedirect}
+            onClick={handleSubmit}
             className="text-blue-600 underline hover:text-blue-800"
           >
             Sign Up
           </button>
-        </div>
+        </div> */}
       </form>
     </div>
   );

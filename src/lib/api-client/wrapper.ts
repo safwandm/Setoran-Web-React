@@ -6,7 +6,7 @@ import { VoucherApi } from './apis';
 // register api lain kalau butuh
 
 // biar konfigurasi simple, kalau mau dev local buat .env
-const BASE_PATH = process.env.BACKEND_HOST || "http://160.19.167.222:5104/"
+const BASE_PATH = process.env.BACKEND_HOST || "http://160.19.167.222:5104"
 
 class ApiService {
   private static instance: ApiService;
