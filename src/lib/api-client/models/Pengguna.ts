@@ -20,6 +20,13 @@ import {
     DeviceTokenToJSON,
     DeviceTokenToJSONTyped,
 } from './DeviceToken';
+import type { Mitra } from './Mitra';
+import {
+    MitraFromJSON,
+    MitraFromJSONTyped,
+    MitraToJSON,
+    MitraToJSONTyped,
+} from './Mitra';
 import type { Notifikasi } from './Notifikasi';
 import {
     NotifikasiFromJSON,
@@ -139,6 +146,12 @@ export interface Pengguna {
     pelanggan?: Pelanggan;
     /**
      * 
+     * @type {Mitra}
+     * @memberof Pengguna
+     */
+    mitra?: Mitra;
+    /**
+     * 
      * @type {Array<Notifikasi>}
      * @memberof Pengguna
      */
@@ -187,10 +200,10 @@ export interface Pengguna {
     alamat?: string | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof Pengguna
      */
-    idGambar?: number | null;
+    idGambar?: string | null;
 }
 
 /**
@@ -226,6 +239,7 @@ export function PenggunaFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'lockoutEnabled': json['lockoutEnabled'] == null ? undefined : json['lockoutEnabled'],
         'accessFailedCount': json['accessFailedCount'] == null ? undefined : json['accessFailedCount'],
         'pelanggan': json['pelanggan'] == null ? undefined : PelangganFromJSON(json['pelanggan']),
+        'mitra': json['mitra'] == null ? undefined : MitraFromJSON(json['mitra']),
         'notifikasis': json['notifikasis'] == null ? undefined : ((json['notifikasis'] as Array<any>).map(NotifikasiFromJSON)),
         'deviceTokens': json['deviceTokens'] == null ? undefined : ((json['deviceTokens'] as Array<any>).map(DeviceTokenFromJSON)),
         'nama': json['nama'] == null ? undefined : json['nama'],
@@ -265,6 +279,7 @@ export function PenggunaToJSONTyped(value?: Pengguna | null, ignoreDiscriminator
         'lockoutEnabled': value['lockoutEnabled'],
         'accessFailedCount': value['accessFailedCount'],
         'pelanggan': PelangganToJSON(value['pelanggan']),
+        'mitra': MitraToJSON(value['mitra']),
         'notifikasis': value['notifikasis'] == null ? undefined : ((value['notifikasis'] as Array<any>).map(NotifikasiToJSON)),
         'deviceTokens': value['deviceTokens'] == null ? undefined : ((value['deviceTokens'] as Array<any>).map(DeviceTokenToJSON)),
         'nama': value['nama'],

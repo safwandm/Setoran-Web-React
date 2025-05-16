@@ -53,10 +53,10 @@ export interface PostNotifikasDTO {
     navigasi?: TargetNavigasi;
     /**
      * 
-     * @type {string}
+     * @type {{ [key: string]: string; }}
      * @memberof PostNotifikasDTO
      */
-    dataNavigasi?: string | null;
+    dataNavigasi?: { [key: string]: string; } | null;
     /**
      * 
      * @type {boolean}

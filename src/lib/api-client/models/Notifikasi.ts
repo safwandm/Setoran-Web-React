@@ -66,10 +66,10 @@ export interface Notifikasi {
     navigasi?: TargetNavigasi;
     /**
      * 
-     * @type {string}
+     * @type {{ [key: string]: string; }}
      * @memberof Notifikasi
      */
-    dataNavigasi?: string | null;
+    dataNavigasi?: { [key: string]: string; } | null;
     /**
      * 
      * @type {boolean}
