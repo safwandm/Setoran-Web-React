@@ -12,9 +12,11 @@ import { DataTableVoucher } from "./data-table"
 import { useEffect, useState } from "react"
 import ApiService from "@/lib/api-client/wrapper"
 import { Voucher } from "@/lib/api-client"
+import LoadingOverlay from "@/components/loading-overlay"
 
 export default function Page() {
 
+  const [loading, setLoading] = useState(true)
   const [voucher, setVoucher] = useState<Voucher[]>([])
 
   let apiService = ApiService.getInstance()
@@ -22,7 +24,7 @@ export default function Page() {
   useEffect(() => {
     apiService.voucherApi.voucherFilteredGet().then(res => {
       setVoucher(res)
-      console.log(res)
+      setLoading(false)
     })
   }, [])
   
@@ -41,8 +43,9 @@ export default function Page() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-             
-              <DataTableVoucher data={voucher} />
+              <LoadingOverlay loading={loading}>
+                <DataTableVoucher data={voucher} />
+              </LoadingOverlay>
             </div>
           </div>
         </div>

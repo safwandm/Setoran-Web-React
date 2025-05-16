@@ -1,16 +1,18 @@
-// components/ClientAuthWrapper.tsx
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ApiService from "@/lib/api-client/wrapper";
 import { useCurrentUserStore } from "@/lib/stores/current-user";
+import LoadingOverlay from "./loading-overlay";
 
 const PUBLIC_ROUTES = ["/signin", "/login"];
 
 export default function ClientAuthWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const setCurrentUser = useCurrentUserStore((state) => state.set)
+  const setCurrentUser = useCurrentUserStore((state) => state.set);
+  const [loading, setLoading] = useState(true);
+  const [showOverlay, setShowOverlay] = useState(true); 
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -32,12 +34,17 @@ export default function ClientAuthWrapper({ children }: { children: React.ReactN
         }
       } catch {
         router.replace("/signin");
+      } finally {
+        setLoading(false);
+        setTimeout(() => setShowOverlay(false), 300); 
       }
     };
 
     checkAuth();
 
     const handleTokenChange = () => {
+      setLoading(true);
+      setShowOverlay(true);
       checkAuth();
     };
 
@@ -45,7 +52,11 @@ export default function ClientAuthWrapper({ children }: { children: React.ReactN
     return () => {
       window.removeEventListener("access_token_updated", handleTokenChange);
     };
-  }, [router]);
+  }, [router, setCurrentUser]);
 
-  return <>{children}</>;
+  return (
+    <LoadingOverlay loading={loading}>
+      {children}
+    </LoadingOverlay>
+  );
 }
