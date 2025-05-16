@@ -24,7 +24,8 @@ class ApiService {
   private constructor(config?: Configuration) {
     if (config == undefined)
         config = new Configuration({
-        basePath: BASE_PATH
+        basePath: BASE_PATH,
+        accessToken: () => localStorage.getItem("access_token") ?? ""
         });
         
     this.config = config
@@ -48,14 +49,6 @@ class ApiService {
       ApiService.instance = new ApiService();
     }
     return ApiService.instance;
-  }
-
-  public setToken(token: string) {
-    this.config = new Configuration({
-      basePath: BASE_PATH,
-      accessToken: token,
-    });
-    this.createApis(); // recreate APIs with new config
   }
 }
 
