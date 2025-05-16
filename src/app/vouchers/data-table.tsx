@@ -22,6 +22,7 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import {
   IconChevronDown,
+  IconSearch,
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
@@ -110,12 +111,12 @@ import {
 
 export const schema = z.object({
   id: z.number(),
-  header: z.string(),
-  type: z.string(),
+  voucherCode: z.string(),
+  voucherName: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  usage: z.string(),
   status: z.string(),
-  target: z.string(),
-  limit: z.string(),
-  reviewer: z.string(),
 })
 
 // Create a separate component for the drag handle
@@ -171,7 +172,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "header",
+    accessorKey: "voucherCode",
     header: () => <div className="w-full text-left">Voucher Code</div>,
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />
@@ -179,54 +180,54 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "type",
+    accessorKey: "vouhcerName",
     header: () => <div className="w-30 text-left">Voucher Name</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.type}
+          {row.original.voucherName}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "startDate",
+    header: () => <div className="w-50 text text-left">Start Date</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.startDate}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "endDate",
+    header: () => <div className="w-full text-left">End Date</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.endDate}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "usage",
+    header: () => <div className="w-full text-left">Usage</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.usage}
       </div>
     ),
   },
   {
     accessorKey: "status",
-    header: () => <div className="w-50 text text-left">Start Date</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.status}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "target",
-    header: () => <div className="w-full text-left">End Date</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.target}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "limit",
-    header: () => <div className="w-full text-left">Usage</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.limit}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "reviewer",
     header: () => <div className="w-full text-left">Status</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.reviewer === "Active" ? (
+        {row.original.status === "Active" ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : row.original.reviewer === "Expired" ?(
+        ) : row.original.status === "Expired" ?(
           <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
         ):(
           <IconBan />
         )}
-        {row.original.reviewer}
+        {row.original.status}
       </Badge>
     ),
   },
@@ -381,39 +382,17 @@ export function DataTableVoucher({
           <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
         </TabsList>
         <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
-                <IconChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="relative">
+            <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                   placeholder="Search by Id .."
+                   value={(table.getColumn("voucherCode")?.getFilterValue() as string) ?? ""}
+                   onChange={(event) =>
+                      table.getColumn("voucherCode")?.setFilterValue(event.target.value)
+                    }
+                    className="h-9 w-[150px] lg:w-[250px] pl-8"
+                />                
+            </div>
           <Button variant="outline" size="sm">
             <IconPlus />
             <span className="hidden lg:inline">Add Section</span>
@@ -599,12 +578,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.header}
+          {item.voucherCode}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.header}</DrawerTitle>
+          <DrawerTitle>{item.voucherCode}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -670,12 +649,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.header} />
+              <Input id="header" defaultValue={item.voucherCode} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.type}>
+                <Select defaultValue={item.voucherName}>
                   <SelectTrigger id="type" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
@@ -701,7 +680,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="status">Status</Label>
-                <Select defaultValue={item.status}>
+                <Select defaultValue={item.startDate}>
                   <SelectTrigger id="status" className="w-full">
                     <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
@@ -716,16 +695,16 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={item.target} />
+                <Input id="target" defaultValue={item.endDate} />
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={item.limit} />
+                <Input id="limit" defaultValue={item.usage} />
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <Label htmlFor="reviewer">Reviewer</Label>
-              <Select defaultValue={item.reviewer}>
+              <Select defaultValue={item.status}>
                 <SelectTrigger id="reviewer" className="w-full">
                   <SelectValue placeholder="Select a reviewer" />
                 </SelectTrigger>

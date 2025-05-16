@@ -1,182 +1,182 @@
 [
   {
     "id": 1,
-    "header": "WEEKEND25",
-    "type": "Weekend Special Discount",
-    "status": "May 1, 2024",
-    "target": "June 1, 2024",
-    "limit": "45/100",
-    "reviewer": "Active"
+    "voucherCode": "WEEKEND25",  
+    "voucherName": "Weekend Special Discount",
+    "startDate": "May 1, 2024",
+    "endDate": "June 1, 2024",
+    "usage": "45/100",
+    "status": "Active"
   },
   {
     "id": 2,
-    "header": "NEWUSER30",
-    "type": "First Time Rental Discount",
-    "status": "April 15, 2024",
-    "target": "May 15, 2024",
-    "limit": "120/150",
-    "reviewer": "Active"
+    "voucherCode": "NEWUSER30",
+    "voucherName": "First Time Rental Discount",
+    "startDate": "April 15, 2024",
+    "endDate": "May 15, 2024",
+    "usage": "120/150",
+    "status": "Active"
   },
   {
     "id": 3,
-    "header": "RAMADAN40",
-    "type": "Ramadan Special Offer",
-    "status": "March 1, 2024",
-    "target": "April 1, 2024",
-    "limit": "200/200",
-    "reviewer": "Expired"
+    "voucherCode": "RAMADAN40",
+    "voucherName": "Ramadan Special Offer",
+    "startDate": "March 1, 2024",
+    "endDate": "April 1, 2024",
+    "usage": "200/200",
+    "status": "Expired"
   },
   {
     "id": 4,
-    "header": "HOLIDAY50",
-    "type": "Holiday Season Discount",
-    "status": "May 10, 2024",
-    "target": "June 10, 2024",
-    "limit": "30/80",
-    "reviewer": "Active"
+    "voucherCode": "HOLIDAY50",
+    "voucherName": "Holiday Season Discount",
+    "startDate": "May 10, 2024",
+    "endDate": "June 10, 2024",
+    "usage": "30/80",
+    "status": "Active"
   },
   {
     "id": 5,
-    "header": "HONDA25K",
-    "type": "Honda Motors Special",
-    "status": "April 1, 2024",
-    "target": "May 1, 2024",
-    "limit": "150/150",
-    "reviewer": "Expired"
+    "voucherCode": "HONDA25K",
+    "voucherName": "Honda Motors Special",
+    "startDate": "April 1, 2024",
+    "endDate": "May 1, 2024",
+    "usage": "150/150",
+    "status": "Expired"
   },
   {
     "id": 6,
-    "header": "YAMAHA30",
-    "type": "Yamaha Motors Deal",
-    "status": "May 15, 2024",
-    "target": "June 15, 2024",
-    "limit": "25/100",
-    "reviewer": "Active"
+    "voucherCode": "YAMAHA30",
+    "voucherName": "Yamaha Motors Deal",
+    "startDate": "May 15, 2024",
+    "endDate": "June 15, 2024",
+    "usage": "25/100",
+    "status": "Active"
   },
   {
     "id": 7,
-    "header": "STUDENT20",
-    "type": "Student Special Offer",
-    "status": "May 1, 2024",
-    "target": "July 1, 2024",
-    "limit": "0/50",
-    "reviewer": "Disabled"
+    "voucherCode": "STUDENT20",
+    "voucherName": "Student Special Offer",
+    "startDate": "May 1, 2024",
+    "endDate": "July 1, 2024",
+    "usage": "0/50",
+    "status": "Disabled"
   },
   {
     "id": 8,
-    "header": "DAILY15K",
-    "type": "Daily Rental Discount",
-    "status": "May 5, 2024",
-    "target": "June 5, 2024",
-    "limit": "78/100",
-    "reviewer": "Active"
+    "voucherCode": "DAILY15K",
+    "voucherName": "Daily Rental Discount",
+    "startDate": "May 5, 2024",
+    "endDate": "June 5, 2024",
+    "usage": "78/100",
+    "status": "Active"
   },
   {
     "id": 9,
-    "header": "WEEKLY40",
-    "type": "Weekly Rental Deal",
-    "status": "April 20, 2024",
-    "target": "July 20, 2024",
-    "limit": "15/40",
-    "reviewer": "Active"
+    "voucherCode": "WEEKLY40",
+    "voucherName": "Weekly Rental Deal",
+    "startDate": "April 20, 2024",
+    "endDate": "July 20, 2024",
+    "usage": "15/40",
+    "status": "Active"
   },
   {
     "id": 10,
-    "header": "FLASH35K",
-    "type": "Flash Sale Special",
-    "status": "May 8, 2024",
-    "target": "May 10, 2024",
-    "limit": "95/100",
-    "reviewer": "Active"
+    "voucherCode": "FLASH35K",
+    "voucherName": "Flash Sale Special",
+    "startDate": "May 8, 2024",
+    "endDate": "May 10, 2024",
+    "usage": "95/100",
+    "status": "Active"
   },
   {
     "id": 11,
-    "header": "LEBARAN50",
-    "type": "Lebaran Holiday Deal",
-    "status": "March 15, 2024",
-    "target": "April 15, 2024",
-    "limit": "200/200",
-    "reviewer": "Expired"
+    "voucherCode": "LEBARAN50",
+    "voucherName": "Lebaran Holiday Deal",
+    "startDate": "March 15, 2024",
+    "endDate": "April 15, 2024",
+    "usage": "200/200",
+    "status": "Expired"
   },
   {
     "id": 12,
-    "header": "MONTH25K",
-    "type": "Monthly Rental Special",
-    "status": "May 1, 2024",
-    "target": "June 30, 2024",
-    "limit": "35/75",
-    "reviewer": "Active"
+    "voucherCode": "MONTH25K",
+    "voucherName": "Monthly Rental Special",
+    "startDate": "May 1, 2024",
+    "endDate": "June 30, 2024",
+    "usage": "35/75",
+    "status": "Active"
   },
   {
     "id": 13,
-    "header": "SPORT45K",
-    "type": "Sport Bike Discount",
-    "status": "May 12, 2024",
-    "target": "June 12, 2024",
-    "limit": "20/60",
-    "reviewer": "Active"
+    "voucherCode": "SPORT45K",
+    "voucherName": "Sport Bike Discount",
+    "startDate": "May 12, 2024",
+    "endDate": "June 12, 2024",
+    "usage": "20/60",
+    "status": "Active"
   },
   {
     "id": 14,
-    "header": "MATIC20K",
-    "type": "Matic Bike Special",
-    "status": "April 25, 2024",
-    "target": "May 25, 2024",
-    "limit": "90/100",
-    "reviewer": "Active"
+    "voucherCode": "MATIC20K",
+    "voucherName": "Matic Bike Special",
+    "startDate": "April 25, 2024",
+    "endDate": "May 25, 2024",
+    "usage": "90/100",
+    "status": "Active"
   },
   {
     "id": 15,
-    "header": "WEEKEND30",
-    "type": "Weekend Getaway Deal",
-    "status": "May 1, 2024",
-    "target": "June 1, 2024",
-    "limit": "0/80",
-    "reviewer": "Disabled"
+    "voucherCode": "WEEKEND30",
+    "voucherName": "Weekend Getaway Deal",
+    "startDate": "May 1, 2024",
+    "endDate": "June 1, 2024",
+    "usage": "0/80",
+    "status": "Disabled"
   },
   {
     "id": 16,
-    "header": "FIRST25K",
-    "type": "First Ride Discount",
-    "status": "May 15, 2024",
-    "target": "June 15, 2024",
-    "limit": "45/50",
-    "reviewer": "Active"
+    "voucherCode": "FIRST25K",
+    "voucherName": "First Ride Discount",
+    "startDate": "May 15, 2024",
+    "endDate": "June 15, 2024",
+    "usage": "45/50",
+    "status": "Active"
   },
   {
     "id": 17,
-    "header": "PAYDAY40",
-    "type": "Payday Special Offer",
-    "status": "May 25, 2024",
-    "target": "May 31, 2024",
-    "limit": "10/100",
-    "reviewer": "Active"
+    "voucherCode": "PAYDAY40",
+    "voucherName": "Payday Special Offer",
+    "startDate": "May 25, 2024",
+    "endDate": "May 31, 2024",
+    "usage": "10/100",
+    "status": "Active"
   },
   {
     "id": 18,
-    "header": "PROMO15K",
-    "type": "Special Promotion",
-    "status": "April 1, 2024",
-    "target": "May 1, 2024",
-    "limit": "150/150",
-    "reviewer": "Expired"
+    "voucherCode": "PROMO15K",
+    "voucherName": "Special Promotion",
+    "startDate": "April 1, 2024",
+    "endDate": "May 1, 2024",
+    "usage": "150/150",
+    "status": "Expired"
   },
   {
     "id": 19,
-    "header": "SCOOT25K",
-    "type": "Scooter Rental Deal",
-    "status": "May 10, 2024",
-    "target": "June 10, 2024",
-    "limit": "55/75",
-    "reviewer": "Active"
+    "voucherCode": "SCOOT25K",
+    "voucherName": "Scooter Rental Deal",
+    "startDate": "May 10, 2024",
+    "endDate": "June 10, 2024",
+    "usage": "55/75",
+    "status": "Active"
   },
   {
     "id": 20,
-    "header": "LOYAL30K",
-    "type": "Loyal Customer Reward",
-    "status": "May 1, 2024",
-    "target": "July 1, 2024",
-    "limit": "25/100",
-    "reviewer": "Active"
+    "voucherCode": "LOYAL30K",
+    "voucherName": "Loyal Customer Reward",
+    "startDate": "May 1, 2024",
+    "endDate": "July 1, 2024",
+    "usage": "25/100",
+    "status": "Active"
   }
 ]

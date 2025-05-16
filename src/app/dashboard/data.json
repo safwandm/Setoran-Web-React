@@ -1,182 +1,182 @@
 [
   {
     "id": 1,
-    "header": "ID-U12",
-    "type": "John Doe",
+    "userId": "ID-U12",
+    "name": "John Doe",
     "status": "Active",
-    "target": "March 15, 2023",
-    "limit": "Verified",
-    "reviewer": "15"
+    "registration": "March 15, 2023",
+    "verification": "Verified",
+    "transaction": "15"
   },
   {
     "id": 2,
-    "header": "ID-U34",
-    "type": "Jane Smith",
+    "userId": "ID-U34",
+    "name": "Jane Smith",
     "status": "Not Active",
-    "target": "July 20, 2024",
-    "limit": "In Process",
-    "reviewer": "8"
+    "registration": "July 20, 2024",
+    "verification": "In Process",
+    "transaction": "8"
   },
   {
     "id": 3,
-    "header": "ID-U56",
-    "type": "Alice Johnson",
+    "userId": "ID-U56",
+    "name": "Alice Johnson",
     "status": "Blocked",
-    "target": "January 10, 2025",
-    "limit": "Canceled",
-    "reviewer": "20"
+    "registration": "January 10, 2025",
+    "verification": "Canceled",
+    "transaction": "20"
   },
   {
     "id": 4,
-    "header": "ID-U78",
-    "type": "Bob Brown",
+    "userId": "ID-U78",
+    "name": "Bob Brown",
     "status": "Active",
-    "target": "December 5, 2023",
-    "limit": "Verified",
-    "reviewer": "12"
+    "registration": "December 5, 2023",
+    "verification": "Verified",
+    "transaction": "12"
   },
   {
     "id": 5,
-    "header": "ID-U90",
-    "type": "Charlie Davis",
+    "userId": "ID-U90",
+    "name": "Charlie Davis",
     "status": "Not Active",
-    "target": "June 18, 2024",
-    "limit": "In Process",
-    "reviewer": "5"
+    "registration": "June 18, 2024",
+    "verification": "In Process",
+    "transaction": "5"
   },
   {
     "id": 6,
-    "header": "ID-U23",
-    "type": "Emily Wilson",
+    "userId": "ID-U23",
+    "name": "Emily Wilson",
     "status": "Blocked",
-    "target": "October 22, 2023",
-    "limit": "Canceled",
-    "reviewer": "18"
+    "registration": "October 22, 2023",
+    "verification": "Canceled",
+    "transaction": "18"
   },
   {
     "id": 7,
-    "header": "ID-U45",
-    "type": "Michael Lee",
+    "userId": "ID-U45",
+    "name": "Michael Lee",
     "status": "Active",
-    "target": "April 9, 2025",
-    "limit": "Verified",
-    "reviewer": "10"
+    "registration": "April 9, 2025",
+    "verification": "Verified",
+    "transaction": "10"
   },
   {
     "id": 8,
-    "header": "ID-U67",
-    "type": "Sophia Martinez",
+    "userId": "ID-U67",
+    "name": "Sophia Martinez",
     "status": "Not Active",
-    "target": "August 14, 2024",
-    "limit": "In Process",
-    "reviewer": "7"
+    "registration": "August 14, 2024",
+    "verification": "In Process",
+    "transaction": "7"
   },
   {
     "id": 9,
-    "header": "ID-U89",
-    "type": "Daniel Kim",
+    "userId": "ID-U89",
+    "name": "Daniel Kim",
     "status": "Blocked",
-    "target": "February 3, 2023",
-    "limit": "Canceled",
-    "reviewer": "25"
+    "registration": "February 3, 2023",
+    "verification": "Canceled",
+    "transaction": "25"
   },
   {
     "id": 10,
-    "header": "ID-U01",
-    "type": "Olivia Garcia",
+    "userId": "ID-U01",
+    "name": "Olivia Garcia",
     "status": "Active",
-    "target": "November 30, 2023",
-    "limit": "Verified",
-    "reviewer": "9"
+    "registration": "November 30, 2023",
+    "verification": "Verified",
+    "transaction": "9"
   },
   {
     "id": 11,
-    "header": "ID-U11",
-    "type": "James Wilson",
+    "userId": "ID-U11",
+    "name": "James Wilson",
     "status": "Not Active",
-    "target": "May 12, 2024",
-    "limit": "In Process",
-    "reviewer": "14"
+    "registration": "May 12, 2024",
+    "verification": "In Process",
+    "transaction": "14"
   },
   {
     "id": 12,
-    "header": "ID-U22",
-    "type": "Emma Davis",
+    "userId": "ID-U22",
+    "name": "Emma Davis",
     "status": "Blocked",
-    "target": "June 25, 2023",
-    "limit": "Canceled",
-    "reviewer": "19"
+    "registration": "June 25, 2023",
+    "verification": "Canceled",
+    "transaction": "19"
   },
   {
     "id": 13,
-    "header": "ID-U33",
-    "type": "Sophia Brown",
+    "userId": "ID-U33",
+    "name": "Sophia Brown",
     "status": "Active",
-    "target": "August 8, 2023",
-    "limit": "Verified",
-    "reviewer": "11"
+    "registration": "August 8, 2023",
+    "verification": "Verified",
+    "transaction": "11"
   },
   {
     "id": 14,
-    "header": "ID-U44",
-    "type": "Liam Johnson",
+    "userId": "ID-U44",
+    "name": "Liam Johnson",
     "status": "Not Active",
-    "target": "September 14, 2024",
-    "limit": "In Process",
-    "reviewer": "6"
+    "registration": "September 14, 2024",
+    "verification": "In Process",
+    "transaction": "6"
   },
   {
     "id": 15,
-    "header": "ID-U55",
-    "type": "Mia Martinez",
+    "userId": "ID-U55",
+    "name": "Mia Martinez",
     "status": "Blocked",
-    "target": "October 19, 2023",
-    "limit": "Canceled",
-    "reviewer": "22"
+    "registration": "October 19, 2023",
+    "verification": "Canceled",
+    "transaction": "22"
   },
   {
     "id": 16,
-    "header": "ID-U66",
-    "type": "Noah Lee",
+    "userId": "ID-U66",
+    "name": "Noah Lee",
     "status": "Active",
-    "target": "December 31, 2023",
-    "limit": "Verified",
-    "reviewer": "13"
+    "registration": "December 31, 2023",
+    "verification": "Verified",
+    "transaction": "13"
   },
   {
     "id": 17,
-    "header": "ID-U77",
-    "type": "Isabella Kim",
+    "userId": "ID-U77",
+    "name": "Isabella Kim",
     "status": "Not Active",
-    "target": "January 5, 2025",
-    "limit": "In Process",
-    "reviewer": "17"
+    "registration": "January 5, 2025",
+    "verification": "In Process",
+    "transaction": "17"
   },
   {
     "id": 18,
-    "header": "ID-U88",
-    "type": "Ethan Garcia",
+    "userId": "ID-U88",
+    "name": "Ethan Garcia",
     "status": "Blocked",
-    "target": "February 20, 2023",
-    "limit": "Canceled",
-    "reviewer": "21"
+    "registration": "February 20, 2023",
+    "verification": "Canceled",
+    "transaction": "21"
   },
   {
     "id": 19,
-    "header": "ID-U99",
-    "type": "Ava Wilson",
+    "userId": "ID-U99",
+    "name": "Ava Wilson",
     "status": "Active",
-    "target": "March 10, 2024",
-    "limit": "Verified",
-    "reviewer": "16"
+    "registration": "March 10, 2024",
+    "verification": "Verified",
+    "transaction": "16"
   },
   {
     "id": 20,
-    "header": "ID-U10",
-    "type": "Oliver Davis",
+    "userId": "ID-U10",
+    "name": "Oliver Davis",
     "status": "Not Active",
-    "target": "April 15, 2025",
-    "limit": "In Process",
-    "reviewer": "12"
+    "registration": "April 15, 2025",
+    "verification": "In Process",
+    "transaction": "12"
   }
 ]

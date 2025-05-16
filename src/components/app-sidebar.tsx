@@ -130,23 +130,23 @@ const data = {
       ],
     },
   ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    // {
-    //   title: "Get Help",
-    //   url: "#",
-    //   icon: IconHelp,
-    // },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
+  // navSecondary: [
+  //   // {
+  //   //   title: "Settings",
+  //   //   url: "#",
+  //   //   icon: IconSettings,
+  //   // },
+  //   // {
+  //   //   title: "Get Help",
+  //   //   url: "#",
+  //   //   icon: IconHelp,
+  //   // },
+  //   // {
+  //   //   title: "Search",
+  //   //   url: "#",
+  //   //   icon: IconSearch,
+  //   // },
+  // ],
   // documents: [
   //   {
   //     name: "Transsactions",
@@ -187,7 +187,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         {/* <NavDocuments items={data.documents} /> */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

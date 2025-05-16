@@ -24,6 +24,7 @@ import {
   IconBan,
   IconArrowsCross,
   IconChevronDown,
+  IconSearch,
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
@@ -111,12 +112,12 @@ import {
 
 export const schema = z.object({
   id: z.number(),
-  header: z.string(),
-  type: z.string(),
+  userId: z.string(),
+  userName: z.string(),
   status: z.string(),
-  target: z.string(),
-  limit: z.string(),
-  reviewer: z.string(),
+  registration: z.string(),
+  verification: z.string(),
+  transaction: z.string(),
 })
 
 // Create a separate component for the drag handle
@@ -172,7 +173,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "header",
+    accessorKey: "userId",
     header: "User ID",
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />
@@ -180,12 +181,12 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "type",
+    accessorKey: "userName",
     header: "Name",
   
     cell: ({ row }) => (
       <div className="w-">
-          {row.original.type}
+          {row.original.userName}
       </div>
     ),
   },
@@ -206,36 +207,36 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    accessorKey: "target",
+    accessorKey: "registration",
     header: () => <div className="w-full text-left">Registration </div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.target}
+          {row.original.registration}
       </div>
     ),
   },
   {
-    accessorKey: "limit",
+    accessorKey: "verification",
     header: () => <div className="w-10 text-left">Verification</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.limit === "Verified" ? (
+        {row.original.verification === "Verified" ? (
           <IconCircleCheckFilled className="fill-blue-500 dark:fill-blue-400" />
-        ) : row.original.limit === "Canceled" ? (
+        ) : row.original.verification === "Canceled" ? (
           <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
         ) : (
           <IconLoader className="animate-spin text-muted-foreground" />
         )}
-        {row.original.limit}
+        {row.original.verification}
       </Badge>
     ),
   },
   {
-    accessorKey: "reviewer",
+    accessorKey: "transaction",
     header: () => <div className="text-left">Transaction</div>,
     cell: ({ row }) => (
       <div className="w-4">
-          {row.original.reviewer}
+          {row.original.transaction}
       </div>
     ),
   },
@@ -360,63 +361,27 @@ export function DataTableUser({
       defaultValue="outline"
       className="w-full flex-col justify-start gap-6"
     >
-      <div className="flex items-center justify-between px-4 lg:px-6">
-        <Label htmlFor="view-selector" className="sr-only">
-          View
-        </Label>
+       <div className="flex items-center justify-between px-4 lg:px-6">
         <Select defaultValue="outline">
-          <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
-            size="sm"
-            id="view-selector"
-          >
-            <SelectValue placeholder="Select a view" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="outline">Outline</SelectItem>
-            <SelectItem value="past-performance">Past Performance</SelectItem>
-          </SelectContent>
         </Select>
-        {/* <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="outline">Users</TabsTrigger>
-          <TabsTrigger value="past-performance">
-            Mitra <Badge variant="secondary">3</Badge>
-          </TabsTrigger>
-        </TabsList> */}
-        <div className="flex items-center gap-2 ml-auto">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
-                <IconChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+         <div className="flex items-center">
+            <Select defaultValue="outline">
+            </Select>
+          </div>
+        <div className="flex items-center">
+          <div className="ml-auto">
+            <div className="relative">
+              <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+              placeholder="Search by Id .."
+              value={(table.getColumn("userId")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("userId")?.setFilterValue(event.target.value)
+              }
+              className="h-9 w-[150px] lg:w-[250px] pl-8"
+            />
+            </div>
+          </div>
         </div>
       </div>
       <TabsContent
@@ -635,12 +600,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.header}
+          {item.userId}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.header}</DrawerTitle>
+          <DrawerTitle>{item.userId}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -706,12 +671,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.header} />
+              <Input id="header" defaultValue={item.userId} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.type}>
+                <Select defaultValue={item.userName}>
                   <SelectTrigger id="type" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
@@ -752,16 +717,16 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={item.target} />
+                <Input id="target" defaultValue={item.registration} />
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={item.limit} />
+                <Input id="limit" defaultValue={item.verification} />
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <Label htmlFor="reviewer">Reviewer</Label>
-              <Select defaultValue={item.reviewer}>
+              <Select defaultValue={item.transaction}>
                 <SelectTrigger id="reviewer" className="w-full">
                   <SelectValue placeholder="Select a reviewer" />
                 </SelectTrigger>
