@@ -152,6 +152,12 @@ export interface Pengguna {
     mitra?: Mitra;
     /**
      * 
+     * @type {boolean}
+     * @memberof Pengguna
+     */
+    isAdmin?: boolean;
+    /**
+     * 
      * @type {Array<Notifikasi>}
      * @memberof Pengguna
      */
@@ -240,6 +246,7 @@ export function PenggunaFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'accessFailedCount': json['accessFailedCount'] == null ? undefined : json['accessFailedCount'],
         'pelanggan': json['pelanggan'] == null ? undefined : PelangganFromJSON(json['pelanggan']),
         'mitra': json['mitra'] == null ? undefined : MitraFromJSON(json['mitra']),
+        'isAdmin': json['isAdmin'] == null ? undefined : json['isAdmin'],
         'notifikasis': json['notifikasis'] == null ? undefined : ((json['notifikasis'] as Array<any>).map(NotifikasiFromJSON)),
         'deviceTokens': json['deviceTokens'] == null ? undefined : ((json['deviceTokens'] as Array<any>).map(DeviceTokenFromJSON)),
         'nama': json['nama'] == null ? undefined : json['nama'],
@@ -280,6 +287,7 @@ export function PenggunaToJSONTyped(value?: Pengguna | null, ignoreDiscriminator
         'accessFailedCount': value['accessFailedCount'],
         'pelanggan': PelangganToJSON(value['pelanggan']),
         'mitra': MitraToJSON(value['mitra']),
+        'isAdmin': value['isAdmin'],
         'notifikasis': value['notifikasis'] == null ? undefined : ((value['notifikasis'] as Array<any>).map(NotifikasiToJSON)),
         'deviceTokens': value['deviceTokens'] == null ? undefined : ((value['deviceTokens'] as Array<any>).map(DeviceTokenToJSON)),
         'nama': value['nama'],
