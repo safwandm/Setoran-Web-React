@@ -12,7 +12,6 @@ export default function ClientAuthWrapper({ children }: { children: React.ReactN
   const router = useRouter();
   const setCurrentUser = useCurrentUserStore((state) => state.set);
   const [loading, setLoading] = useState(true);
-  const [showOverlay, setShowOverlay] = useState(true); 
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -36,7 +35,6 @@ export default function ClientAuthWrapper({ children }: { children: React.ReactN
         router.replace("/signin");
       } finally {
         setLoading(false);
-        setTimeout(() => setShowOverlay(false), 300); 
       }
     };
 
@@ -44,7 +42,6 @@ export default function ClientAuthWrapper({ children }: { children: React.ReactN
 
     const handleTokenChange = () => {
       setLoading(true);
-      setShowOverlay(true);
       checkAuth();
     };
 

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+dotenv.config()
 
 import { Configuration } from './runtime';
 import { AuthApi, MitraApi, MotorApi, NotifikasiApi, PelangganApi, PenggunaApi, SetoranAPINETApi } from './apis';
@@ -6,7 +7,7 @@ import { VoucherApi } from './apis';
 // register api lain kalau butuh
 
 // biar konfigurasi simple, kalau mau dev local buat .env
-const BASE_PATH = process.env.BACKEND_HOST || "https://160.19.167.222:5104"
+const BASE_PATH = process.env.NEXT_PUBLIC_BACKEND_HOST || "https://160.19.167.222:5104"
 
 class ApiService {
   private static instance: ApiService;
