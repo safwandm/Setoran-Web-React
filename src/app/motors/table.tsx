@@ -106,16 +106,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-
-export const schema = z.object({
-  id: z.number(),
-  motorId: z.string(),
-  motorName: z.string(),
-  mitraName: z.string(),
-  status: z.string(),
-  price: z.string(),
-  rented: z.string(),
-})
+import { Motor } from "@/lib/api-client"
+import ApiService from "@/lib/api-client/wrapper"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -137,12 +129,12 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
+const columns: ColumnDef<Motor>[] = [
+  // {
+  //   id: "drag",
+  //   header: () => null,
+  //   cell: ({ row }) => <DragHandle id={row.original.idMotor || 0} />,
+  // },
   {
     id: "select",
     header: ({ table }) => (
@@ -182,7 +174,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Motor Name</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.motorName}
+          {row.original.model}
       </div>
     ),
   },
@@ -191,7 +183,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Mitra Name</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.mitraName}
+          {row.original.idMitra}
       </div>
     ),
   },
@@ -200,16 +192,16 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Status</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Available" ? (
+        {row.original.statusMotor === "Tersedia" ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-blue-400" />
-        ) : row.original.status === "For Rent" ? (
+        ) : row.original.statusMotor === "For Rent" ? (
           <IconUser className="" />
-        ) : row.original.status === "Under Construction" ? (
+        ) : row.original.statusMotor === "Under Construction" ? (
           <IconBuildingWarehouse className=" text-muted-foreground" />
         ):
         <IconCircleCheckFilled className=" text-muted-foreground" />
         }
-        {row.original.status}
+        {row.original.statusMotor}
       </Badge>
     ),
   },
@@ -218,19 +210,19 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Price</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.price}
+          {row.original.hargaHarian}
       </div>
     ),
   },
-  {
-    accessorKey: "rented",
-    header: "Rented",
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.rented}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "rented",
+  //   header: "Rented",
+  //   cell: ({ row }) => (
+  //     <div className="w-9">
+  //         {row.original.rented}
+  //     </div>
+  //   ),
+  // },
   {
     id: "actions",
     cell: () => (
@@ -257,9 +249,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
 ]
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+function DraggableRow({ row }: { row: Row<Motor> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
+    id: row.original.idMotor!,
   })
 
   return (
@@ -282,12 +274,8 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   )
 }
 
-export function TableMotors({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
+export function TableMotors() {
+  const [data, setData] = React.useState<Motor[]>([])
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -307,9 +295,11 @@ export function TableMotors({
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
+    () => data?.map(({ idMotor }) => idMotor!) || [],
     [data]
   )
+
+  const apiService = ApiService.getInstance()
 
   const table = useReactTable({
     data,
@@ -321,7 +311,7 @@ export function TableMotors({
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.id.toString(),
+    getRowId: (row) => row.idMotor!.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -347,12 +337,16 @@ export function TableMotors({
     }
   }
 
+  React.useEffect(() => {
+    apiService.motorApi.apiMotorGet().then(res => setData(res))
+  }, [])
+
   return (
     <Tabs
       defaultValue="outline"
       className="w-full flex-col justify-start gap-6"
     >
-      <div className="flex items-center justify-between px-4 lg:px-6">
+      {/* <div className="flex items-center justify-between px-4 lg:px-6">
         <Select defaultValue="outline">
         </Select>
          <div className="flex items-center">
@@ -364,7 +358,7 @@ export function TableMotors({
             <div className="relative">
               <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-              placeholder="Search by Id .."
+              placeholder="Search .."
               value={(table.getColumn("motorId")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
                 table.getColumn("motorId")?.setFilterValue(event.target.value)
@@ -374,7 +368,7 @@ export function TableMotors({
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <TabsContent
         value="outline"
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
@@ -527,14 +521,14 @@ export function TableMotors({
   )
 }
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: Motor}) {
   const isMobile = useIsMobile()
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.motorId}
+          {item.idMotor}
         </Button>
       </DrawerTrigger>
       <DrawerContent>

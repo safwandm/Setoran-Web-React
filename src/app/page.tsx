@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
@@ -11,7 +11,9 @@ export default function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  router.push("/dashboard")
+  useEffect(() => {
+    router.push("/dashboard")
+  }, [])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
