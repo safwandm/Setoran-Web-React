@@ -111,6 +111,7 @@ import {
 import { StatusVoucher, Voucher } from "@/lib/api-client"
 import { formatDateToLongDate } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
+import LoadingOverlay from "@/components/loading-overlay"
 
 export const schema = z.object({
   id: z.number(),
@@ -283,12 +284,12 @@ function DraggableRow({ row }: { row: Row<Voucher> }) {
   )
 }
 
-export function DataTableVoucher({
-  data: initialData,
-}: {
-  data: Voucher[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
+export function DataTableVoucher(
+  {  }
+) {
+
+  const [loading, setLoading] = React.useState(true)
+  const [data, setData] = React.useState<Voucher[]>([])
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -300,6 +301,8 @@ export function DataTableVoucher({
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = React.useState("")
+
   const sortableId = React.useId()
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
@@ -312,9 +315,16 @@ export function DataTableVoucher({
     [data]
   )
 
+  const apiService = ApiService.getInstance()
+  const controller = new AbortController();
+
   React.useEffect(() => {
-    setData(initialData)
-  }, [initialData])
+    setLoading(true)
+    apiService.voucherApi.voucherFilteredGet({ search: search }, { signal: controller.signal }).then(res => {
+      setData(res)
+      setLoading(false)
+    })
+  }, [search])
 
   const table = useReactTable({
     data,
@@ -380,18 +390,18 @@ export function DataTableVoucher({
           <div className="relative">
             <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                   placeholder="Search by Id .."
-                   value={(table.getColumn("voucherCode")?.getFilterValue() as string) ?? ""}
+                   placeholder="Search .."
+                   value={search}
                    onChange={(event) =>
-                      table.getColumn("voucherCode")?.setFilterValue(event.target.value)
+                      setSearch(event.target.value)
                     }
                     className="h-9 w-[150px] lg:w-[250px] pl-8"
                 />                
             </div>
-          <Button variant="outline" size="sm">
+          {/* <Button variant="outline" size="sm">
             <IconPlus />
             <span className="hidden lg:inline">Add Section</span>
-          </Button>
+          </Button> */}
         </div>
       </div>
       <TabsContent
@@ -399,55 +409,57 @@ export function DataTableVoucher({
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
         <div className="overflow-hidden rounded-lg border">
-          <DndContext
-            collisionDetection={closestCenter}
-            modifiers={[restrictToVerticalAxis]}
-            onDragEnd={handleDragEnd}
-            sensors={sensors}
-            id={sortableId}
-          >
-            <Table>
-              <TableHeader className="bg-muted sticky top-0 z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} colSpan={header.colSpan}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      )
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                {table.getRowModel().rows?.length ? (
-                  <SortableContext
-                    items={dataIds}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {table.getRowModel().rows.map((row) => (
-                      <DraggableRow key={row.id} row={row} />
-                    ))}
-                  </SortableContext>
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
+          <LoadingOverlay loading={loading}>
+            <DndContext
+              collisionDetection={closestCenter}
+              modifiers={[restrictToVerticalAxis]}
+              onDragEnd={handleDragEnd}
+              sensors={sensors}
+              id={sortableId}
+            >
+              <Table>
+                <TableHeader className="bg-muted sticky top-0 z-10">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead key={header.id} colSpan={header.colSpan}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </TableHead>
+                        )
+                      })}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+                <TableBody className="**:data-[slot=table-cell]:first:w-8">
+                  {table.getRowModel().rows?.length ? (
+                    <SortableContext
+                      items={dataIds}
+                      strategy={verticalListSortingStrategy}
                     >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </DndContext>
+                      {table.getRowModel().rows.map((row) => (
+                        <DraggableRow key={row.id} row={row} />
+                      ))}
+                    </SortableContext>
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </DndContext>
+          </LoadingOverlay>
         </div>
         <div className="flex items-center justify-between px-4">
           <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">

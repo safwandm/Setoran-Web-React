@@ -16,18 +16,7 @@ import LoadingOverlay from "@/components/loading-overlay"
 
 export default function Page() {
 
-  const [loading, setLoading] = useState(true)
-  const [voucher, setVoucher] = useState<Voucher[]>([])
 
-  let apiService = ApiService.getInstance()
-
-  useEffect(() => {
-    apiService.voucherApi.voucherFilteredGet().then(res => {
-      setVoucher(res)
-      setLoading(false)
-    })
-  }, [])
-  
   return (
     <SidebarProvider
       style={
@@ -43,9 +32,7 @@ export default function Page() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <LoadingOverlay loading={loading}>
-                <DataTableVoucher data={voucher} />
-              </LoadingOverlay>
+              <DataTableVoucher />
             </div>
           </div>
         </div>
