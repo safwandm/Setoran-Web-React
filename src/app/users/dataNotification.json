@@ -1,0 +1,46 @@
+{
+  "notifications": [
+    {
+      "id": 1,
+      "title": "New User Registration",
+      "description": "A new user has registered to the system",
+      "time": "2 hours ago",
+      "status": "success",
+      "details": {
+        "userId": "USR001",
+        "userName": "John Doe",
+        "email": "john.doe@example.com",
+        "registrationDate": "2024-05-13T10:30:00",
+        "userType": "Customer"
+      }
+    },
+    {
+      "id": 2,
+      "title": "Payment Received",
+      "description": "Payment of $50 received from User123",
+      "time": "5 hours ago",
+      "status": "info",
+      "details": {
+        "transactionId": "TRX789",
+        "amount": "$50.00",
+        "paymentMethod": "Credit Card",
+        "customerName": "User123",
+        "date": "2024-05-13T07:45:00"
+      }
+    },
+    {
+      "id": 3,
+      "title": "System Update",
+      "description": "System maintenance scheduled for tomorrow",
+      "time": "1 day ago",
+      "status": "warning",
+      "details": {
+        "maintenanceId": "MTN456",
+        "scheduledDate": "2024-05-14T02:00:00",
+        "duration": "2 hours",
+        "affectedServices": ["Payment System", "User Registration"],
+        "priority": "High"
+      }
+    }
+  ]
+}
