@@ -15,53 +15,45 @@
 
 import * as runtime from '../runtime';
 import type {
-  Motor,
-  MotorForm,
-  PutMotorDTO,
+  Pembayaran,
+  PostPembayaranDTO,
+  PutPembayaranDTO,
 } from '../models/index';
 import {
-    MotorFromJSON,
-    MotorToJSON,
-    MotorFormFromJSON,
-    MotorFormToJSON,
-    PutMotorDTOFromJSON,
-    PutMotorDTOToJSON,
+    PembayaranFromJSON,
+    PembayaranToJSON,
+    PostPembayaranDTOFromJSON,
+    PostPembayaranDTOToJSON,
+    PutPembayaranDTOFromJSON,
+    PutPembayaranDTOToJSON,
 } from '../models/index';
 
-export interface ApiMotorGetRequest {
-    query?: object;
-}
-
-export interface ApiMotorIdGetRequest {
+export interface ApiPembayaranIdGetRequest {
     id: number;
 }
 
-export interface ApiMotorIdPutRequest {
+export interface ApiPembayaranIdPutRequest {
     id: number;
-    putMotorDTO?: PutMotorDTO;
+    putPembayaranDTO?: PutPembayaranDTO;
 }
 
-export interface ApiMotorIdUlasansGetRequest {
-    id: number;
+export interface ApiPembayaranPostRequest {
+    postPembayaranDTO?: PostPembayaranDTO;
 }
 
-export interface ApiMotorPostRequest {
-    motorForm?: MotorForm;
+export interface ApiPembayaranTransaksiIdGetRequest {
+    id: number;
 }
 
 /**
  * 
  */
-export class MotorApi extends runtime.BaseAPI {
+export class PembayaranApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiMotorGetRaw(requestParameters: ApiMotorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Motor>>> {
+    async apiPembayaranGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Pembayaran>>> {
         const queryParameters: any = {};
-
-        if (requestParameters['query'] != null) {
-            queryParameters['query'] = requestParameters['query'];
-        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -74,29 +66,29 @@ export class MotorApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/api/Motor`,
+            path: `/api/Pembayaran`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(MotorFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(PembayaranFromJSON));
     }
 
     /**
      */
-    async apiMotorGet(requestParameters: ApiMotorGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Motor>> {
-        const response = await this.apiMotorGetRaw(requestParameters, initOverrides);
+    async apiPembayaranGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Pembayaran>> {
+        const response = await this.apiPembayaranGetRaw(initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async apiMotorIdGetRaw(requestParameters: ApiMotorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiPembayaranIdGetRaw(requestParameters: ApiPembayaranIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling apiMotorIdGet().'
+                'Required parameter "id" was null or undefined when calling apiPembayaranIdGet().'
             );
         }
 
@@ -113,7 +105,7 @@ export class MotorApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/api/Motor/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/api/Pembayaran/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -124,17 +116,17 @@ export class MotorApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiMotorIdGet(requestParameters: ApiMotorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorIdGetRaw(requestParameters, initOverrides);
+    async apiPembayaranIdGet(requestParameters: ApiPembayaranIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiPembayaranIdGetRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async apiMotorIdPutRaw(requestParameters: ApiMotorIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiPembayaranIdPutRaw(requestParameters: ApiPembayaranIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling apiMotorIdPut().'
+                'Required parameter "id" was null or undefined when calling apiPembayaranIdPut().'
             );
         }
 
@@ -153,11 +145,11 @@ export class MotorApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/api/Motor/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/api/Pembayaran/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: PutMotorDTOToJSON(requestParameters['putMotorDTO']),
+            body: PutPembayaranDTOToJSON(requestParameters['putPembayaranDTO']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -165,17 +157,51 @@ export class MotorApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiMotorIdPut(requestParameters: ApiMotorIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorIdPutRaw(requestParameters, initOverrides);
+    async apiPembayaranIdPut(requestParameters: ApiPembayaranIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiPembayaranIdPutRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async apiMotorIdUlasansGetRaw(requestParameters: ApiMotorIdUlasansGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiPembayaranPostRaw(requestParameters: ApiPembayaranPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json-patch+json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/Pembayaran`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PostPembayaranDTOToJSON(requestParameters['postPembayaranDTO']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async apiPembayaranPost(requestParameters: ApiPembayaranPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiPembayaranPostRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
+    async apiPembayaranTransaksiIdGetRaw(requestParameters: ApiPembayaranTransaksiIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pembayaran>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling apiMotorIdUlasansGet().'
+                'Required parameter "id" was null or undefined when calling apiPembayaranTransaksiIdGet().'
             );
         }
 
@@ -192,53 +218,20 @@ export class MotorApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/api/Motor/{id}/ulasans`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/api/Pembayaran/transaksi/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => PembayaranFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiMotorIdUlasansGet(requestParameters: ApiMotorIdUlasansGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorIdUlasansGetRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     */
-    async apiMotorPostRaw(requestParameters: ApiMotorPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json-patch+json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/Motor`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: MotorFormToJSON(requestParameters['motorForm']),
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     */
-    async apiMotorPost(requestParameters: ApiMotorPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorPostRaw(requestParameters, initOverrides);
+    async apiPembayaranTransaksiIdGet(requestParameters: ApiPembayaranTransaksiIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pembayaran> {
+        const response = await this.apiPembayaranTransaksiIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
 }

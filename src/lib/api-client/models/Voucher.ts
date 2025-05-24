@@ -20,6 +20,13 @@ import {
     StatusVoucherToJSON,
     StatusVoucherToJSONTyped,
 } from './StatusVoucher';
+import type { Pelanggan } from './Pelanggan';
+import {
+    PelangganFromJSON,
+    PelangganFromJSONTyped,
+    PelangganToJSON,
+    PelangganToJSONTyped,
+} from './Pelanggan';
 
 /**
  * 
@@ -69,6 +76,12 @@ export interface Voucher {
      * @memberof Voucher
      */
     kodeVoucher?: string | null;
+    /**
+     * 
+     * @type {Array<Pelanggan>}
+     * @memberof Voucher
+     */
+    pelanggans?: Array<Pelanggan> | null;
 }
 
 
@@ -97,6 +110,7 @@ export function VoucherFromJSONTyped(json: any, ignoreDiscriminator: boolean): V
         'tanggalAkhir': json['tanggalAkhir'] == null ? undefined : (new Date(json['tanggalAkhir'])),
         'persenVoucher': json['persenVoucher'] == null ? undefined : json['persenVoucher'],
         'kodeVoucher': json['kodeVoucher'] == null ? undefined : json['kodeVoucher'],
+        'pelanggans': json['pelanggans'] == null ? undefined : ((json['pelanggans'] as Array<any>).map(PelangganFromJSON)),
     };
 }
 
@@ -118,6 +132,7 @@ export function VoucherToJSONTyped(value?: Voucher | null, ignoreDiscriminator: 
         'tanggalAkhir': value['tanggalAkhir'] == null ? undefined : ((value['tanggalAkhir']).toISOString()),
         'persenVoucher': value['persenVoucher'],
         'kodeVoucher': value['kodeVoucher'],
+        'pelanggans': value['pelanggans'] == null ? undefined : ((value['pelanggans'] as Array<any>).map(PelangganToJSON)),
     };
 }
 

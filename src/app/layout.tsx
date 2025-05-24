@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ClientAuthWrapper from "@/components/auth-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,6 +17,8 @@ export const metadata: Metadata = {
   title: "SeToRan",
 };
 
+const PUBLIC_ROUTES = ['/signup', '/login']
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ClientAuthWrapper>
+          {children}
+        </ClientAuthWrapper>
       </body>
     </html>
   );

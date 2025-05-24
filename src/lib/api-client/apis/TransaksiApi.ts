@@ -15,37 +15,43 @@
 
 import * as runtime from '../runtime';
 import type {
-  Pelanggan,
-  PostPelangganDTO,
+  PostTransaksiDTO,
 } from '../models/index';
 import {
-    PelangganFromJSON,
-    PelangganToJSON,
-    PostPelangganDTOFromJSON,
-    PostPelangganDTOToJSON,
+    PostTransaksiDTOFromJSON,
+    PostTransaksiDTOToJSON,
 } from '../models/index';
 
-export interface PelangganGenericIdDeleteRequest {
+export interface ApiTransaksiGetRequest {
+    query?: object;
+}
+
+export interface ApiTransaksiIdGetRequest {
     id: number;
 }
 
-export interface PelangganGenericIdGetRequest {
+export interface ApiTransaksiIdPutRequest {
     id: number;
+    status?: string;
 }
 
-export interface PelangganPutRequest {
-    postPelangganDTO?: PostPelangganDTO;
+export interface ApiTransaksiPostRequest {
+    postTransaksiDTO?: PostTransaksiDTO;
 }
 
 /**
  * 
  */
-export class PelangganApi extends runtime.BaseAPI {
+export class TransaksiApi extends runtime.BaseAPI {
 
     /**
      */
-    async pelangganCurrentPelangganGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pelanggan>> {
+    async apiTransaksiGetRaw(requestParameters: ApiTransaksiGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const queryParameters: any = {};
+
+        if (requestParameters['query'] != null) {
+            queryParameters['query'] = requestParameters['query'];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -58,47 +64,8 @@ export class PelangganApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Pelanggan/currentPelanggan`,
+            path: `/api/Transaksi`,
             method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => PelangganFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async pelangganCurrentPelangganGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pelanggan> {
-        const response = await this.pelangganCurrentPelangganGetRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async pelangganGenericIdDeleteRaw(requestParameters: PelangganGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling pelangganGenericIdDelete().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/Pelanggan/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
@@ -108,17 +75,17 @@ export class PelangganApi extends runtime.BaseAPI {
 
     /**
      */
-    async pelangganGenericIdDelete(requestParameters: PelangganGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.pelangganGenericIdDeleteRaw(requestParameters, initOverrides);
+    async apiTransaksiGet(requestParameters: ApiTransaksiGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiTransaksiGetRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async pelangganGenericIdGetRaw(requestParameters: PelangganGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pelanggan>> {
+    async apiTransaksiIdGetRaw(requestParameters: ApiTransaksiIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling pelangganGenericIdGet().'
+                'Required parameter "id" was null or undefined when calling apiTransaksiIdGet().'
             );
         }
 
@@ -135,25 +102,66 @@ export class PelangganApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Pelanggan/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/api/Transaksi/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PelangganFromJSON(jsonValue));
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      */
-    async pelangganGenericIdGet(requestParameters: PelangganGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pelanggan> {
-        const response = await this.pelangganGenericIdGetRaw(requestParameters, initOverrides);
-        return await response.value();
+    async apiTransaksiIdGet(requestParameters: ApiTransaksiIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiTransaksiIdGetRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async pelangganPutRaw(requestParameters: PelangganPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiTransaksiIdPutRaw(requestParameters: ApiTransaksiIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling apiTransaksiIdPut().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['status'] != null) {
+            queryParameters['status'] = requestParameters['status'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/Transaksi/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async apiTransaksiIdPut(requestParameters: ApiTransaksiIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiTransaksiIdPutRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
+    async apiTransaksiPostRaw(requestParameters: ApiTransaksiPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -169,11 +177,11 @@ export class PelangganApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Pelanggan`,
-            method: 'PUT',
+            path: `/api/Transaksi`,
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PostPelangganDTOToJSON(requestParameters['postPelangganDTO']),
+            body: PostTransaksiDTOToJSON(requestParameters['postTransaksiDTO']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -181,8 +189,8 @@ export class PelangganApi extends runtime.BaseAPI {
 
     /**
      */
-    async pelangganPut(requestParameters: PelangganPutRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.pelangganPutRaw(requestParameters, initOverrides);
+    async apiTransaksiPost(requestParameters: ApiTransaksiPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiTransaksiPostRaw(requestParameters, initOverrides);
     }
 
 }

@@ -15,53 +15,42 @@
 
 import * as runtime from '../runtime';
 import type {
-  Motor,
-  MotorForm,
-  PutMotorDTO,
+  Pengguna,
+  PostPenggunaDTO,
 } from '../models/index';
 import {
-    MotorFromJSON,
-    MotorToJSON,
-    MotorFormFromJSON,
-    MotorFormToJSON,
-    PutMotorDTOFromJSON,
-    PutMotorDTOToJSON,
+    PenggunaFromJSON,
+    PenggunaToJSON,
+    PostPenggunaDTOFromJSON,
+    PostPenggunaDTOToJSON,
 } from '../models/index';
 
-export interface ApiMotorGetRequest {
-    query?: object;
-}
-
-export interface ApiMotorIdGetRequest {
+export interface PenggunaGenericIdDeleteRequest {
     id: number;
 }
 
-export interface ApiMotorIdPutRequest {
-    id: number;
-    putMotorDTO?: PutMotorDTO;
-}
-
-export interface ApiMotorIdUlasansGetRequest {
+export interface PenggunaGenericIdGetRequest {
     id: number;
 }
 
-export interface ApiMotorPostRequest {
-    motorForm?: MotorForm;
+export interface PenggunaGetAllGetRequest {
+    withMitra?: boolean;
+    withPelanggan?: boolean;
+}
+
+export interface PenggunaPutRequest {
+    postPenggunaDTO?: PostPenggunaDTO;
 }
 
 /**
  * 
  */
-export class MotorApi extends runtime.BaseAPI {
+export class PenggunaApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiMotorGetRaw(requestParameters: ApiMotorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Motor>>> {
+    async penggunaCurrentPenggunaGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pengguna>> {
         const queryParameters: any = {};
-
-        if (requestParameters['query'] != null) {
-            queryParameters['query'] = requestParameters['query'];
-        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -74,29 +63,29 @@ export class MotorApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/api/Motor`,
+            path: `/Pengguna/currentPengguna`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(MotorFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PenggunaFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiMotorGet(requestParameters: ApiMotorGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Motor>> {
-        const response = await this.apiMotorGetRaw(requestParameters, initOverrides);
+    async penggunaCurrentPenggunaGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pengguna> {
+        const response = await this.penggunaCurrentPenggunaGetRaw(initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async apiMotorIdGetRaw(requestParameters: ApiMotorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async penggunaGenericIdDeleteRaw(requestParameters: PenggunaGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling apiMotorIdGet().'
+                'Required parameter "id" was null or undefined when calling penggunaGenericIdDelete().'
             );
         }
 
@@ -113,8 +102,8 @@ export class MotorApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/api/Motor/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
+            path: `/Pengguna/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
@@ -124,20 +113,92 @@ export class MotorApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiMotorIdGet(requestParameters: ApiMotorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorIdGetRaw(requestParameters, initOverrides);
+    async penggunaGenericIdDelete(requestParameters: PenggunaGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.penggunaGenericIdDeleteRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async apiMotorIdPutRaw(requestParameters: ApiMotorIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async penggunaGenericIdGetRaw(requestParameters: PenggunaGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pengguna>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling apiMotorIdPut().'
+                'Required parameter "id" was null or undefined when calling penggunaGenericIdGet().'
             );
         }
 
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/Pengguna/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PenggunaFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async penggunaGenericIdGet(requestParameters: PenggunaGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pengguna> {
+        const response = await this.penggunaGenericIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async penggunaGetAllGetRaw(requestParameters: PenggunaGetAllGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Pengguna>>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['withMitra'] != null) {
+            queryParameters['withMitra'] = requestParameters['withMitra'];
+        }
+
+        if (requestParameters['withPelanggan'] != null) {
+            queryParameters['withPelanggan'] = requestParameters['withPelanggan'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/Pengguna/getAll`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(PenggunaFromJSON));
+    }
+
+    /**
+     */
+    async penggunaGetAllGet(requestParameters: PenggunaGetAllGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Pengguna>> {
+        const response = await this.penggunaGetAllGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async penggunaPutRaw(requestParameters: PenggunaPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -153,11 +214,11 @@ export class MotorApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/api/Motor/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/Pengguna`,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: PutMotorDTOToJSON(requestParameters['putMotorDTO']),
+            body: PostPenggunaDTOToJSON(requestParameters['postPenggunaDTO']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -165,80 +226,8 @@ export class MotorApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiMotorIdPut(requestParameters: ApiMotorIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorIdPutRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     */
-    async apiMotorIdUlasansGetRaw(requestParameters: ApiMotorIdUlasansGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiMotorIdUlasansGet().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/Motor/{id}/ulasans`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     */
-    async apiMotorIdUlasansGet(requestParameters: ApiMotorIdUlasansGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorIdUlasansGetRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     */
-    async apiMotorPostRaw(requestParameters: ApiMotorPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json-patch+json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/Motor`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: MotorFormToJSON(requestParameters['motorForm']),
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     */
-    async apiMotorPost(requestParameters: ApiMotorPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorPostRaw(requestParameters, initOverrides);
+    async penggunaPut(requestParameters: PenggunaPutRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.penggunaPutRaw(requestParameters, initOverrides);
     }
 
 }
