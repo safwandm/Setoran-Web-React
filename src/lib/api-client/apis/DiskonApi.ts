@@ -15,35 +15,18 @@
 
 import * as runtime from '../runtime';
 import type {
-  CheckVoucherDTO,
   Diskon,
-  PostVoucherDTO,
-  StatusVoucher,
-  Voucher,
+  PostDiskonDTO,
+  PutDiskonDTO,
 } from '../models/index';
 import {
-    CheckVoucherDTOFromJSON,
-    CheckVoucherDTOToJSON,
     DiskonFromJSON,
     DiskonToJSON,
-    PostVoucherDTOFromJSON,
-    PostVoucherDTOToJSON,
-    StatusVoucherFromJSON,
-    StatusVoucherToJSON,
-    VoucherFromJSON,
-    VoucherToJSON,
+    PostDiskonDTOFromJSON,
+    PostDiskonDTOToJSON,
+    PutDiskonDTOFromJSON,
+    PutDiskonDTOToJSON,
 } from '../models/index';
-
-export interface DiskonCheckVoucherCodeGetRequest {
-    code: string;
-}
-
-export interface DiskonFilteredGetRequest {
-    search?: string;
-    status?: StatusVoucher;
-    start?: Date;
-    end?: Date;
-}
 
 export interface DiskonGenericIdDeleteRequest {
     id: number;
@@ -53,109 +36,18 @@ export interface DiskonGenericIdGetRequest {
     id: number;
 }
 
-export interface DiskonGetByCodeCodeGetRequest {
-    code: string;
-}
-
 export interface DiskonPostRequest {
-    postVoucherDTO?: PostVoucherDTO;
+    postDiskonDTO?: PostDiskonDTO;
 }
 
 export interface DiskonPutRequest {
-    voucher?: Voucher;
+    putDiskonDTO?: PutDiskonDTO;
 }
 
 /**
  * 
  */
 export class DiskonApi extends runtime.BaseAPI {
-
-    /**
-     */
-    async diskonCheckVoucherCodeGetRaw(requestParameters: DiskonCheckVoucherCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckVoucherDTO>> {
-        if (requestParameters['code'] == null) {
-            throw new runtime.RequiredError(
-                'code',
-                'Required parameter "code" was null or undefined when calling diskonCheckVoucherCodeGet().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/Diskon/checkVoucher/{code}`.replace(`{${"code"}}`, encodeURIComponent(String(requestParameters['code']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CheckVoucherDTOFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async diskonCheckVoucherCodeGet(requestParameters: DiskonCheckVoucherCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckVoucherDTO> {
-        const response = await this.diskonCheckVoucherCodeGetRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async diskonFilteredGetRaw(requestParameters: DiskonFilteredGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Voucher>>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
-        }
-
-        if (requestParameters['status'] != null) {
-            queryParameters['status'] = requestParameters['status'];
-        }
-
-        if (requestParameters['start'] != null) {
-            queryParameters['start'] = (requestParameters['start'] as any).toISOString();
-        }
-
-        if (requestParameters['end'] != null) {
-            queryParameters['end'] = (requestParameters['end'] as any).toISOString();
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/Diskon/filtered`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(VoucherFromJSON));
-    }
-
-    /**
-     */
-    async diskonFilteredGet(requestParameters: DiskonFilteredGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Voucher>> {
-        const response = await this.diskonFilteredGetRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
 
     /**
      */
@@ -236,78 +128,7 @@ export class DiskonApi extends runtime.BaseAPI {
 
     /**
      */
-    async diskonGetActiveGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Voucher>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/Diskon/getActive`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(VoucherFromJSON));
-    }
-
-    /**
-     */
-    async diskonGetActiveGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Voucher>> {
-        const response = await this.diskonGetActiveGetRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async diskonGetByCodeCodeGetRaw(requestParameters: DiskonGetByCodeCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Voucher>> {
-        if (requestParameters['code'] == null) {
-            throw new runtime.RequiredError(
-                'code',
-                'Required parameter "code" was null or undefined when calling diskonGetByCodeCodeGet().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/Diskon/getByCode/{code}`.replace(`{${"code"}}`, encodeURIComponent(String(requestParameters['code']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => VoucherFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async diskonGetByCodeCodeGet(requestParameters: DiskonGetByCodeCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Voucher> {
-        const response = await this.diskonGetByCodeCodeGetRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async diskonPostRaw(requestParameters: DiskonPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Voucher>> {
+    async diskonPostRaw(requestParameters: DiskonPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Diskon>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -327,15 +148,15 @@ export class DiskonApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PostVoucherDTOToJSON(requestParameters['postVoucherDTO']),
+            body: PostDiskonDTOToJSON(requestParameters['postDiskonDTO']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => VoucherFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => DiskonFromJSON(jsonValue));
     }
 
     /**
      */
-    async diskonPost(requestParameters: DiskonPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Voucher> {
+    async diskonPost(requestParameters: DiskonPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Diskon> {
         const response = await this.diskonPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -362,7 +183,7 @@ export class DiskonApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: VoucherToJSON(requestParameters['voucher']),
+            body: PutDiskonDTOToJSON(requestParameters['putDiskonDTO']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

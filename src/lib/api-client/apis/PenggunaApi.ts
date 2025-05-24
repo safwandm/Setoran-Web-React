@@ -25,6 +25,10 @@ import {
     PostPenggunaDTOToJSON,
 } from '../models/index';
 
+export interface PenggunaFromMitraGetRequest {
+    idMitra?: number;
+}
+
 export interface PenggunaGenericIdDeleteRequest {
     id: number;
 }
@@ -76,6 +80,42 @@ export class PenggunaApi extends runtime.BaseAPI {
      */
     async penggunaCurrentPenggunaGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pengguna> {
         const response = await this.penggunaCurrentPenggunaGetRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async penggunaFromMitraGetRaw(requestParameters: PenggunaFromMitraGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pengguna>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['idMitra'] != null) {
+            queryParameters['idMitra'] = requestParameters['idMitra'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/Pengguna/fromMitra`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PenggunaFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async penggunaFromMitraGet(requestParameters: PenggunaFromMitraGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pengguna> {
+        const response = await this.penggunaFromMitraGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -31,6 +31,7 @@ models/Notifikasi.ts
 models/Pelanggan.ts
 models/Pembayaran.ts
 models/Pengguna.ts
+models/PostDiskonDTO.ts
 models/PostNotifikasDTO.ts
 models/PostPelangganDTO.ts
 models/PostPembayaranDTO.ts
@@ -38,6 +39,7 @@ models/PostPenggunaDTO.ts
 models/PostTransaksiDTO.ts
 models/PostUlasanDTO.ts
 models/PostVoucherDTO.ts
+models/PutDiskonDTO.ts
 models/PutMotorDTO.ts
 models/PutPembayaranDTO.ts
 models/RefreshRequest.ts
