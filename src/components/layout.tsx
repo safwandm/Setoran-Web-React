@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import dataNotification from "./dataNotification.json";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { IconBell } from "@tabler/icons-react";
@@ -24,49 +23,8 @@ import {
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
+import { Notifikasi } from "@/lib/api-client";
 
-type NotificationStatus = "success" | "warning" | "error" | "info";
-type BaseNotification = {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  status: NotificationStatus;
-};
-
-type UserNotificationDetails = {
-  type: "user";
-  userId: string;
-  userName: string;
-  email: string;
-  registrationDate: string;
-  userType: string;
-};
-
-type PaymentNotificationDetails = {
-  type: "payment";
-  transactionId: string;
-  amount: string;
-  paymentMethod: string;
-  customerName: string;
-  date: string;
-};
-
-type MaintenanceNotificationDetails = {
-  type: "maintenance";
-  maintenanceId: string;
-  scheduledDate: string;
-  duration: string;
-  affectedServices: string[];
-  priority: string;
-};
-
-type Notification = BaseNotification & {
-  details:
-    | UserNotificationDetails
-    | PaymentNotificationDetails
-    | MaintenanceNotificationDetails;
-};
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -136,9 +94,10 @@ export default function Layout({ children, noLayout=[] }: { children: any, noLay
     return <>{children}</>
   }
 
+  const [notifications, setNotifications] = useState<Notifikasi[]>([])
   const [isMobile, setIsMobile] = useState(false);
   const [selectedNotification, setSelectedNotification] =
-    useState<Notification | null>(null);
+    useState<Notifikasi | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   useEffect(() => {
@@ -149,11 +108,11 @@ export default function Layout({ children, noLayout=[] }: { children: any, noLay
   }, []);
 
   const handleViewDetails = (notificationId: number) => {
-    const foundNotification = dataNotification.notifications.find(
-      (n) => n.id === notificationId
+    const foundNotification = notifications.find(
+      (n) => n.idNotifikasi === notificationId
     );
     if (foundNotification) {
-      setSelectedNotification(foundNotification as Notification);
+      setSelectedNotification(foundNotification);
       setIsDetailsOpen(true);
     }
   };
@@ -195,14 +154,14 @@ export default function Layout({ children, noLayout=[] }: { children: any, noLay
                     <div>
                       <h3 className="mb-2 font-semibold text-sm">Today</h3>
                       <div className="space-y-3">
-                        {dataNotification.notifications.map((notification) => (
+                        {notifications.map((notification) => (
                           <NotificationItem
-                            key={notification.id}
-                            title={notification.title}
-                            description={notification.description}
-                            time={notification.time}
-                            status={notification.status as NotificationStatus}
-                            onAction={() => handleViewDetails(notification.id)}
+                            key={notification.idNotifikasi!}
+                            title={notification.judul!}
+                            description={notification.deskripsi!}
+                            // time={notification.time}
+                            // status={notification.status as NotificationStatus}
+                            onAction={() => handleViewDetails(notification.idNotifikasi!)}
                           />
                         ))}
                       </div>
