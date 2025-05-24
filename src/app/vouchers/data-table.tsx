@@ -111,7 +111,7 @@ import {
 import { StatusVoucher, Voucher } from "@/lib/api-client"
 import { formatDateToLongDate } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
-import LoadingOverlay from "@/components/loading-overlay"
+import { LoadingOverlay } from "@/components/loading-overlay"
 
 export const schema = z.object({
   id: z.number(),

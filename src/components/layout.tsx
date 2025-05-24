@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -28,22 +28,7 @@ import { formatDateToLongDate } from "@/lib/utils";
 import ApiService from "@/lib/api-client/wrapper";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  return isMobile;
-}
+import { LoadingOverlayContext } from "./loading-overlay";
 
 function NotificationItem({
   title,
@@ -201,7 +186,9 @@ export default function Layout({
             </div>
           </div>
         </header>
-        {children}
+        <LoadingOverlayContext>
+          {children}
+        </LoadingOverlayContext>
         <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
           <DialogContent>
             <DialogHeader>

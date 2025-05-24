@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ApiService from "@/lib/api-client/wrapper";
 import { useCurrentUserStore } from "@/lib/stores/current-user";
-import LoadingOverlay from "./loading-overlay";
+import { LoadingOverlay } from "./loading-overlay";
 
 const PUBLIC_ROUTES = ["/signin", "/login"];
 

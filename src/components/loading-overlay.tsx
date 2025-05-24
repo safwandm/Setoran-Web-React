@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface LoadingOverlayProps {
   loading: boolean;
@@ -7,7 +7,21 @@ interface LoadingOverlayProps {
   fadeDuration?: number; // milliseconds
 }
 
-export default function LoadingOverlay({
+type LoadingContextType = {
+  setLoading: (value: boolean) => void;
+};
+
+const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
+
+export const useLoading = () => {
+  const context = useContext(LoadingContext);
+  if (!context) {
+    throw new Error("useLoading must be used within a LoadingProvider");
+  }
+  return context.setLoading;
+};
+
+export function LoadingOverlay({
   loading,
   children,
   message = 'Loading...',
@@ -46,3 +60,14 @@ export default function LoadingOverlay({
   );
 };
 
+export function LoadingOverlayContext({ children, defaultLoadState=true }) {
+  const [loading, setLoading] = useState(defaultLoadState)
+
+  return (
+  <LoadingContext.Provider value={{ setLoading: setLoading }}>
+      <LoadingOverlay loading={loading}>
+        {children}
+      </LoadingOverlay>
+  </LoadingContext.Provider>
+  )
+}
