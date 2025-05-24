@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export function formatDateToLongDate(date: Date) {
+export function formatDateToLongDate(date: Date | undefined | null) {
   if (!date || date.getFullYear() === 1)
     return "-";
   
