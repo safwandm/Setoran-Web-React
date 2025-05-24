@@ -29,7 +29,10 @@ import {
 } from '../models/index';
 
 export interface ApiMotorGetRequest {
-    query?: object;
+    idMitra?: string;
+    status?: string;
+    model?: string;
+    transmisi?: string;
 }
 
 export interface ApiMotorIdGetRequest {
@@ -59,8 +62,20 @@ export class MotorApi extends runtime.BaseAPI {
     async apiMotorGetRaw(requestParameters: ApiMotorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Motor>>> {
         const queryParameters: any = {};
 
-        if (requestParameters['query'] != null) {
-            queryParameters['query'] = requestParameters['query'];
+        if (requestParameters['idMitra'] != null) {
+            queryParameters['IdMitra'] = requestParameters['idMitra'];
+        }
+
+        if (requestParameters['status'] != null) {
+            queryParameters['Status'] = requestParameters['status'];
+        }
+
+        if (requestParameters['model'] != null) {
+            queryParameters['Model'] = requestParameters['model'];
+        }
+
+        if (requestParameters['transmisi'] != null) {
+            queryParameters['Transmisi'] = requestParameters['transmisi'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
