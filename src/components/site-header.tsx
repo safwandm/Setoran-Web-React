@@ -1,9 +1,16 @@
 "use client"
+
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { IconBell } from "@tabler/icons-react"
-// import { useIsMobile } from "@/hooks/use-mobile"
+import notificationsData from "@/components/dataNotification.json"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import {
   Drawer,
   DrawerClose,
@@ -13,9 +20,52 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-
 import { useEffect, useState } from "react"
-export function useIsMobile() {
+
+// Types
+type NotificationStatus = "success" | "warning" | "error" | "info"
+
+type BaseNotification = {
+  id: number
+  title: string
+  description: string
+  time: string
+  status: NotificationStatus // This ensures status is one of the allowed values
+}
+
+type UserNotificationDetails = {
+  type: "user"
+  userId: string
+  userName: string
+  email: string
+  registrationDate: string
+  userType: string
+}
+
+type PaymentNotificationDetails = {
+  type: "payment"
+  transactionId: string
+  amount: string
+  paymentMethod: string
+  customerName: string
+  date: string
+}
+
+type MaintenanceNotificationDetails = {
+  type: "maintenance"
+  maintenanceId: string
+  scheduledDate: string
+  duration: string
+  affectedServices: string[]
+  priority: string
+}
+
+type Notification = BaseNotification & {
+  details: UserNotificationDetails | PaymentNotificationDetails | MaintenanceNotificationDetails
+}
+
+// Hooks
+function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -31,7 +81,7 @@ export function useIsMobile() {
   return isMobile
 }
 
-
+// NotificationItem Component
 function NotificationItem({
   title,
   description,
@@ -58,94 +108,159 @@ function NotificationItem({
       <div className="flex-1">
         <h4 className="text-sm font-medium">{title}</h4>
         <p className="text-sm text-muted-foreground">{description}</p>
-        <span className="text-xs text-muted-foreground">{time}</span>
-        {onAction && (
+        <div className="flex items-center justify-between mt-2">
+          <span className="text-xs text-muted-foreground">{time}</span>
+          {onAction && (
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={onAction}
-              className="h-8 px-2"
+              className="h-8 px-3 text-xs font-medium hover:bg-secondary/80 transition-colors"
             >
               View Details
             </Button>
           )}
+        </div>
       </div>
     </div>
   )
 }
 
+// Main Component
 export function SiteHeader() {
-   const isMobile = useIsMobile()
-  return (
-    <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
-      <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
-        <SidebarTrigger className="-ml-1" />
-        <Separator
-          orientation="vertical"
-          className="mx-2 data-[orientation=vertical]:h-4"
-        />
-        <h1 className="text-base font-medium">Dashboard</h1>
-        <div className="ml-auto flex items-center gap-2">
-          <Drawer direction={isMobile? "bottom" : "right"} >
-            <DrawerTrigger asChild>
-              <Button variant="ghost" size="icon" className="hidden sm:flex">
-                <IconBell className="h-5 w-5" />
-              </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <DrawerHeader>
-                <DrawerTitle>Notifications</DrawerTitle>
-              </DrawerHeader>
-              <div className="flex flex-col gap-4 overflow-y-auto px-4">
-                <div>
-                  <h3 className="mb-2 font-semibold text-sm">Today</h3>
-                  <div className="space-y-3">
-                    <NotificationItem
-                      title="New User Registration"
-                      description="A new user has registered to the system"
-                      time="2 hours ago"
-                      status="success"
-                      onAction={() => {
-                        console.log("View details clicked")
-                      }}
-                    />
-                    <NotificationItem
-                      title="Payment Received"
-                      description="Payment of $50 received from User123"
-                      time="5 hours ago"
-                      status="info"
-                    />
-                  </div>
-                </div>
+  const isMobile = useIsMobile()
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null)
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
-                <Separator />
+const handleViewDetails = (notificationId: number) => {
+  const foundNotification = notificationsData.notifications.find(n => n.id === notificationId)
+  if (foundNotification) {
+    // Validate that the status is one of the allowed values
+    const validStatus = ["success", "warning", "error", "info"].includes(foundNotification.status)
+    if (!validStatus) {
+      console.error(`Invalid status: ${foundNotification.status}`)
+      return
+    }
 
-                <div>
-                  <h3 className="mb-2 font-semibold text-sm">Yesterday</h3>
-                  <div className="space-y-3">
-                    <NotificationItem
-                      title="System Update"
-                      description="System maintenance scheduled for tomorrow"
-                      time="1 day ago"
-                      status="warning"
-                    />
-                  </div>
-                </div>
-              </div>
+    // Add the correct 'type' property to details
+    let detailsWithType: UserNotificationDetails | PaymentNotificationDetails | MaintenanceNotificationDetails | undefined
 
-              <DrawerFooter>
-                <Button variant="outline" className="w-full">
-                  Mark All as Read
-                </Button>
-                <DrawerClose asChild>
-                  <Button variant="outline">Close</Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </DrawerContent>
-          </Drawer>
-        </div>
-      </div>
-    </header>
-  )
+    if (
+      "userId" in foundNotification.details &&
+      "userName" in foundNotification.details &&
+      "email" in foundNotification.details
+    ) {
+      detailsWithType = {
+        type: "user",
+        ...(foundNotification.details as Omit<UserNotificationDetails, "type">)
+      }
+    } else if (
+      "transactionId" in foundNotification.details &&
+      "amount" in foundNotification.details
+    ) {
+      detailsWithType = {
+        type: "payment",
+        ...(foundNotification.details as Omit<PaymentNotificationDetails, "type">)
+      }
+    } else if (
+      "maintenanceId" in foundNotification.details &&
+      "scheduledDate" in foundNotification.details
+    ) {
+      detailsWithType = {
+        type: "maintenance",
+        ...(foundNotification.details as Omit<MaintenanceNotificationDetails, "type">)
+      }
+    }
+
+    if (!detailsWithType) {
+      console.error("Unknown notification details structure", foundNotification.details)
+      return
+    }
+
+    const notification: Notification = {
+      ...foundNotification,
+      status: foundNotification.status as NotificationStatus,
+      details: detailsWithType
+    }
+
+    setSelectedNotification(notification)
+    setIsDetailsOpen(true)
+  }
 }
 
+  return (
+    <>
+      <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b">
+        <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mx-2 data-[orientation=vertical]:h-4"
+          />
+          <h1 className="text-base font-medium">Dashboard</h1>
+          <div className="ml-auto flex items-center gap-2">
+            <Drawer direction={isMobile ? "bottom" : "right"}>
+              <DrawerTrigger asChild>
+                <Button variant="ghost" size="icon" className="hidden sm:flex">
+                  <IconBell className="h-5 w-5" />
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Notifications</DrawerTitle>
+                </DrawerHeader>
+                <div className="flex flex-col gap-4 overflow-y-auto px-4">
+                  <div>
+                    <h3 className="mb-2 font-semibold text-sm">Today</h3>
+                    <div className="space-y-3">
+                      {notificationsData.notifications.map((notification) => (
+                        <NotificationItem
+                        key={notification.id}
+                        title={notification.title}
+                        description={notification.description}
+                        time={notification.time}
+                        status={notification.status as NotificationStatus}
+                        onAction={() => handleViewDetails(notification.id)}
+                      />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <DrawerFooter>
+                  <Button variant="outline" className="w-full">
+                    Mark All as Read
+                  </Button>
+                  <DrawerClose asChild>
+                    <Button variant="outline">Close</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+          </div>
+        </div>
+      </header>
+
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{selectedNotification?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {selectedNotification?.details && 
+              Object.entries(selectedNotification.details).map(([key, value]) => (
+                <div key={key} className="flex flex-col gap-1">
+                  <dt className="text-sm font-medium capitalize">
+                    {key.replace(/([A-Z])/g, ' $1').trim()}
+                  </dt>
+                  <dd className="text-sm text-muted-foreground">
+                    {Array.isArray(value) ? value.join(", ") : value.toString()}
+                  </dd>
+                </div>
+              ))
+            }
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
