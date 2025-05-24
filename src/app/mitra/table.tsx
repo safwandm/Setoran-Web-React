@@ -108,16 +108,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-
-export const schema = z.object({
-  id: z.number(),
-  mitraId: z.string(),
-  mitraName: z.string(),
-  status: z.string(),
-  registered: z.string(),
-  available: z.string(),
-  payment: z.string(),
-})
+import { Mitra, MitraMotorDTO, StatusMitra } from "@/lib/api-client"
+import ApiService from "@/lib/api-client/wrapper"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -139,43 +131,43 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+const columns: ColumnDef<MitraMotorDTO>[] = [
+  // {
+  //   id: "drag",
+  //   header: () => null,
+  //   cell: ({ row }) => <DragHandle id={row.original.mitra!.idMitra!} />,
+  // },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <div className="flex items-center justify-center">
+  //       <Checkbox
+  //         checked={
+  //           table.getIsAllPageRowsSelected() ||
+  //           (table.getIsSomePageRowsSelected() && "indeterminate")
+  //         }
+  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //         aria-label="Select all"
+  //       />
+  //     </div>
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div className="flex items-center justify-center">
+  //       <Checkbox
+  //         checked={row.getIsSelected()}
+  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //         aria-label="Select row"
+  //       />
+  //     </div>
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "mitraId",
     header: () => <div className="w-20 text-left">Mitra ID</div>,
     cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />
+      return <TableCellViewer item={row.original.mitra!} />
     },
     enableHiding: false,
   },
@@ -184,7 +176,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Mitra Name</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.mitraName}
+          {row.original.mitra!.pengguna?.nama}
       </div>
     ),
   },
@@ -193,82 +185,56 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Status</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Active" ? (
+        {row.original.mitra!.status === StatusMitra.Aktif ? (
           <IconCircle className="fill-green-500 dark:fill-blue-400" />
-        ) : row.original.status === "Blocked" ? (
-          <IconBan className="" />
-        ):
+        ) :
         <IconCircle className=" text-muted-foreground" />
         }
-        {row.original.status}
+        {row.original.mitra!.status}
       </Badge>
     ),
   },
   {
-    accessorKey: "registered",
-    header: () => <div className="w-30 text-left">Register</div>,
+    accessorKey: "alamat",
+    header: () => <div className="w-30 text-left">Address</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.registered}
+          {row.original.mitra!.pengguna?.alamat}
       </div>
     ),
   },
   {
-    accessorKey: "available",
-    header: () => <div className="w-30 text-left">Available</div>,
+    accessorKey: "email",
+    header: () => <div className="w-30 text-left">Email</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.available}
+          {row.original.mitra!.pengguna?.email}
       </div>
     ),
   },
   {
-    accessorKey: "payment",
-    header: "Payment ",
+    accessorKey: "telp",
+    header: () => <div className="w-30 text-left">Phone Number</div>,
     cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.payment === "Paid" ? (
-          <IconCircleCheckFilled className="fill-blue-500 dark:fill-blue-400" />
-        ) : row.original.payment === "Waiting for Payment" ? (
-          <IconClock2 className="" />
-        ) : row.original.payment === "Failed" ? (
-          <IconArrowsCross className=" text-muted-foreground" />
-        ):
-        <IconLoader className=" text-muted-foreground" />
-        }
-        {row.original.payment}
-      </Badge>
+      <div className="w-9">
+          {row.original.mitra!.pengguna?.nomorTelepon}
+      </div>
     ),
   },
   {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    accessorKey: "Vehicle",
+    header: () => <div className="w-30 text-left">Vehicle count</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.jumlahMotor}
+      </div>
     ),
   },
 ]
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+function DraggableRow({ row }: { row: Row<MitraMotorDTO> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
+    id: row.original.mitra!.idMitra!,
   })
 
   return (
@@ -291,12 +257,8 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   )
 }
 
-export function TableMitra({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
+export function TableMitra() {
+  const [data, setData] = React.useState<MitraMotorDTO[]>([])
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -316,7 +278,7 @@ export function TableMitra({
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
+    () => data?.map(({ mitra }) => mitra!.idMitra!) || [],
     [data]
   )
 
@@ -330,7 +292,7 @@ export function TableMitra({
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.id.toString(),
+    getRowId: (row) => row.mitra!.idMitra!.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -344,6 +306,14 @@ export function TableMitra({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
+
+  const apiService = ApiService.getInstance()
+
+  React.useEffect(() => {
+    apiService.mitraApi.mitraMitraMotorGet().then(res => {
+      setData(res)
+    })
+  }, [])
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
@@ -536,14 +506,14 @@ export function TableMitra({
   )
 }
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: Mitra }) {
   const isMobile = useIsMobile()
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.mitraId}
+          {item.idMitra}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
