@@ -91,16 +91,9 @@ import {
   Tabs,
   TabsContent,
 } from "@/components/ui/tabs"
-
-export const schema = z.object({
-  id: z.number(),
-  transactionId: z.string(),
-  userName: z.string(),
-  returnDate: z.string(),
-  motorName: z.string(),
-  rentalDate: z.string(),
-  status: z.string(),
-})
+import { Transaksi } from "@/lib/api-client"
+import { formatDateToLongDate } from "@/lib/utils"
+import ApiService from "@/lib/api-client/wrapper"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -122,38 +115,38 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+const columns: ColumnDef<Transaksi>[] = [
+  // {
+  //   id: "drag",
+  //   header: () => null,
+  //   cell: ({ row }) => <DragHandle id={row.original.idTransaksi!} />,
+  // },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <div className="flex items-center justify-center">
+  //       <Checkbox
+  //         checked={
+  //           table.getIsAllPageRowsSelected() ||
+  //           (table.getIsSomePageRowsSelected() && "indeterminate")
+  //         }
+  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //         aria-label="Select all"
+  //       />
+  //     </div>
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div className="flex items-center justify-center">
+  //       <Checkbox
+  //         checked={row.getIsSelected()}
+  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //         aria-label="Select row"
+  //       />
+  //     </div>
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "transactionId",
     header: () => <div className="w-30 text-left">Transaction ID</div>,
@@ -170,7 +163,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   
     cell: ({ row }) => (
       <div className="w-4">
-          {row.original.userName}
+          {row.original.pelanggan?.pengguna?.nama}
       </div>
     ),
   },
@@ -179,7 +172,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Motor Name</div>,
     cell: ({ row }) => (
       <div className="w-8">
-          {row.original.motorName}
+          {row.original.motor?.model}
       </div>
     ),
   },
@@ -188,7 +181,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Rental Date</div>,
     cell: ({ row }) => (
       <div className="w-8">
-          {row.original.rentalDate}
+          {formatDateToLongDate(row.original.tanggalMulai!)}
       </div>
     ),
   },
@@ -197,7 +190,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Return Date</div>,
     cell: ({ row }) => (
       <div className="w-8">
-          {row.original.returnDate}
+          {formatDateToLongDate(row.original.tanggalSelesai!)}
       </div>
     ),
   },
@@ -206,9 +199,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-full text text-left">Status</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Success" ? (
+        {row.original.status === "finished" ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : row.original.status === "Failed" ? (
+        ) : row.original.status === "created" ? (
           <IconArrowsCross className="dark:fill-red-400" />
         ) : (
           <IconLoader className="animate-spin text-muted-foreground" />
@@ -241,9 +234,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
 ]
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+function DraggableRow({ row }: { row: Row<Transaksi> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
+    id: row.original.idTransaksi!,
   })
 
   return (
@@ -266,12 +259,8 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   )
 }
 
-export function DataTableTransaction({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
+export function DataTableTransaction() {
+  const [data, setData] = React.useState<Transaksi[]>([])
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -291,7 +280,7 @@ export function DataTableTransaction({
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
+    () => data?.map(({ idTransaksi }) => idTransaksi!) || [],
     [data]
   )
 
@@ -305,7 +294,7 @@ export function DataTableTransaction({
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.id.toString(),
+    getRowId: (row) => row.idTransaksi!.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -318,6 +307,14 @@ export function DataTableTransaction({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+  })
+
+  const apiService = ApiService.getInstance()
+
+  React.useEffect(() => {
+    apiService.transaksiApi.apiTransaksiGet().then(res => {
+      res
+    })
   })
 
   function handleDragEnd(event: DragEndEvent) {
@@ -496,14 +493,14 @@ export function DataTableTransaction({
     </Tabs>
   )
 }
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: Transaksi }) {
   const isMobile = useIsMobile()
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.transactionId}
+          {item.idTransaksi}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
