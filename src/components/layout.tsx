@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
@@ -23,8 +23,11 @@ import {
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
-import { Notifikasi } from "@/lib/api-client";
-
+import { GetNotifikasDTO, Notifikasi, TargetNavigasi } from "@/lib/api-client";
+import { formatDateToLongDate } from "@/lib/utils";
+import ApiService from "@/lib/api-client/wrapper";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -51,7 +54,7 @@ function NotificationItem({
 }: {
   title: string;
   description: string;
-  time: string;
+  time: Date;
   status?: "success" | "warning" | "error" | "info";
   onAction?: () => void;
 }) {
@@ -69,7 +72,9 @@ function NotificationItem({
         <h4 className="text-sm font-medium">{title}</h4>
         <p className="text-sm text-muted-foreground">{description}</p>
         <div className="flex items-center justify-between mt-2">
-          <span className="text-xs text-muted-foreground">{time}</span>
+          <span className="text-xs text-muted-foreground">
+            {time !== undefined ? formatDateToLongDate(time) : "-"}
+          </span>
           {onAction && (
             <Button
               variant="ghost"
@@ -86,15 +91,21 @@ function NotificationItem({
   );
 }
 
-export default function Layout({ children, noLayout=[] }: { children: any, noLayout: string[]}) {
-  const pathname = usePathname()
-  const isPublic = noLayout.includes(pathname)
+export default function Layout({
+  children,
+  noLayout = [],
+}: {
+  children: any;
+  noLayout: string[];
+}) {
+  const pathname = usePathname();
+  const isPublic = noLayout.includes(pathname);
 
   if (isPublic) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
-  const [notifications, setNotifications] = useState<Notifikasi[]>([])
+  const [notifications, setNotifications] = useState<GetNotifikasDTO[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [selectedNotification, setSelectedNotification] =
     useState<Notifikasi | null>(null);
@@ -116,6 +127,14 @@ export default function Layout({ children, noLayout=[] }: { children: any, noLay
       setIsDetailsOpen(true);
     }
   };
+
+  const apiService = ApiService.getInstance();
+
+  useEffect(() => {
+    apiService.notifikasiApi.notifikasiGetPerUserGet().then((res) => {
+      setNotifications(res);
+    });
+  }, []);
   return (
     <SidebarProvider
       style={
@@ -159,9 +178,11 @@ export default function Layout({ children, noLayout=[] }: { children: any, noLay
                             key={notification.idNotifikasi!}
                             title={notification.judul!}
                             description={notification.deskripsi!}
-                            // time={notification.time}
+                            time={notification.waktuNotifikasi!}
                             // status={notification.status as NotificationStatus}
-                            onAction={() => handleViewDetails(notification.idNotifikasi!)}
+                            onAction={() =>
+                              handleViewDetails(notification.idNotifikasi!)
+                            }
                           />
                         ))}
                       </div>
@@ -180,14 +201,14 @@ export default function Layout({ children, noLayout=[] }: { children: any, noLay
             </div>
           </div>
         </header>
-        { children }
+        {children}
         <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{selectedNotification?.title}</DialogTitle>
+              <DialogTitle>{selectedNotification?.judul}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              {selectedNotification?.details &&
+              {/* {selectedNotification?.details &&
                 Object.entries(selectedNotification.details).map(
                   ([key, value]) => (
                     <div key={key} className="flex flex-col gap-1">
@@ -201,7 +222,42 @@ export default function Layout({ children, noLayout=[] }: { children: any, noLay
                       </dd>
                     </div>
                   )
-                )}
+                )} */}
+              <div className="flex flex-col gap-1">
+                <dt className="text-sm font-medium capitalize">Title</dt>
+                <dd className="text-sm text-muted-foreground">
+                  {selectedNotification?.judul}
+                </dd>
+              </div>
+              <div className="flex flex-col gap-1">
+                <dt className="text-sm font-medium capitalize">Description</dt>
+                <dd className="text-sm text-muted-foreground">
+                  {selectedNotification?.deskripsi}
+                </dd>
+              </div>
+              <div className="flex flex-col gap-1">
+                <dt className="text-sm font-medium capitalize">Notification Date</dt>
+                <dd className="text-sm text-muted-foreground">
+                  {selectedNotification?.waktuNotifikasi !== undefined ? formatDateToLongDate(selectedNotification?.waktuNotifikasi) : "-"}
+                </dd>
+              </div>
+              {selectedNotification?.navigasi == TargetNavigasi.Transaksi ? (
+                <div className="flex flex-col gap-1">
+                  <dt className="text-sm font-medium capitalize">
+                    Transaction Id
+                  </dt>
+                  {/* <dd className="text-sm text-muted-foreground">
+                    {selectedNotification?.deskripsi}
+                  </dd> */}
+                  <Link href={`/transactions?idTransaksi=${selectedNotification.dataNavigasi!.idTransaksi}`} onClick={() => window.location.reload()}>
+                    <Button variant="link" className="text-foreground w-fit px-0 text-left">
+                      {selectedNotification.dataNavigasi!.idTransaksi}
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </DialogContent>
         </Dialog>

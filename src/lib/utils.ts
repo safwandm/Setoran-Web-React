@@ -7,8 +7,8 @@ export function cn(...inputs: ClassValue[]) {
 
 
 export function formatDateToLongDate(date: Date) {
-  if (!date)
-    return "";
+  if (!date || date.getFullYear() === 1)
+    return "-";
   
   const day = date.getUTCDate();
   const month = date.toLocaleString('en-GB', {
