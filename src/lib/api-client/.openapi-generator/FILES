@@ -32,6 +32,7 @@ models/Pelanggan.ts
 models/Pembayaran.ts
 models/Pengguna.ts
 models/PostDiskonDTO.ts
+models/PostMitraDTO.ts
 models/PostNotifikasDTO.ts
 models/PostPelangganDTO.ts
 models/PostPembayaranDTO.ts

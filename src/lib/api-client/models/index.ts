@@ -19,6 +19,7 @@ export * from './Pelanggan';
 export * from './Pembayaran';
 export * from './Pengguna';
 export * from './PostDiskonDTO';
+export * from './PostMitraDTO';
 export * from './PostNotifikasDTO';
 export * from './PostPelangganDTO';
 export * from './PostPembayaranDTO';

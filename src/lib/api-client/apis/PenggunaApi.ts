@@ -30,11 +30,11 @@ export interface PenggunaFromMitraGetRequest {
 }
 
 export interface PenggunaGenericIdDeleteRequest {
-    id: number;
+    id: string;
 }
 
 export interface PenggunaGenericIdGetRequest {
-    id: number;
+    id: string;
 }
 
 export interface PenggunaGetAllGetRequest {

@@ -17,12 +17,15 @@ import * as runtime from '../runtime';
 import type {
   Mitra,
   MitraMotorDTO,
+  PostMitraDTO,
 } from '../models/index';
 import {
     MitraFromJSON,
     MitraToJSON,
     MitraMotorDTOFromJSON,
     MitraMotorDTOToJSON,
+    PostMitraDTOFromJSON,
+    PostMitraDTOToJSON,
 } from '../models/index';
 
 export interface MitraGenericIdDeleteRequest {
@@ -31,6 +34,10 @@ export interface MitraGenericIdDeleteRequest {
 
 export interface MitraGenericIdGetRequest {
     id: number;
+}
+
+export interface MitraPutRequest {
+    postMitraDTO?: PostMitraDTO;
 }
 
 /**
@@ -145,6 +152,40 @@ export class MitraApi extends runtime.BaseAPI {
     async mitraMitraMotorGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<MitraMotorDTO>> {
         const response = await this.mitraMitraMotorGetRaw(initOverrides);
         return await response.value();
+    }
+
+    /**
+     */
+    async mitraPutRaw(requestParameters: MitraPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json-patch+json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/Mitra`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PostMitraDTOToJSON(requestParameters['postMitraDTO']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async mitraPut(requestParameters: MitraPutRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.mitraPutRaw(requestParameters, initOverrides);
     }
 
 }
