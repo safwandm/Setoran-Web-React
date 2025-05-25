@@ -5,6 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -158,8 +159,11 @@ export function TambahVoucherDialog({ refresh=() => {} }) {
                   <p className="text-sm text-red-600">{errors.tanggal}</p>
                 )}
               </div>
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center mt-4 gap-5">
                 <Button type="submit">Submit</Button>
+                <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
+                  Cancel
+                </Button>
               </div>
             </form>
           </DialogDescription>

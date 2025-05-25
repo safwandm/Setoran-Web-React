@@ -339,7 +339,7 @@ export function DataTableUser() {
     apiService.penggunaApi.penggunaGetAllGet().then(res => {
       setData(res.filter(itm => itm.pelanggan))
     })
-  })
+  }, [])
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
