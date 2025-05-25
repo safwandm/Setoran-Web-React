@@ -112,6 +112,7 @@ import {
 import { Pelanggan, Pengguna } from "@/lib/api-client"
 import ApiService from "@/lib/api-client/wrapper"
 import { LoadingOverlay } from "@/components/loading-overlay"
+import EditPenggunaDrawer from "@/components/forms/pengguna-drawer"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -169,7 +170,7 @@ const columns: ColumnDef<Pengguna>[] = [
     accessorKey: "userId",
     header: "User ID",
     cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />
+      return <EditPenggunaDrawer idPengguna={row.original.id!} buttonText={row.original.id!} onSave={() => window.location.reload()} />
     },
     enableHiding: false,
   },
@@ -263,30 +264,30 @@ const columns: ColumnDef<Pengguna>[] = [
   //     </div>
   //   ),
   // },
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
+  // {
+  //   id: "actions",
+  //   cell: () => (
+  //     <DropdownMenu>
+  //       <DropdownMenuTrigger asChild>
+  //         <Button
+  //           variant="ghost"
+  //           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+  //           size="icon"
+  //         >
+  //           <IconDotsVertical />
+  //           <span className="sr-only">Open menu</span>
+  //         </Button>
+  //       </DropdownMenuTrigger>
+  //       <DropdownMenuContent align="end" className="w-32">
+  //         <DropdownMenuItem>Edit</DropdownMenuItem>
+  //         <DropdownMenuItem>Make a copy</DropdownMenuItem>
+  //         <DropdownMenuItem>Favorite</DropdownMenuItem>
+  //         <DropdownMenuSeparator />
+  //         <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+  //       </DropdownMenuContent>
+  //     </DropdownMenu>
+  //   ),
+  // },
 ]
 
 function DraggableRow({ row }: { row: Row<Pengguna> }) {

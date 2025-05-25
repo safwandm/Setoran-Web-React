@@ -94,6 +94,7 @@ import {
 import { Transaksi } from "@/lib/api-client"
 import { formatDateToLongDate } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
+import EditTransactionDrawer from "@/components/forms/transaction-drawer"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -114,125 +115,6 @@ function DragHandle({ id }: { id: number }) {
     </Button>
   )
 }
-
-const columns: ColumnDef<Transaksi>[] = [
-  // {
-  //   id: "drag",
-  //   header: () => null,
-  //   cell: ({ row }) => <DragHandle id={row.original.idTransaksi!} />,
-  // },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
-  {
-    accessorKey: "transactionId",
-    header: () => <div className="w-30 text-left">Transaction ID</div>,
-    cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />
-    },
-    enableHiding: false,
-    enableColumnFilter: true,
-    filterFn: "includesString",
-  },
-  {
-    accessorKey: "userName",
-    header: () => <div className="w-30 text-left">User Name</div>,
-  
-    cell: ({ row }) => (
-      <div className="w-4">
-          {row.original.pelanggan?.pengguna?.nama}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "motorName",
-    header: () => <div className="w-30 text-left">Motor Name</div>,
-    cell: ({ row }) => (
-      <div className="w-8">
-          {row.original.motor?.model}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "rentalDate",
-    header: () => <div className="w-30 text-left">Rental Date</div>,
-    cell: ({ row }) => (
-      <div className="w-8">
-          {formatDateToLongDate(row.original.tanggalMulai!)}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "returnDate",
-    header: () => <div className="w-30 text-left">Return Date</div>,
-    cell: ({ row }) => (
-      <div className="w-8">
-          {formatDateToLongDate(row.original.tanggalSelesai!)}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: () => <div className="w-full text text-left">Status</div>,
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "finished" ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : row.original.status === "created" ? (
-          <IconArrowsCross className="dark:fill-red-400" />
-        ) : (
-          <IconLoader className="animate-spin text-muted-foreground" />
-        )}
-        {row.original.status}
-      </Badge>
-    ),
-  },
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
-]
 
 function DraggableRow({ row }: { row: Row<Transaksi> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
@@ -284,6 +166,135 @@ export function DataTableTransaction() {
     [data]
   )
 
+  const refresh = () => {
+    apiService.transaksiApi.apiTransaksiGet().then(res => {
+      setData(res)
+    })
+  }
+
+  const columns: ColumnDef<Transaksi>[] = [
+    // {
+    //   id: "drag",
+    //   header: () => null,
+    //   cell: ({ row }) => <DragHandle id={row.original.idTransaksi!} />,
+    // },
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <div className="flex items-center justify-center">
+    //       <Checkbox
+    //         checked={
+    //           table.getIsAllPageRowsSelected() ||
+    //           (table.getIsSomePageRowsSelected() && "indeterminate")
+    //         }
+    //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //         aria-label="Select all"
+    //       />
+    //     </div>
+    //   ),
+    //   cell: ({ row }) => (
+    //     <div className="flex items-center justify-center">
+    //       <Checkbox
+    //         checked={row.getIsSelected()}
+    //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //         aria-label="Select row"
+    //       />
+    //     </div>
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
+    {
+      accessorKey: "transactionId",
+      header: () => <div className="w-30 text-left">Transaction ID</div>,
+      cell: ({ row }) => {
+        return <TableCellViewer item={row.original} />
+      },
+      enableHiding: false,
+      enableColumnFilter: true,
+      filterFn: "includesString",
+    },
+    {
+      accessorKey: "userName",
+      header: () => <div className="w-30 text-left">User Name</div>,
+    
+      cell: ({ row }) => (
+        <div className="w-4">
+            {row.original.pelanggan?.pengguna?.nama}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "motorName",
+      header: () => <div className="w-30 text-left">Motor Name</div>,
+      cell: ({ row }) => (
+        <div className="w-8">
+            {row.original.motor?.model}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "rentalDate",
+      header: () => <div className="w-30 text-left">Rental Date</div>,
+      cell: ({ row }) => (
+        <div className="w-8">
+            {formatDateToLongDate(row.original.tanggalMulai!)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "returnDate",
+      header: () => <div className="w-30 text-left">Return Date</div>,
+      cell: ({ row }) => (
+        <div className="w-8">
+            {formatDateToLongDate(row.original.tanggalSelesai!)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: () => <div className="w-full text text-left">Status</div>,
+      cell: ({ row }) => (
+        <Badge variant="outline" className="text-muted-foreground px-1.5">
+          {row.original.status === "finished" ? (
+            <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+          ) : row.original.status === "created" ? (
+            <IconArrowsCross className="dark:fill-red-400" />
+          ) : (
+            <IconLoader className="animate-spin text-muted-foreground" />
+          )}
+          {row.original.status}
+        </Badge>
+      ),
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <EditTransactionDrawer 
+              idTransaksi={row.original.idTransaksi!}
+              onSave={() => refresh()}
+            />
+            <DropdownMenuSeparator />
+            {/* <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem> */}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+  ]
+
+
   const table = useReactTable({
     data,
     columns,
@@ -312,9 +323,7 @@ export function DataTableTransaction() {
   const apiService = ApiService.getInstance()
 
   React.useEffect(() => {
-    apiService.transaksiApi.apiTransaksiGet().then(res => {
-      setData(res)
-    })
+    refresh()
   }, [])
 
   function handleDragEnd(event: DragEndEvent) {

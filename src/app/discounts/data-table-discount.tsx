@@ -111,6 +111,7 @@ import {
 import { Diskon, StatusDiskon } from "@/lib/api-client"
 import { formatDateToLongDate } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
+import EditDiskonDrawer from "@/components/forms/discount-drawer"
 
 
 // Create a separate component for the drag handle
@@ -169,7 +170,7 @@ const columns: ColumnDef<Diskon>[] = [
     accessorKey: "idDiskon",
     header: () => <div className="w-full text-left">Discount ID</div>,
     cell: ({ row }) => {
-      return row.original.idDiskon
+      return <EditDiskonDrawer idDiskon={row.original.idDiskon!} buttonText={row.original.idDiskon!.toString()} onSave={() => window.location.reload()}/>
     },
     enableHiding: false,
   },
@@ -255,30 +256,30 @@ const columns: ColumnDef<Diskon>[] = [
       </Badge>
     ),
   },
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => (
+  //     <DropdownMenu>
+  //       <DropdownMenuTrigger asChild>
+  //         <Button
+  //           variant="ghost"
+  //           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+  //           size="icon"
+  //         >
+  //           <IconDotsVertical />
+  //           <span className="sr-only">Open menu</span>
+  //         </Button>
+  //       </DropdownMenuTrigger>
+  //       <DropdownMenuContent align="end" className="w-32">
+  //         <EditDiskonDrawer idDiskon={row.original.idDiskon!} buttonText="Edit" inDropdown={true} />
+  //         <DropdownMenuItem>Make a copy</DropdownMenuItem>
+  //         <DropdownMenuItem>Favorite</DropdownMenuItem>
+  //         <DropdownMenuSeparator />
+  //         <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+  //       </DropdownMenuContent>
+  //     </DropdownMenu>
+  //   ),
+  // },
 ]
 
 function DraggableRow({ row }: { row: Row<Diskon> }) {

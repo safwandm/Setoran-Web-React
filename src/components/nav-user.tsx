@@ -29,6 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
 
 export function NavUser({
   user,
@@ -90,19 +91,11 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.location.href = "/account"}>
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              {/* <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem> */}
-              {/* <DropdownMenuItem>
-                <IconNotification />
-                Notifications
-              </DropdownMenuItem> */}
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.location.href = "/setting"}>
                 <IconSettings />
                 Setting
               </DropdownMenuItem>

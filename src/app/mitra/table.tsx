@@ -107,6 +107,7 @@ import { Mitra, MitraMotorDTO, StatusMitra } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
 import Link from "next/link";
 import { LoadingOverlay } from "@/components/loading-overlay";
+import EditPenggunaDrawer from "@/components/forms/pengguna-drawer";
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -127,105 +128,6 @@ function DragHandle({ id }: { id: number }) {
     </Button>
   );
 }
-
-const columns: ColumnDef<MitraMotorDTO>[] = [
-  // {
-  //   id: "drag",
-  //   header: () => null,
-  //   cell: ({ row }) => <DragHandle id={row.original.mitra!.idMitra!} />,
-  // },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
-  {
-    accessorKey: "mitraId",
-    header: () => <div className="w-20 text-left">Mitra ID</div>,
-    cell: ({ row }) => {
-      return (
-        <Link href={`/pengguna/${row.original.mitra?.pengguna?.id}`}>
-          <Button
-            variant="link"
-            className="text-foreground w-fit px-0 text-left"
-          >
-            {row.original.mitra?.idMitra}
-          </Button>
-        </Link>
-      );
-      // <PenggunaDrawer initialPengguna={undefined} idPengguna={row.original.mitra?.idPengguna!} buttonTitle={row.original.mitra!.idMitra?.toString()} />
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "mitraName",
-    header: () => <div className="w-30 text-left">Mitra Name</div>,
-    cell: ({ row }) => (
-      <div className="w-9">{row.original.mitra!.pengguna?.nama}</div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: () => <div className="w-30 text-left">Status</div>,
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.mitra!.status === StatusMitra.Aktif ? (
-          <IconCircle className="fill-green-500 dark:fill-blue-400" />
-        ) : (
-          <IconCircle className=" text-muted-foreground" />
-        )}
-        {row.original.mitra!.status}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "alamat",
-    header: () => <div className="w-30 text-left">Address</div>,
-    cell: ({ row }) => (
-      <div className="w-9">{row.original.mitra!.pengguna?.alamat}</div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: () => <div className="w-30 text-left">Email</div>,
-    cell: ({ row }) => (
-      <div className="w-9">{row.original.mitra!.pengguna?.email}</div>
-    ),
-  },
-  {
-    accessorKey: "telp",
-    header: () => <div className="w-30 text-left">Phone Number</div>,
-    cell: ({ row }) => (
-      <div className="w-9">{row.original.mitra!.pengguna?.nomorTelepon}</div>
-    ),
-  },
-  {
-    accessorKey: "Vehicle",
-    header: () => <div className="w-30 text-left">Vehicle count</div>,
-    cell: ({ row }) => <div className="w-9">{row.original.jumlahMotor}</div>,
-  },
-];
 
 function DraggableRow({ row }: { row: Row<MitraMotorDTO> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
@@ -278,6 +180,104 @@ export function TableMitra() {
     [data]
   );
 
+  const refresh = () => {
+    setLoading(true);
+    apiService.mitraApi.mitraMitraMotorGet().then((res) => {
+      setData(res);
+      setLoading(false);
+    });
+  }
+
+  const columns: ColumnDef<MitraMotorDTO>[] = [
+    // {
+    //   id: "drag",
+    //   header: () => null,
+    //   cell: ({ row }) => <DragHandle id={row.original.mitra!.idMitra!} />,
+    // },
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <div className="flex items-center justify-center">
+    //       <Checkbox
+    //         checked={
+    //           table.getIsAllPageRowsSelected() ||
+    //           (table.getIsSomePageRowsSelected() && "indeterminate")
+    //         }
+    //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //         aria-label="Select all"
+    //       />
+    //     </div>
+    //   ),
+    //   cell: ({ row }) => (
+    //     <div className="flex items-center justify-center">
+    //       <Checkbox
+    //         checked={row.getIsSelected()}
+    //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //         aria-label="Select row"
+    //       />
+    //     </div>
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
+    {
+      accessorKey: "mitraId",
+      header: () => <div className="w-20 text-left">Mitra ID</div>,
+      cell: ({ row }) => {
+        return <EditPenggunaDrawer idPengguna={row.original.mitra?.idPengguna!} buttonText={row.original.mitra?.idMitra!.toString()} onSave={() => refresh()}/>;
+        // <PenggunaDrawer initialPengguna={undefined} idPengguna={row.original.mitra?.idPengguna!} buttonTitle={row.original.mitra!.idMitra?.toString()} />
+      },
+      enableHiding: false,
+    },
+    {
+      accessorKey: "mitraName",
+      header: () => <div className="w-30 text-left">Mitra Name</div>,
+      cell: ({ row }) => (
+        <div className="w-9">{row.original.mitra!.pengguna?.nama}</div>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: () => <div className="w-30 text-left">Status</div>,
+      cell: ({ row }) => (
+        <Badge variant="outline" className="text-muted-foreground px-1.5">
+          {row.original.mitra!.status === StatusMitra.Aktif ? (
+            <IconCircle className="fill-green-500 dark:fill-blue-400" />
+          ) : (
+            <IconCircle className=" text-muted-foreground" />
+          )}
+          {row.original.mitra!.status}
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: "alamat",
+      header: () => <div className="w-30 text-left">Address</div>,
+      cell: ({ row }) => (
+        <div className="w-9">{row.original.mitra!.pengguna?.alamat}</div>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: () => <div className="w-30 text-left">Email</div>,
+      cell: ({ row }) => (
+        <div className="w-9">{row.original.mitra!.pengguna?.email}</div>
+      ),
+    },
+    {
+      accessorKey: "telp",
+      header: () => <div className="w-30 text-left">Phone Number</div>,
+      cell: ({ row }) => (
+        <div className="w-9">{row.original.mitra!.pengguna?.nomorTelepon}</div>
+      ),
+    },
+    {
+      accessorKey: "Vehicle",
+      header: () => <div className="w-30 text-left">Vehicle count</div>,
+      cell: ({ row }) => <div className="w-9">{row.original.jumlahMotor}</div>,
+    },
+  ];
+
   const table = useReactTable({
     data,
     columns,
@@ -306,11 +306,7 @@ export function TableMitra() {
   const apiService = ApiService.getInstance();
 
   React.useEffect(() => {
-    setLoading(true);
-    apiService.mitraApi.mitraMitraMotorGet().then((res) => {
-      setData(res);
-      setLoading(false);
-    });
+    refresh()
   }, []);
 
   function handleDragEnd(event: DragEndEvent) {
