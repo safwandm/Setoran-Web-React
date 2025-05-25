@@ -112,6 +112,7 @@ import { StatusVoucher, Voucher } from "@/lib/api-client"
 import { formatDateToLongDate } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import { LoadingOverlay } from "@/components/loading-overlay"
+import { TambahVoucherDialog } from "./voucher-dialog"
 
 export const schema = z.object({
   id: z.number(),
@@ -400,8 +401,9 @@ export function DataTableVoucher(
             </div>
           {/* <Button variant="outline" size="sm">
             <IconPlus />
-            <span className="hidden lg:inline">Add Section</span>
+            <span className="hidden lg:inline">Add Voucher</span>
           </Button> */}
+          <TambahVoucherDialog />
         </div>
       </div>
       <TabsContent
