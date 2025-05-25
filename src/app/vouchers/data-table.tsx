@@ -139,7 +139,74 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
+function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+  const { transform, transition, setNodeRef, isDragging } = useSortable({
+    id: row.original.id,
+  })
+
+  return (
+    <TableRow
+      data-state={row.getIsSelected() && "selected"}
+      data-dragging={isDragging}
+      ref={setNodeRef}
+      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition: transition,
+      }}
+    >
+      {row.getVisibleCells().map((cell) => (
+        <TableCell key={cell.id}>
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </TableCell>
+      ))}
+    </TableRow>
+  )
+}
+
+export function DataTableVoucher({
+  data: initialData,
+}: {
+  data: z.infer<typeof schema>[]
+}) {
+  const [data, setData] = React.useState(() => initialData)
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+  const sortableId = React.useId()
+  const sensors = useSensors(
+    useSensor(MouseSensor, {}),
+    useSensor(TouchSensor, {}),
+    useSensor(KeyboardSensor, {})
+  )
+
+  const dataIds = React.useMemo<UniqueIdentifier[]>(
+    () => data?.map(({ id }) => id) || [],
+    [data]
+  )
+
+  const handleUpdateVoucher = async (updatedVoucher: z.infer<typeof schema>) => {
+    try {
+      setData(currentData => 
+        currentData.map(item => 
+          item.id === updatedVoucher.id ? updatedVoucher : item
+        )
+      )
+    } catch (error) {
+      console.error('Error updating voucher:', error)
+      toast.error('Failed to update voucher')
+    }
+  }
+
+  const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
     header: () => null,
@@ -232,84 +299,31 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
+      id: "actions",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <EditDrawerContent 
+              item={row.original}
+              onSave={handleUpdateVoucher}
+            />
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
 ]
-
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
-  const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
-  })
-
-  return (
-    <TableRow
-      data-state={row.getIsSelected() && "selected"}
-      data-dragging={isDragging}
-      ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: transition,
-      }}
-    >
-      {row.getVisibleCells().map((cell) => (
-        <TableCell key={cell.id}>
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </TableCell>
-      ))}
-    </TableRow>
-  )
-}
-
-export function DataTableVoucher({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
-  })
-  const sortableId = React.useId()
-  const sensors = useSensors(
-    useSensor(MouseSensor, {}),
-    useSensor(TouchSensor, {}),
-    useSensor(KeyboardSensor, {})
-  )
-
-  const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
-    [data]
-  )
 
   const table = useReactTable({
     data,
@@ -551,6 +565,8 @@ export function DataTableVoucher({
   )
 }
 
+
+
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
   { month: "February", desktop: 305, mobile: 200 },
@@ -723,6 +739,148 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <Button>Submit</Button>
           <DrawerClose asChild>
             <Button variant="outline">Done</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+} 
+
+function EditDrawerContent(
+  { 
+    item, 
+    onSave 
+  }: { 
+    item: z.infer<typeof schema>
+    onSave?: (updatedData: z.infer<typeof schema>) => void
+  }
+) {
+  const isMobile = useIsMobile()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [formData, setFormData] = React.useState({
+    voucherCode: item.voucherCode,
+    voucherName: item.voucherName, 
+    startDate: item.startDate,
+    endDate: item.endDate,
+    usage: item.usage,
+    status: item.status
+  })
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true)
+      const updatedVoucher = {
+        ...item,
+        ...formData
+      }
+      onSave?.(updatedVoucher)
+      toast.success('Voucher updated successfully')
+    } catch (error) {
+      toast.error('Failed to update voucher')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Drawer direction={isMobile ? "bottom" : "right"}>
+      <DrawerTrigger asChild>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Edit
+        </DropdownMenuItem>
+      </DrawerTrigger>
+      <DrawerContent className="h-[85vh] sm:max-w-[500px]">
+        <DrawerHeader>
+          <DrawerTitle>Edit Voucher</DrawerTitle>
+          <DrawerDescription>
+            Make changes to voucher code: {item.voucherCode}
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="voucherCode">Voucher Code</Label>
+              <Input 
+                id="voucherCode"
+                value={formData.voucherCode}
+                onChange={(e) => handleChange('voucherCode', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="voucherName">Voucher Name</Label>
+              <Input
+                id="voucherName"
+                value={formData.voucherName}
+                onChange={(e) => handleChange('voucherName', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={formData.startDate}
+                onChange={(e) => handleChange('startDate', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={formData.endDate}
+                onChange={(e) => handleChange('endDate', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="usage">Usage</Label>
+              <Input
+                id="usage"
+                value={formData.usage}
+                onChange={(e) => handleChange('usage', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value) => handleChange('status', value)}
+              >
+                <SelectTrigger id="status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Expired">Expired</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+        <DrawerFooter>
+          <Button 
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <IconLoader className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Save changes'
+            )}
+          </Button>
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import {
   IconCreditCard,
   IconSettings,
@@ -40,6 +41,19 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
+
+  const handleLogout = () => {
+    router.push("/signin")
+  }
+
+   const handleSetting = () => {
+    router.push("/setting")
+  }
+
+  const handleAccount = () => {
+    router.push("/account")
+  }
 
   return (
     <SidebarMenu>
@@ -85,7 +99,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleAccount}>
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
@@ -97,13 +111,13 @@ export function NavUser({
                 <IconNotification />
                 Notifications
               </DropdownMenuItem> */}
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSetting}>
                 <IconSettings />
                 Setting
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <IconLogout />
               Log out
             </DropdownMenuItem>

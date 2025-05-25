@@ -102,6 +102,111 @@ export const schema = z.object({
   status: z.string(),
 })
 
+// Add this component after your imports and before other components
+function EditDrawerContent({ item }: { item: z.infer<typeof schema>  }) {
+  const isMobile = useIsMobile()
+  const [formData, setFormData] = React.useState({
+    userName: item.userName,
+    motorName: item.motorName,
+    rentalDate: item.rentalDate,
+    returnDate: item.returnDate,
+    status: item.status
+  })
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleSave = () => {
+    // Add your save logic here
+    console.log('Saving changes:', formData)
+    // You can add API call here
+  }
+
+  return (
+    <Drawer direction={isMobile ? "bottom" : "right"}>
+      <DrawerTrigger asChild>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Edit
+        </DropdownMenuItem>
+      </DrawerTrigger>
+      <DrawerContent className="h-[85vh] sm:max-w-[500px]">
+        <DrawerHeader>
+          <DrawerTitle>Edit Transaction</DrawerTitle>
+          <DrawerDescription>
+            Make changes to transaction ID: {item.transactionId}
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="userName">User Name</Label>
+              <Input 
+                id="userName" 
+                value={formData.userName}
+                onChange={(e) => handleChange('userName', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="motorName">Motor Name</Label>
+              <Input 
+                id="motorName" 
+                value={formData.motorName}
+                onChange={(e) => handleChange('motorName', e.target.value)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="rentalDate">Rental Date</Label>
+                <Input 
+                  id="rentalDate" 
+                  value={formData.rentalDate}
+                  onChange={(e) => handleChange('rentalDate', e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="returnDate">Return Date</Label>
+                <Input 
+                  id="returnDate" 
+                  value={formData.returnDate}
+                  onChange={(e) => handleChange('returnDate', e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select 
+                value={formData.status}
+                onValueChange={(value) => handleChange('status', value)}
+              >
+                <SelectTrigger id="status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Success">Success</SelectItem>
+                  <SelectItem value="Failed">Failed</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+        <DrawerFooter>
+          <Button onClick={handleSave}>Save changes</Button>
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+
+// Then update your actions column in the columns definition
+
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
@@ -217,9 +322,10 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       </Badge>
     ),
   },
-  {
-    id: "actions",
-    cell: () => (
+  // Replace the existing actions column
+{
+  id: "actions",
+  cell: ({ row }) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -227,14 +333,22 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
             className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
             size="icon"
           >
-            <IconDotsVertical />
+            <IconDotsVertical className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <EditDrawerContent item={row.original} />
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          <DropdownMenuItem 
+            variant="destructive"
+            onClick={() => {
+              // Add your delete logic here
+              console.log('Delete:', row.original)
+            }}
+          >
+            Delete
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -496,6 +610,7 @@ export function DataTableTransaction({
     </Tabs>
   )
 }
+
 function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile()
 

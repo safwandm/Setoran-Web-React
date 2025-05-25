@@ -56,7 +56,9 @@ import {
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { toast } from "sonner"
 import { z } from "zod"
-
+import { NextResponse } from 'next/server'
+// import fs from 'fs/promises'
+import path from 'path'
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -120,6 +122,38 @@ export const schema = z.object({
   transaction: z.string(),
 })
 
+const DATA_FILE = path.join(process.cwd(), 'data/users.json')
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const id = params.id
+    const updatedUser = await request.json()
+
+    // Read current data
+    const data = await fs.readFile(DATA_FILE, 'utf-8')
+    const users = JSON.parse(data)
+
+    // Update user in the array
+    const updatedUsers = users.map((user: any) => 
+      user.id === parseInt(id) ? updatedUser : user
+    )
+
+    // Write back to file
+    await fs.writeFile(DATA_FILE, JSON.stringify(updatedUsers, null, 2))
+
+    return NextResponse.json(updatedUser)
+
+  } catch (error) {
+    console.error('Error updating user:', error)
+    return NextResponse.json(
+      { error: 'Failed to update user' },
+      { status: 500 }
+    )
+  }
+}
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
@@ -140,7 +174,61 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
+function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+  const { transform, transition, setNodeRef, isDragging } = useSortable({
+    id: row.original.id,
+  })
+
+  return (
+    <TableRow
+      data-state={row.getIsSelected() && "selected"}
+      data-dragging={isDragging}
+      ref={setNodeRef}
+      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition: transition,
+      }}
+    >
+      {row.getVisibleCells().map((cell) => (
+        <TableCell key={cell.id}>
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </TableCell>
+      ))}
+    </TableRow>
+  )
+}
+
+export function DataTableUser({
+  data: initialData,
+}: {
+  data: z.infer<typeof schema>[]
+}) {
+  const [data, setData] = React.useState(() => initialData)
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+  const sortableId = React.useId()
+  const sensors = useSensors(
+    useSensor(MouseSensor, {}),
+    useSensor(TouchSensor, {}),
+    useSensor(KeyboardSensor, {})
+  )
+
+  const dataIds = React.useMemo<UniqueIdentifier[]>(
+    () => data?.map(({ id }) => id) || [],
+    [data]
+  )
+
+  const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
     header: () => null,
@@ -242,7 +330,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
-    cell: () => (
+    cell: ({ row }) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -255,9 +343,10 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
+          <EditDrawerContent 
+            item={row.original}
+            onSave={handleUpdateUser}
+          />
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
         </DropdownMenuContent>
@@ -266,59 +355,31 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
 ]
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
-  const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
-  })
+  const handleUpdateUser = async (updatedUser: z.infer<typeof schema>) => {
+    try {
+      const response = await fetch(`/api/users/${updatedUser.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser)
+      })
 
-  return (
-    <TableRow
-      data-state={row.getIsSelected() && "selected"}
-      data-dragging={isDragging}
-      ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: transition,
-      }}
-    >
-      {row.getVisibleCells().map((cell) => (
-        <TableCell key={cell.id}>
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </TableCell>
-      ))}
-    </TableRow>
-  )
-}
+      if (!response.ok) {
+        throw new Error('Failed to update user')
+      }
 
-export function DataTableUser({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
-  })
-  const sortableId = React.useId()
-  const sensors = useSensors(
-    useSensor(MouseSensor, {}),
-    useSensor(TouchSensor, {}),
-    useSensor(KeyboardSensor, {})
-  )
-
-  const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
-    [data]
-  )
+      setData(currentData => 
+        currentData.map(item => 
+          item.id === updatedUser.id ? updatedUser : item
+        )
+      )
+      toast.success('User updated successfully')
+    } catch (error) {
+      console.error('Error updating user:', error) 
+      toast.error('Failed to update user')
+    }
+  }
 
   const table = useReactTable({
     data,
@@ -570,6 +631,161 @@ export function DataTableUser({
           </div>
         </TabsContent>
     </Tabs>
+  )
+}
+
+function EditDrawerContent(
+  { 
+    item, 
+    onSave 
+  }: { 
+    item: z.infer<typeof schema>
+    onSave?: (updatedData: z.infer<typeof schema>) => void
+  }
+) {
+  const isMobile = useIsMobile()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [formData, setFormData] = React.useState({
+    userName: item.userName,
+    status: item.status,
+    registration: item.registration,
+    verification: item.verification,
+    transaction: item.transaction
+  })
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true)
+
+      const updatedUser = {
+        ...item,
+        ...formData
+      }
+
+      const response = await fetch(`/api/users/${item.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser)
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update user')
+      }
+
+      onSave?.(updatedUser)
+      toast.success('User updated successfully')
+      
+    } catch (error) {
+      console.error('Error updating user:', error)
+      toast.error('Failed to update user')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Drawer direction={isMobile ? "bottom" : "right"}>
+      <DrawerTrigger asChild>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Edit
+        </DropdownMenuItem>
+      </DrawerTrigger>
+      <DrawerContent className="h-[85vh] sm:max-w-[500px]">
+        <DrawerHeader>
+          <DrawerTitle>Edit User</DrawerTitle>
+          <DrawerDescription>
+            Make changes to user ID: {item.userId}
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="userName">User Name</Label>
+              <Input 
+                id="userName" 
+                value={formData.userName}
+                onChange={(e) => handleChange('userName', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select 
+                value={formData.status}
+                onValueChange={(value) => handleChange('status', value)}
+              >
+                <SelectTrigger id="status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="In Progress">In Progress</SelectItem>
+                  <SelectItem value="Blocked">Blocked</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="registration">Registration Date</Label>
+              <Input 
+                id="registration" 
+                value={formData.registration}
+                onChange={(e) => handleChange('registration', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="verification">Verification Status</Label>
+              <Select 
+                value={formData.verification}
+                onValueChange={(value) => handleChange('verification', value)}
+              >
+                <SelectTrigger id="verification">
+                  <SelectValue placeholder="Select verification status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Verified">Verified</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Canceled">Canceled</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="transaction">Transaction</Label>
+              <Input 
+                id="transaction" 
+                value={formData.transaction}
+                onChange={(e) => handleChange('transaction', e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+        <DrawerFooter>
+          <Button 
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <IconLoader className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Save changes'
+            )}
+          </Button>
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }
 

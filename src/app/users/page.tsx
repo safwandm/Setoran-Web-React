@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { IconBell } from "@tabler/icons-react"
+import data from "./data.json"
+import { DataTableUser } from "./data-table-user"
+import dataNotification from "./dataNotification.json"
 import {
   Dialog,
   DialogContent,
@@ -126,10 +129,6 @@ function NotificationItem({
   )
 }
 
-import data from "./data.json"
-import { DataTableUser } from "./data-table-user"
-import dataNotification from "./dataNotification.json"
-
 export default function Page() {
   const [isMobile, setIsMobile] = useState(false)
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null)
@@ -241,3 +240,5 @@ useEffect(() => {
     </SidebarProvider>
   )
 }
+
+
