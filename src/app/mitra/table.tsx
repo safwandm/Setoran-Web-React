@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   DndContext,
   KeyboardSensor,
@@ -11,15 +11,15 @@ import {
   useSensors,
   type DragEndEvent,
   type UniqueIdentifier,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   SortableContext,
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   IconClock2,
   IconCircle,
@@ -32,11 +32,11 @@ import {
   IconCircleCheckFilled,
   IconDotsVertical,
   IconGripVertical,
- IconSearch,
+  IconSearch,
   IconLoader,
   IconTrendingUp,
   IconUser,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -51,21 +51,21 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-import { toast } from "sonner"
-import { z } from "zod"
+} from "@tanstack/react-table";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { useIsMobile } from "@/hooks/use-mobile"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/chart";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Drawer,
   DrawerClose,
@@ -75,7 +75,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -83,17 +83,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -101,21 +101,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import { Mitra, MitraMotorDTO, StatusMitra } from "@/lib/api-client"
-import ApiService from "@/lib/api-client/wrapper"
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Mitra, MitraMotorDTO, StatusMitra } from "@/lib/api-client";
+import ApiService from "@/lib/api-client/wrapper";
+import Link from "next/link";
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
     id,
-  })
+  });
 
   return (
     <Button
@@ -128,7 +124,7 @@ function DragHandle({ id }: { id: number }) {
       <IconGripVertical className="text-muted-foreground size-3" />
       <span className="sr-only">Drag to reorder</span>
     </Button>
-  )
+  );
 }
 
 const columns: ColumnDef<MitraMotorDTO>[] = [
@@ -167,7 +163,19 @@ const columns: ColumnDef<MitraMotorDTO>[] = [
     accessorKey: "mitraId",
     header: () => <div className="w-20 text-left">Mitra ID</div>,
     cell: ({ row }) => {
-      return <TableCellViewer item={row.original.mitra!} />
+      return (
+        <Link
+          href={`/pengguna/${row.original.mitra?.pengguna?.id}`}
+        >
+          <Button
+            variant="link"
+            className="text-foreground w-fit px-0 text-left"
+          >
+            {row.original.mitra?.idMitra}
+          </Button>
+        </Link>
+      );
+      // <PenggunaDrawer initialPengguna={undefined} idPengguna={row.original.mitra?.idPengguna!} buttonTitle={row.original.mitra!.idMitra?.toString()} />
     },
     enableHiding: false,
   },
@@ -175,9 +183,7 @@ const columns: ColumnDef<MitraMotorDTO>[] = [
     accessorKey: "mitraName",
     header: () => <div className="w-30 text-left">Mitra Name</div>,
     cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.mitra!.pengguna?.nama}
-      </div>
+      <div className="w-9">{row.original.mitra!.pengguna?.nama}</div>
     ),
   },
   {
@@ -187,9 +193,9 @@ const columns: ColumnDef<MitraMotorDTO>[] = [
       <Badge variant="outline" className="text-muted-foreground px-1.5">
         {row.original.mitra!.status === StatusMitra.Aktif ? (
           <IconCircle className="fill-green-500 dark:fill-blue-400" />
-        ) :
-        <IconCircle className=" text-muted-foreground" />
-        }
+        ) : (
+          <IconCircle className=" text-muted-foreground" />
+        )}
         {row.original.mitra!.status}
       </Badge>
     ),
@@ -198,44 +204,34 @@ const columns: ColumnDef<MitraMotorDTO>[] = [
     accessorKey: "alamat",
     header: () => <div className="w-30 text-left">Address</div>,
     cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.mitra!.pengguna?.alamat}
-      </div>
+      <div className="w-9">{row.original.mitra!.pengguna?.alamat}</div>
     ),
   },
   {
     accessorKey: "email",
     header: () => <div className="w-30 text-left">Email</div>,
     cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.mitra!.pengguna?.email}
-      </div>
+      <div className="w-9">{row.original.mitra!.pengguna?.email}</div>
     ),
   },
   {
     accessorKey: "telp",
     header: () => <div className="w-30 text-left">Phone Number</div>,
     cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.mitra!.pengguna?.nomorTelepon}
-      </div>
+      <div className="w-9">{row.original.mitra!.pengguna?.nomorTelepon}</div>
     ),
   },
   {
     accessorKey: "Vehicle",
     header: () => <div className="w-30 text-left">Vehicle count</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.jumlahMotor}
-      </div>
-    ),
+    cell: ({ row }) => <div className="w-9">{row.original.jumlahMotor}</div>,
   },
-]
+];
 
 function DraggableRow({ row }: { row: Row<MitraMotorDTO> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.mitra!.idMitra!,
-  })
+  });
 
   return (
     <TableRow
@@ -254,33 +250,33 @@ function DraggableRow({ row }: { row: Row<MitraMotorDTO> }) {
         </TableCell>
       ))}
     </TableRow>
-  )
+  );
 }
 
 export function TableMitra() {
-  const [data, setData] = React.useState<MitraMotorDTO[]>([])
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [data, setData] = React.useState<MitraMotorDTO[]>([]);
+  const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
-  })
-  const sortableId = React.useId()
+  });
+  const sortableId = React.useId();
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {})
-  )
+  );
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
     () => data?.map(({ mitra }) => mitra!.idMitra!) || [],
     [data]
-  )
+  );
 
   const table = useReactTable({
     data,
@@ -305,24 +301,24 @@ export function TableMitra() {
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+  });
 
-  const apiService = ApiService.getInstance()
+  const apiService = ApiService.getInstance();
 
   React.useEffect(() => {
-    apiService.mitraApi.mitraMitraMotorGet().then(res => {
-      setData(res)
-    })
-  }, [])
+    apiService.mitraApi.mitraMitraMotorGet().then((res) => {
+      setData(res);
+    });
+  }, []);
 
   function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event
+    const { active, over } = event;
     if (active && over && active.id !== over.id) {
       setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex)
-      })
+        const oldIndex = dataIds.indexOf(active.id);
+        const newIndex = dataIds.indexOf(over.id);
+        return arrayMove(data, oldIndex, newIndex);
+      });
     }
   }
 
@@ -332,24 +328,24 @@ export function TableMitra() {
       className="w-full flex-col justify-start gap-6"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
-        <Select defaultValue="outline">
-        </Select>
-         <div className="flex items-center">
-            <Select defaultValue="outline">
-            </Select>
-          </div>
+        <Select defaultValue="outline"></Select>
+        <div className="flex items-center">
+          <Select defaultValue="outline"></Select>
+        </div>
         <div className="flex items-center">
           <div className="ml-auto">
             <div className="relative">
               <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-              placeholder="Search by Id .."
-              value={(table.getColumn("mitraId")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("mitraId")?.setFilterValue(event.target.value)
-              }
-              className="h-9 w-[150px] lg:w-[250px] pl-8"
-            />
+                placeholder="Search by Id .."
+                value={
+                  (table.getColumn("mitraId")?.getFilterValue() as string) ?? ""
+                }
+                onChange={(event) =>
+                  table.getColumn("mitraId")?.setFilterValue(event.target.value)
+                }
+                className="h-9 w-[150px] lg:w-[250px] pl-8"
+              />
             </div>
           </div>
         </div>
@@ -380,7 +376,7 @@ export function TableMitra() {
                                 header.getContext()
                               )}
                         </TableHead>
-                      )
+                      );
                     })}
                   </TableRow>
                 ))}
@@ -422,7 +418,7 @@ export function TableMitra() {
               <Select
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={(value) => {
-                  table.setPageSize(Number(value))
+                  table.setPageSize(Number(value));
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
@@ -503,11 +499,11 @@ export function TableMitra() {
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
     </Tabs>
-  )
+  );
 }
 
 function TableCellViewer({ item }: { item: Mitra }) {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
@@ -530,5 +526,5 @@ function TableCellViewer({ item }: { item: Mitra }) {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }

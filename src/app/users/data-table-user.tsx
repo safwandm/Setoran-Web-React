@@ -109,16 +109,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-
-export const schema = z.object({
-  id: z.number(),
-  userId: z.string(),
-  userName: z.string(),
-  status: z.string(),
-  registration: z.string(),
-  verification: z.string(),
-  transaction: z.string(),
-})
+import { Pelanggan, Pengguna } from "@/lib/api-client"
+import ApiService from "@/lib/api-client/wrapper"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -140,38 +132,38 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+const columns: ColumnDef<Pengguna>[] = [
+  // {
+  //   id: "drag",
+  //   header: () => null,
+  //   cell: ({ row }) => <DragHandle id={row.original.pelanggan?.idPelanggan!} />,
+  // },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <div className="flex items-center justify-center">
+  //       <Checkbox
+  //         checked={
+  //           table.getIsAllPageRowsSelected() ||
+  //           (table.getIsSomePageRowsSelected() && "indeterminate")
+  //         }
+  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //         aria-label="Select all"
+  //       />
+  //     </div>
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div className="flex items-center justify-center">
+  //       <Checkbox
+  //         checked={row.getIsSelected()}
+  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //         aria-label="Select row"
+  //       />
+  //     </div>
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "userId",
     header: "User ID",
@@ -190,56 +182,56 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "status",
-    header: () => <div className="w-0.5 text-left">Status</div>,
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Active" ? (
-          <IconCircle className="fill-green-500" />
-        ) : row.original.status === "Blocked" ? (
-          <IconBan className="dark:fill-red-400" />
-        ) : (
-          <IconCircle/>
-        )}
-        {row.original.status}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "registration",
-    header: () => <div className="w-full text-left">Registration </div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.registration}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "verification",
-    header: () => <div className="w-10 text-left">Verification</div>,
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.verification === "Verified" ? (
-          <IconCircleCheckFilled className="fill-blue-500 dark:fill-blue-400" />
-        ) : row.original.verification === "Canceled" ? (
-          <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
-        ) : (
-          <IconLoader className="animate-spin text-muted-foreground" />
-        )}
-        {row.original.verification}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "transaction",
-    header: () => <div className="text-left">Transaction</div>,
-    cell: ({ row }) => (
-      <div className="w-4">
-          {row.original.transaction}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "status",
+  //   header: () => <div className="w-0.5 text-left">Status</div>,
+  //   cell: ({ row }) => (
+  //     <Badge variant="outline" className="text-muted-foreground px-1.5">
+  //       {row.original.status === "Active" ? (
+  //         <IconCircle className="fill-green-500" />
+  //       ) : row.original.status === "Blocked" ? (
+  //         <IconBan className="dark:fill-red-400" />
+  //       ) : (
+  //         <IconCircle/>
+  //       )}
+  //       {row.original.status}
+  //     </Badge>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "registration",
+  //   header: () => <div className="w-full text-left">Registration </div>,
+  //   cell: ({ row }) => (
+  //     <div className="w-9">
+  //         {row.original.registration}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "verification",
+  //   header: () => <div className="w-10 text-left">Verification</div>,
+  //   cell: ({ row }) => (
+  //     <Badge variant="outline" className="text-muted-foreground px-1.5">
+  //       {row.original.verification === "Verified" ? (
+  //         <IconCircleCheckFilled className="fill-blue-500 dark:fill-blue-400" />
+  //       ) : row.original.verification === "Canceled" ? (
+  //         <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
+  //       ) : (
+  //         <IconLoader className="animate-spin text-muted-foreground" />
+  //       )}
+  //       {row.original.verification}
+  //     </Badge>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "transaction",
+  //   header: () => <div className="text-left">Transaction</div>,
+  //   cell: ({ row }) => (
+  //     <div className="w-4">
+  //         {row.original.transaction}
+  //     </div>
+  //   ),
+  // },
   {
     id: "actions",
     cell: () => (
@@ -266,9 +258,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
 ]
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+function DraggableRow({ row }: { row: Row<Pengguna> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
+    id: row.original.pelanggan?.idPelanggan!,
   })
 
   return (
@@ -291,12 +283,8 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   )
 }
 
-export function DataTableUser({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
+export function DataTableUser() {
+  const [data, setData] = React.useState<Pengguna[]>([])
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -316,7 +304,7 @@ export function DataTableUser({
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
+    () => data?.map(({ pelanggan }) => pelanggan!.idPelanggan!) || [],
     [data]
   )
 
@@ -330,7 +318,7 @@ export function DataTableUser({
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.id.toString(),
+    getRowId: (row) => row.pelanggan!.idPelanggan!.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -343,6 +331,14 @@ export function DataTableUser({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+  })
+
+  const apiService = ApiService.getInstance()
+
+  React.useEffect(() => {
+    apiService.penggunaApi.penggunaGetAllGet().then(res => {
+      setData(res.filter(itm => itm.pelanggan))
+    })
   })
 
   function handleDragEnd(event: DragEndEvent) {
@@ -593,19 +589,19 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: Pengguna }) {
   const isMobile = useIsMobile()
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.userId}
+          {item.pelanggan?.idPelanggan}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.userId}</DrawerTitle>
+        {/* <DrawerHeader className="gap-1">
+          <DrawerTitle>{item.pelanggan?.idPelanggan}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -746,7 +742,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <DrawerClose asChild>
             <Button variant="outline">Done</Button>
           </DrawerClose>
-        </DrawerFooter>
+        </DrawerFooter> */}
       </DrawerContent>
     </Drawer>
   )

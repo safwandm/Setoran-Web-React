@@ -313,9 +313,9 @@ export function DataTableTransaction() {
 
   React.useEffect(() => {
     apiService.transaksiApi.apiTransaksiGet().then(res => {
-      res
+      setData(res)
     })
-  })
+  }, [])
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event

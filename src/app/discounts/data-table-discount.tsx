@@ -108,16 +108,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { Diskon, StatusDiskon } from "@/lib/api-client"
+import { formatDateToLongDate } from "@/lib/utils"
 
-export const schema = z.object({
-  id: z.number(),
-  motorId: z.string(),
-  discountValue: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
-  usage: z.string(),
-  status: z.string(),
-})
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -139,38 +132,38 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+const columns: ColumnDef<Diskon>[] = [
+  // {
+  //   id: "drag",
+  //   header: () => null,
+  //   cell: ({ row }) => <DragHandle id={row.original.idDiskon!} />,
+  // },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <div className="flex items-center justify-center">
+  //       <Checkbox
+  //         checked={
+  //           table.getIsAllPageRowsSelected() ||
+  //           (table.getIsSomePageRowsSelected() && "indeterminate")
+  //         }
+  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //         aria-label="Select all"
+  //       />
+  //     </div>
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div className="flex items-center justify-center">
+  //       <Checkbox
+  //         checked={row.getIsSelected()}
+  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //         aria-label="Select row"
+  //       />
+  //     </div>
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "motorId",
     header: () => <div className="w-full text-left">Motor ID</div>,
@@ -184,7 +177,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-30 text-left">Discount Value</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.discountValue}
+          {row.original.jumlahDiskon}
       </div>
     ),
   },
@@ -193,7 +186,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-50 text text-left">Start Date</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.startDate}
+          {formatDateToLongDate(row.original.tanggalMulai)}
       </div>
     ),
   },
@@ -202,32 +195,30 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="w-full text-left">End Date</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.endDate}
+          {formatDateToLongDate(row.original.tanggalAkhir)}
       </div>
     ),
   },
-  {
-    accessorKey: "usage",
-    header: () => <div className="w-full text-left">Usage</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.usage}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "usage",
+  //   header: () => <div className="w-full text-left">Usage</div>,
+  //   cell: ({ row }) => (
+  //     <div className="w-9">
+  //         {row.original.usage}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "status",
     header: () => <div className="w-full text-left">Status</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Active" ? (
+        {row.original.statusDiskon === StatusDiskon.Aktif ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : row.original.status === "Expired" ?(
+        ) : (
           <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
-        ):(
-          <IconBan />
         )}
-        {row.original.status}
+        {row.original.statusDiskon}
       </Badge>
     ),
   },
@@ -257,9 +248,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
 ]
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+function DraggableRow({ row }: { row: Row<Diskon> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
+    id: row.original.idDiskon!,
   })
 
   return (
@@ -282,12 +273,8 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   )
 }
 
-export function DataTableDiscount({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
+export function DataTableDiscount() {
+  const [data, setData] = React.useState<Diskon[]>([])
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -307,7 +294,7 @@ export function DataTableDiscount({
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
+    () => data?.map(({ idDiskon }) => idDiskon!) || [],
     [data]
   )
 
@@ -321,7 +308,7 @@ export function DataTableDiscount({
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.id.toString(),
+    getRowId: (row) => row.idDiskon!.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -571,19 +558,20 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: Diskon }) {
   const isMobile = useIsMobile()
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.motorId}
+          {item.idMotor}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.motorId}</DrawerTitle>
+        
+        {/* <DrawerHeader className="gap-1">
+          <DrawerTitle>{item.idMotor}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -649,12 +637,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.motorId} />
+              <Input id="header" defaultValue={item.idMotor} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.discountValue}>
+                <Select defaultValue={item.jumlahDiskon?.toString()}>
                   <SelectTrigger id="type" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
@@ -724,7 +712,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <DrawerClose asChild>
             <Button variant="outline">Done</Button>
           </DrawerClose>
-        </DrawerFooter>
+        </DrawerFooter> */}
       </DrawerContent>
     </Drawer>
   )
