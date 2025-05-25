@@ -42,6 +42,10 @@ export interface PenggunaGetAllGetRequest {
     withPelanggan?: boolean;
 }
 
+export interface PenggunaIdGetRequest {
+    id: string;
+}
+
 export interface PenggunaPutRequest {
     postPenggunaDTO?: PostPenggunaDTO;
 }
@@ -233,6 +237,45 @@ export class PenggunaApi extends runtime.BaseAPI {
      */
     async penggunaGetAllGet(requestParameters: PenggunaGetAllGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Pengguna>> {
         const response = await this.penggunaGetAllGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async penggunaIdGetRaw(requestParameters: PenggunaIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pengguna>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling penggunaIdGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/Pengguna/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PenggunaFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async penggunaIdGet(requestParameters: PenggunaIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pengguna> {
+        const response = await this.penggunaIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

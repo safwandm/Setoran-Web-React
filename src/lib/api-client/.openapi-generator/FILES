@@ -55,6 +55,7 @@ models/TargetNavigasi.ts
 models/Transaksi.ts
 models/TwoFactorRequest.ts
 models/TwoFactorResponse.ts
+models/Ulasan.ts
 models/Voucher.ts
 models/index.ts
 runtime.ts

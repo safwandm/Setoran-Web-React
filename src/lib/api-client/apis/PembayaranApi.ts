@@ -84,7 +84,7 @@ export class PembayaranApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiPembayaranIdGetRaw(requestParameters: ApiPembayaranIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiPembayaranIdGetRaw(requestParameters: ApiPembayaranIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pembayaran>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -111,13 +111,14 @@ export class PembayaranApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => PembayaranFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiPembayaranIdGet(requestParameters: ApiPembayaranIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiPembayaranIdGetRaw(requestParameters, initOverrides);
+    async apiPembayaranIdGet(requestParameters: ApiPembayaranIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pembayaran> {
+        const response = await this.apiPembayaranIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

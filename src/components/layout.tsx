@@ -76,6 +76,20 @@ function NotificationItem({
   );
 }
 
+type TitleContextType = {
+  setTitle: (value: string) => void;
+};
+
+const TitleContext = createContext<TitleContextType | undefined>(undefined);
+
+export const usetTitle = () => {
+  const context = useContext(TitleContext);
+  if (!context) {
+    throw new Error("useLoading must be used within a LoadingProvider");
+  }
+  return context.setTitle;
+};
+
 export default function Layout({
   children,
   noLayout = [],
@@ -90,6 +104,7 @@ export default function Layout({
     return <>{children}</>;
   }
 
+  const [title, setTitle] = useState("")
   const [notifications, setNotifications] = useState<GetNotifikasDTO[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [selectedNotification, setSelectedNotification] =
@@ -138,7 +153,7 @@ export default function Layout({
               orientation="vertical"
               className="mx-2 data-[orientation=vertical]:h-4"
             />
-            <h1 className="text-base font-medium">Motors</h1>
+            <h1 className="text-base font-medium">{title}</h1>
             <div className="ml-auto flex items-center gap-2">
               <Drawer direction={isMobile ? "bottom" : "right"}>
                 <DrawerTrigger asChild>
@@ -186,9 +201,11 @@ export default function Layout({
             </div>
           </div>
         </header>
-        <LoadingOverlayContext>
-          {children}
-        </LoadingOverlayContext>
+        <TitleContext.Provider value={{ setTitle: setTitle }}>
+          <LoadingOverlayContext defaultLoadState={false}>
+            {children}
+          </LoadingOverlayContext>
+        </TitleContext.Provider>
         <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
           <DialogContent>
             <DialogHeader>
@@ -223,9 +240,15 @@ export default function Layout({
                 </dd>
               </div>
               <div className="flex flex-col gap-1">
-                <dt className="text-sm font-medium capitalize">Notification Date</dt>
+                <dt className="text-sm font-medium capitalize">
+                  Notification Date
+                </dt>
                 <dd className="text-sm text-muted-foreground">
-                  {selectedNotification?.waktuNotifikasi !== undefined ? formatDateToLongDate(selectedNotification?.waktuNotifikasi) : "-"}
+                  {selectedNotification?.waktuNotifikasi !== undefined
+                    ? formatDateToLongDate(
+                        selectedNotification?.waktuNotifikasi
+                      )
+                    : "-"}
                 </dd>
               </div>
               {selectedNotification?.navigasi == TargetNavigasi.Transaksi ? (
@@ -236,8 +259,16 @@ export default function Layout({
                   {/* <dd className="text-sm text-muted-foreground">
                     {selectedNotification?.deskripsi}
                   </dd> */}
-                  <Link href={`/transactions?idTransaksi=${selectedNotification.dataNavigasi!.idTransaksi}`} onClick={() => window.location.reload()}>
-                    <Button variant="link" className="text-foreground w-fit px-0 text-left">
+                  <Link
+                    href={`/transactions?idTransaksi=${
+                      selectedNotification.dataNavigasi!.idTransaksi
+                    }`}
+                    onClick={() => window.location.reload()}
+                  >
+                    <Button
+                      variant="link"
+                      className="text-foreground w-fit px-0 text-left"
+                    >
                       {selectedNotification.dataNavigasi!.idTransaksi}
                     </Button>
                   </Link>

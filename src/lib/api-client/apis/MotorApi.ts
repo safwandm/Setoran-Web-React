@@ -18,6 +18,7 @@ import type {
   Motor,
   MotorForm,
   PutMotorDTO,
+  Ulasan,
 } from '../models/index';
 import {
     MotorFromJSON,
@@ -26,6 +27,8 @@ import {
     MotorFormToJSON,
     PutMotorDTOFromJSON,
     PutMotorDTOToJSON,
+    UlasanFromJSON,
+    UlasanToJSON,
 } from '../models/index';
 
 export interface ApiMotorGetRequest {
@@ -107,7 +110,7 @@ export class MotorApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiMotorIdGetRaw(requestParameters: ApiMotorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiMotorIdGetRaw(requestParameters: ApiMotorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Motor>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -134,13 +137,14 @@ export class MotorApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => MotorFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiMotorIdGet(requestParameters: ApiMotorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorIdGetRaw(requestParameters, initOverrides);
+    async apiMotorIdGet(requestParameters: ApiMotorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Motor> {
+        const response = await this.apiMotorIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
@@ -186,7 +190,7 @@ export class MotorApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiMotorIdUlasansGetRaw(requestParameters: ApiMotorIdUlasansGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiMotorIdUlasansGetRaw(requestParameters: ApiMotorIdUlasansGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Ulasan>>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -213,13 +217,14 @@ export class MotorApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UlasanFromJSON));
     }
 
     /**
      */
-    async apiMotorIdUlasansGet(requestParameters: ApiMotorIdUlasansGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorIdUlasansGetRaw(requestParameters, initOverrides);
+    async apiMotorIdUlasansGet(requestParameters: ApiMotorIdUlasansGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Ulasan>> {
+        const response = await this.apiMotorIdUlasansGetRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

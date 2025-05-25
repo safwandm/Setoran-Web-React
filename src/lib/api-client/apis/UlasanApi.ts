@@ -16,10 +16,13 @@
 import * as runtime from '../runtime';
 import type {
   PostUlasanDTO,
+  Ulasan,
 } from '../models/index';
 import {
     PostUlasanDTOFromJSON,
     PostUlasanDTOToJSON,
+    UlasanFromJSON,
+    UlasanToJSON,
 } from '../models/index';
 
 export interface ApiUlasanIdGetRequest {
@@ -37,7 +40,7 @@ export class UlasanApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiUlasanGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiUlasanGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Ulasan>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -57,18 +60,19 @@ export class UlasanApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UlasanFromJSON));
     }
 
     /**
      */
-    async apiUlasanGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiUlasanGetRaw(initOverrides);
+    async apiUlasanGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Ulasan>> {
+        const response = await this.apiUlasanGetRaw(initOverrides);
+        return await response.value();
     }
 
     /**
      */
-    async apiUlasanIdGetRaw(requestParameters: ApiUlasanIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiUlasanIdGetRaw(requestParameters: ApiUlasanIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Ulasan>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -95,13 +99,14 @@ export class UlasanApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => UlasanFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiUlasanIdGet(requestParameters: ApiUlasanIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiUlasanIdGetRaw(requestParameters, initOverrides);
+    async apiUlasanIdGet(requestParameters: ApiUlasanIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Ulasan> {
+        const response = await this.apiUlasanIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

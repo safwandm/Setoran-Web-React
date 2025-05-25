@@ -42,4 +42,5 @@ export * from './TargetNavigasi';
 export * from './Transaksi';
 export * from './TwoFactorRequest';
 export * from './TwoFactorResponse';
+export * from './Ulasan';
 export * from './Voucher';

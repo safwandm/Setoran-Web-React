@@ -16,10 +16,13 @@
 import * as runtime from '../runtime';
 import type {
   PostTransaksiDTO,
+  Transaksi,
 } from '../models/index';
 import {
     PostTransaksiDTOFromJSON,
     PostTransaksiDTOToJSON,
+    TransaksiFromJSON,
+    TransaksiToJSON,
 } from '../models/index';
 
 export interface ApiTransaksiGetRequest {
@@ -46,7 +49,7 @@ export class TransaksiApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiTransaksiGetRaw(requestParameters: ApiTransaksiGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiTransaksiGetRaw(requestParameters: ApiTransaksiGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Transaksi>>> {
         const queryParameters: any = {};
 
         if (requestParameters['query'] != null) {
@@ -70,18 +73,19 @@ export class TransaksiApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TransaksiFromJSON));
     }
 
     /**
      */
-    async apiTransaksiGet(requestParameters: ApiTransaksiGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiTransaksiGetRaw(requestParameters, initOverrides);
+    async apiTransaksiGet(requestParameters: ApiTransaksiGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Transaksi>> {
+        const response = await this.apiTransaksiGetRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
      */
-    async apiTransaksiIdGetRaw(requestParameters: ApiTransaksiIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiTransaksiIdGetRaw(requestParameters: ApiTransaksiIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Transaksi>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -108,13 +112,14 @@ export class TransaksiApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => TransaksiFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiTransaksiIdGet(requestParameters: ApiTransaksiIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiTransaksiIdGetRaw(requestParameters, initOverrides);
+    async apiTransaksiIdGet(requestParameters: ApiTransaksiIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Transaksi> {
+        const response = await this.apiTransaksiIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
