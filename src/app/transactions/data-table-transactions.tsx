@@ -91,9 +91,121 @@ import {
   Tabs,
   TabsContent,
 } from "@/components/ui/tabs"
-import { Transaksi } from "@/lib/api-client"
-import { formatDateToLongDate } from "@/lib/utils"
-import ApiService from "@/lib/api-client/wrapper"
+
+export const schema = z.object({
+  id: z.number(),
+  transactionId: z.string(),
+  userName: z.string(),
+  returnDate: z.string(),
+  motorName: z.string(),
+  rentalDate: z.string(),
+  status: z.string(),
+})
+
+// Add this component after your imports and before other components
+function EditDrawerContent({ item }: { item: z.infer<typeof schema>  }) {
+  const isMobile = useIsMobile()
+  const [formData, setFormData] = React.useState({
+    userName: item.userName,
+    motorName: item.motorName,
+    rentalDate: item.rentalDate,
+    returnDate: item.returnDate,
+    status: item.status
+  })
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleSave = () => {
+    // Add your save logic here
+    console.log('Saving changes:', formData)
+    // You can add API call here
+  }
+
+  return (
+    <Drawer direction={isMobile ? "bottom" : "right"}>
+      <DrawerTrigger asChild>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Edit
+        </DropdownMenuItem>
+      </DrawerTrigger>
+      <DrawerContent className="h-[85vh] sm:max-w-[500px]">
+        <DrawerHeader>
+          <DrawerTitle>Edit Transaction</DrawerTitle>
+          <DrawerDescription>
+            Make changes to transaction ID: {item.transactionId}
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="userName">User Name</Label>
+              <Input 
+                id="userName" 
+                value={formData.userName}
+                onChange={(e) => handleChange('userName', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="motorName">Motor Name</Label>
+              <Input 
+                id="motorName" 
+                value={formData.motorName}
+                onChange={(e) => handleChange('motorName', e.target.value)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="rentalDate">Rental Date</Label>
+                <Input 
+                  id="rentalDate" 
+                  value={formData.rentalDate}
+                  onChange={(e) => handleChange('rentalDate', e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="returnDate">Return Date</Label>
+                <Input 
+                  id="returnDate" 
+                  value={formData.returnDate}
+                  onChange={(e) => handleChange('returnDate', e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select 
+                value={formData.status}
+                onValueChange={(value) => handleChange('status', value)}
+              >
+                <SelectTrigger id="status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Success">Success</SelectItem>
+                  <SelectItem value="Failed">Failed</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+        <DrawerFooter>
+          <Button onClick={handleSave}>Save changes</Button>
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+
+// Then update your actions column in the columns definition
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -115,38 +227,38 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<Transaksi>[] = [
-  // {
-  //   id: "drag",
-  //   header: () => null,
-  //   cell: ({ row }) => <DragHandle id={row.original.idTransaksi!} />,
-  // },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
+const columns: ColumnDef<z.infer<typeof schema>>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
+  {
+    id: "select",
+    header: ({ table }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "transactionId",
     header: () => <div className="w-30 text-left">Transaction ID</div>,
@@ -163,7 +275,7 @@ const columns: ColumnDef<Transaksi>[] = [
   
     cell: ({ row }) => (
       <div className="w-4">
-          {row.original.pelanggan?.pengguna?.nama}
+          {row.original.userName}
       </div>
     ),
   },
@@ -172,7 +284,7 @@ const columns: ColumnDef<Transaksi>[] = [
     header: () => <div className="w-30 text-left">Motor Name</div>,
     cell: ({ row }) => (
       <div className="w-8">
-          {row.original.motor?.model}
+          {row.original.motorName}
       </div>
     ),
   },
@@ -181,7 +293,7 @@ const columns: ColumnDef<Transaksi>[] = [
     header: () => <div className="w-30 text-left">Rental Date</div>,
     cell: ({ row }) => (
       <div className="w-8">
-          {formatDateToLongDate(row.original.tanggalMulai!)}
+          {row.original.rentalDate}
       </div>
     ),
   },
@@ -190,7 +302,7 @@ const columns: ColumnDef<Transaksi>[] = [
     header: () => <div className="w-30 text-left">Return Date</div>,
     cell: ({ row }) => (
       <div className="w-8">
-          {formatDateToLongDate(row.original.tanggalSelesai!)}
+          {row.original.returnDate}
       </div>
     ),
   },
@@ -199,9 +311,9 @@ const columns: ColumnDef<Transaksi>[] = [
     header: () => <div className="w-full text text-left">Status</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "finished" ? (
+        {row.original.status === "Success" ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : row.original.status === "created" ? (
+        ) : row.original.status === "Failed" ? (
           <IconArrowsCross className="dark:fill-red-400" />
         ) : (
           <IconLoader className="animate-spin text-muted-foreground" />
@@ -210,9 +322,10 @@ const columns: ColumnDef<Transaksi>[] = [
       </Badge>
     ),
   },
-  {
-    id: "actions",
-    cell: () => (
+  // Replace the existing actions column
+{
+  id: "actions",
+  cell: ({ row }) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -220,23 +333,31 @@ const columns: ColumnDef<Transaksi>[] = [
             className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
             size="icon"
           >
-            <IconDotsVertical />
+            <IconDotsVertical className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <EditDrawerContent item={row.original} />
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          <DropdownMenuItem 
+            variant="destructive"
+            onClick={() => {
+              // Add your delete logic here
+              console.log('Delete:', row.original)
+            }}
+          >
+            Delete
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
   },
 ]
 
-function DraggableRow({ row }: { row: Row<Transaksi> }) {
+function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.idTransaksi!,
+    id: row.original.id,
   })
 
   return (
@@ -259,8 +380,12 @@ function DraggableRow({ row }: { row: Row<Transaksi> }) {
   )
 }
 
-export function DataTableTransaction() {
-  const [data, setData] = React.useState<Transaksi[]>([])
+export function DataTableTransaction({
+  data: initialData,
+}: {
+  data: z.infer<typeof schema>[]
+}) {
+  const [data, setData] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -280,7 +405,7 @@ export function DataTableTransaction() {
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ idTransaksi }) => idTransaksi!) || [],
+    () => data?.map(({ id }) => id) || [],
     [data]
   )
 
@@ -294,7 +419,7 @@ export function DataTableTransaction() {
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.idTransaksi!.toString(),
+    getRowId: (row) => row.id.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -308,14 +433,6 @@ export function DataTableTransaction() {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
-
-  const apiService = ApiService.getInstance()
-
-  React.useEffect(() => {
-    apiService.transaksiApi.apiTransaksiGet().then(res => {
-      setData(res)
-    })
-  }, [])
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
@@ -493,14 +610,15 @@ export function DataTableTransaction() {
     </Tabs>
   )
 }
-function TableCellViewer({ item }: { item: Transaksi }) {
+
+function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile()
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.idTransaksi}
+          {item.transactionId}
         </Button>
       </DrawerTrigger>
       <DrawerContent>

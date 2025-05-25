@@ -56,7 +56,9 @@ import {
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { toast } from "sonner"
 import { z } from "zod"
-
+import { NextResponse } from 'next/server'
+// import fs from 'fs/promises'
+import path from 'path'
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -109,9 +111,49 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { Pelanggan, Pengguna } from "@/lib/api-client"
-import ApiService from "@/lib/api-client/wrapper"
 
+export const schema = z.object({
+  id: z.number(),
+  userId: z.string(),
+  userName: z.string(),
+  status: z.string(),
+  registration: z.string(),
+  verification: z.string(),
+  transaction: z.string(),
+})
+
+const DATA_FILE = path.join(process.cwd(), 'data/users.json')
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const id = params.id
+    const updatedUser = await request.json()
+
+    // Read current data
+    const data = await fs.readFile(DATA_FILE, 'utf-8')
+    const users = JSON.parse(data)
+
+    // Update user in the array
+    const updatedUsers = users.map((user: any) => 
+      user.id === parseInt(id) ? updatedUser : user
+    )
+
+    // Write back to file
+    await fs.writeFile(DATA_FILE, JSON.stringify(updatedUsers, null, 2))
+
+    return NextResponse.json(updatedUser)
+
+  } catch (error) {
+    console.error('Error updating user:', error)
+    return NextResponse.json(
+      { error: 'Failed to update user' },
+      { status: 500 }
+    )
+  }
+}
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
@@ -132,135 +174,9 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<Pengguna>[] = [
-  // {
-  //   id: "drag",
-  //   header: () => null,
-  //   cell: ({ row }) => <DragHandle id={row.original.pelanggan?.idPelanggan!} />,
-  // },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
-  {
-    accessorKey: "userId",
-    header: "User ID",
-    cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "userName",
-    header: "Name",
-  
-    cell: ({ row }) => (
-      <div className="w-">
-          {row.original.userName}
-      </div>
-    ),
-  },
-  // {
-  //   accessorKey: "status",
-  //   header: () => <div className="w-0.5 text-left">Status</div>,
-  //   cell: ({ row }) => (
-  //     <Badge variant="outline" className="text-muted-foreground px-1.5">
-  //       {row.original.status === "Active" ? (
-  //         <IconCircle className="fill-green-500" />
-  //       ) : row.original.status === "Blocked" ? (
-  //         <IconBan className="dark:fill-red-400" />
-  //       ) : (
-  //         <IconCircle/>
-  //       )}
-  //       {row.original.status}
-  //     </Badge>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "registration",
-  //   header: () => <div className="w-full text-left">Registration </div>,
-  //   cell: ({ row }) => (
-  //     <div className="w-9">
-  //         {row.original.registration}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "verification",
-  //   header: () => <div className="w-10 text-left">Verification</div>,
-  //   cell: ({ row }) => (
-  //     <Badge variant="outline" className="text-muted-foreground px-1.5">
-  //       {row.original.verification === "Verified" ? (
-  //         <IconCircleCheckFilled className="fill-blue-500 dark:fill-blue-400" />
-  //       ) : row.original.verification === "Canceled" ? (
-  //         <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
-  //       ) : (
-  //         <IconLoader className="animate-spin text-muted-foreground" />
-  //       )}
-  //       {row.original.verification}
-  //     </Badge>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "transaction",
-  //   header: () => <div className="text-left">Transaction</div>,
-  //   cell: ({ row }) => (
-  //     <div className="w-4">
-  //         {row.original.transaction}
-  //     </div>
-  //   ),
-  // },
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
-]
-
-function DraggableRow({ row }: { row: Row<Pengguna> }) {
+function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.pelanggan?.idPelanggan!,
+    id: row.original.id,
   })
 
   return (
@@ -283,8 +199,12 @@ function DraggableRow({ row }: { row: Row<Pengguna> }) {
   )
 }
 
-export function DataTableUser() {
-  const [data, setData] = React.useState<Pengguna[]>([])
+export function DataTableUser({
+  data: initialData,
+}: {
+  data: z.infer<typeof schema>[]
+}) {
+  const [data, setData] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -304,9 +224,162 @@ export function DataTableUser() {
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ pelanggan }) => pelanggan!.idPelanggan!) || [],
+    () => data?.map(({ id }) => id) || [],
     [data]
   )
+
+  const columns: ColumnDef<z.infer<typeof schema>>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
+  {
+    id: "select",
+    header: ({ table }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "userId",
+    header: "User ID",
+    cell: ({ row }) => {
+      return <TableCellViewer item={row.original} />
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "userName",
+    header: "Name",
+  
+    cell: ({ row }) => (
+      <div className="w-">
+          {row.original.userName}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: () => <div className="w-0.5 text-left">Status</div>,
+    cell: ({ row }) => (
+      <Badge variant="outline" className="text-muted-foreground px-1.5">
+        {row.original.status === "Active" ? (
+          <IconCircle className="fill-green-500" />
+        ) : row.original.status === "Blocked" ? (
+          <IconBan className="dark:fill-red-400" />
+        ) : (
+          <IconCircle/>
+        )}
+        {row.original.status}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: "registration",
+    header: () => <div className="w-full text-left">Registration </div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.registration}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "verification",
+    header: () => <div className="w-10 text-left">Verification</div>,
+    cell: ({ row }) => (
+      <Badge variant="outline" className="text-muted-foreground px-1.5">
+        {row.original.verification === "Verified" ? (
+          <IconCircleCheckFilled className="fill-blue-500 dark:fill-blue-400" />
+        ) : row.original.verification === "Canceled" ? (
+          <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
+        ) : (
+          <IconLoader className="animate-spin text-muted-foreground" />
+        )}
+        {row.original.verification}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: "transaction",
+    header: () => <div className="text-left">Transaction</div>,
+    cell: ({ row }) => (
+      <div className="w-4">
+          {row.original.transaction}
+      </div>
+    ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+            size="icon"
+          >
+            <IconDotsVertical />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-32">
+          <EditDrawerContent 
+            item={row.original}
+            onSave={handleUpdateUser}
+          />
+          <DropdownMenuSeparator />
+          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
+  },
+]
+
+  const handleUpdateUser = async (updatedUser: z.infer<typeof schema>) => {
+    try {
+      const response = await fetch(`/api/users/${updatedUser.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser)
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update user')
+      }
+
+      setData(currentData => 
+        currentData.map(item => 
+          item.id === updatedUser.id ? updatedUser : item
+        )
+      )
+      toast.success('User updated successfully')
+    } catch (error) {
+      console.error('Error updating user:', error) 
+      toast.error('Failed to update user')
+    }
+  }
 
   const table = useReactTable({
     data,
@@ -318,7 +391,7 @@ export function DataTableUser() {
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.pelanggan!.idPelanggan!.toString(),
+    getRowId: (row) => row.id.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -332,14 +405,6 @@ export function DataTableUser() {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
-
-  const apiService = ApiService.getInstance()
-
-  React.useEffect(() => {
-    apiService.penggunaApi.penggunaGetAllGet().then(res => {
-      setData(res.filter(itm => itm.pelanggan))
-    })
-  }, [])
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
@@ -569,6 +634,161 @@ export function DataTableUser() {
   )
 }
 
+function EditDrawerContent(
+  { 
+    item, 
+    onSave 
+  }: { 
+    item: z.infer<typeof schema>
+    onSave?: (updatedData: z.infer<typeof schema>) => void
+  }
+) {
+  const isMobile = useIsMobile()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [formData, setFormData] = React.useState({
+    userName: item.userName,
+    status: item.status,
+    registration: item.registration,
+    verification: item.verification,
+    transaction: item.transaction
+  })
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true)
+
+      const updatedUser = {
+        ...item,
+        ...formData
+      }
+
+      const response = await fetch(`/api/users/${item.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser)
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update user')
+      }
+
+      onSave?.(updatedUser)
+      toast.success('User updated successfully')
+      
+    } catch (error) {
+      console.error('Error updating user:', error)
+      toast.error('Failed to update user')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Drawer direction={isMobile ? "bottom" : "right"}>
+      <DrawerTrigger asChild>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Edit
+        </DropdownMenuItem>
+      </DrawerTrigger>
+      <DrawerContent className="h-[85vh] sm:max-w-[500px]">
+        <DrawerHeader>
+          <DrawerTitle>Edit User</DrawerTitle>
+          <DrawerDescription>
+            Make changes to user ID: {item.userId}
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="userName">User Name</Label>
+              <Input 
+                id="userName" 
+                value={formData.userName}
+                onChange={(e) => handleChange('userName', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select 
+                value={formData.status}
+                onValueChange={(value) => handleChange('status', value)}
+              >
+                <SelectTrigger id="status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="In Progress">In Progress</SelectItem>
+                  <SelectItem value="Blocked">Blocked</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="registration">Registration Date</Label>
+              <Input 
+                id="registration" 
+                value={formData.registration}
+                onChange={(e) => handleChange('registration', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="verification">Verification Status</Label>
+              <Select 
+                value={formData.verification}
+                onValueChange={(value) => handleChange('verification', value)}
+              >
+                <SelectTrigger id="verification">
+                  <SelectValue placeholder="Select verification status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Verified">Verified</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Canceled">Canceled</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="transaction">Transaction</Label>
+              <Input 
+                id="transaction" 
+                value={formData.transaction}
+                onChange={(e) => handleChange('transaction', e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+        <DrawerFooter>
+          <Button 
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <IconLoader className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Save changes'
+            )}
+          </Button>
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
   { month: "February", desktop: 305, mobile: 200 },
@@ -589,19 +809,19 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-function TableCellViewer({ item }: { item: Pengguna }) {
+function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile()
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.pelanggan?.idPelanggan}
+          {item.userId}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        {/* <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.pelanggan?.idPelanggan}</DrawerTitle>
+        <DrawerHeader className="gap-1">
+          <DrawerTitle>{item.userId}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -742,7 +962,7 @@ function TableCellViewer({ item }: { item: Pengguna }) {
           <DrawerClose asChild>
             <Button variant="outline">Done</Button>
           </DrawerClose>
-        </DrawerFooter> */}
+        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   )

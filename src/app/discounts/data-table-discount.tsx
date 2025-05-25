@@ -108,9 +108,16 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { Diskon, StatusDiskon } from "@/lib/api-client"
-import { formatDateToLongDate } from "@/lib/utils"
 
+export const schema = z.object({
+  id: z.number(),
+  motorId: z.string(),
+  discountValue: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  usage: z.string(),
+  status: z.string(),
+})
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -132,125 +139,9 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<Diskon>[] = [
-  // {
-  //   id: "drag",
-  //   header: () => null,
-  //   cell: ({ row }) => <DragHandle id={row.original.idDiskon!} />,
-  // },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
-  {
-    accessorKey: "motorId",
-    header: () => <div className="w-full text-left">Motor ID</div>,
-    cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "discountValue",
-    header: () => <div className="w-30 text-left">Discount Value</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.jumlahDiskon}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "startDate",
-    header: () => <div className="w-50 text text-left">Start Date</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {formatDateToLongDate(row.original.tanggalMulai)}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "endDate",
-    header: () => <div className="w-full text-left">End Date</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {formatDateToLongDate(row.original.tanggalAkhir)}
-      </div>
-    ),
-  },
-  // {
-  //   accessorKey: "usage",
-  //   header: () => <div className="w-full text-left">Usage</div>,
-  //   cell: ({ row }) => (
-  //     <div className="w-9">
-  //         {row.original.usage}
-  //     </div>
-  //   ),
-  // },
-  {
-    accessorKey: "status",
-    header: () => <div className="w-full text-left">Status</div>,
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.statusDiskon === StatusDiskon.Aktif ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : (
-          <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
-        )}
-        {row.original.statusDiskon}
-      </Badge>
-    ),
-  },
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
-]
-
-function DraggableRow({ row }: { row: Row<Diskon> }) {
+function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.idDiskon!,
+    id: row.original.id,
   })
 
   return (
@@ -273,8 +164,154 @@ function DraggableRow({ row }: { row: Row<Diskon> }) {
   )
 }
 
-export function DataTableDiscount() {
-  const [data, setData] = React.useState<Diskon[]>([])
+function EditDrawerContent(
+  { 
+    item, 
+    onSave 
+  }: { 
+    item: z.infer<typeof schema>
+    onSave?: (updatedData: z.infer<typeof schema>) => void
+  }
+) {
+  const isMobile = useIsMobile()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [formData, setFormData] = React.useState({
+    motorId: item.motorId,
+    discountValue: item.discountValue,
+    startDate: item.startDate,
+    endDate: item.endDate,
+    usage: item.usage,
+    status: item.status
+  })
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true)
+      const updatedDiscount = {
+        ...item,
+        ...formData
+      }
+      onSave?.(updatedDiscount)
+      toast.success('Discount updated successfully')
+    } catch (error) {
+      toast.error('Failed to update discount')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Drawer direction={isMobile ? "bottom" : "right"}>
+      <DrawerTrigger asChild>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Edit
+        </DropdownMenuItem>
+      </DrawerTrigger>
+      <DrawerContent className="h-[85vh] sm:max-w-[500px]">
+        <DrawerHeader>
+          <DrawerTitle>Edit Discount</DrawerTitle>
+          <DrawerDescription>
+            Make changes to discount for Motor ID: {item.motorId}
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="motorId">Motor ID</Label>
+              <Input 
+                id="motorId"
+                value={formData.motorId}
+                onChange={(e) => handleChange('motorId', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="discountValue">Discount Value</Label>
+              <Input
+                id="discountValue"
+                value={formData.discountValue}
+                onChange={(e) => handleChange('discountValue', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={formData.startDate}
+                onChange={(e) => handleChange('startDate', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={formData.endDate}
+                onChange={(e) => handleChange('endDate', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="usage">Usage</Label>
+              <Input
+                id="usage"
+                value={formData.usage}
+                onChange={(e) => handleChange('usage', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value) => handleChange('status', value)}
+              >
+                <SelectTrigger id="status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Expired">Expired</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+        <DrawerFooter>
+          <Button 
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <IconLoader className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Save changes'
+            )}
+          </Button>
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+
+export function DataTableDiscount({
+  data: initialData,
+}: {
+  data: z.infer<typeof schema>[]
+}) {
+  const [data, setData] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -294,9 +331,142 @@ export function DataTableDiscount() {
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ idDiskon }) => idDiskon!) || [],
+    () => data?.map(({ id }) => id) || [],
     [data]
   )
+
+  const handleUpdateDiscount = async (updatedDiscount: z.infer<typeof schema>) => {
+    try {
+      setData(currentData => 
+        currentData.map(item => 
+          item.id === updatedDiscount.id ? updatedDiscount : item
+        )
+      )
+      toast.success('Discount updated successfully')
+    } catch (error) {
+      console.error('Error updating discount:', error)
+      toast.error('Failed to update discount')
+    }
+  }
+
+  const columns: ColumnDef<z.infer<typeof schema>>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
+  {
+    id: "select",
+    header: ({ table }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "motorId",
+    header: () => <div className="w-full text-left">Motor ID</div>,
+    cell: ({ row }) => {
+      return <TableCellViewer item={row.original} />
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "discountValue",
+    header: () => <div className="w-30 text-left">Discount Value</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.discountValue}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "startDate",
+    header: () => <div className="w-50 text text-left">Start Date</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.startDate}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "endDate",
+    header: () => <div className="w-full text-left">End Date</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.endDate}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "usage",
+    header: () => <div className="w-full text-left">Usage</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.usage}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: () => <div className="w-full text-left">Status</div>,
+    cell: ({ row }) => (
+      <Badge variant="outline" className="text-muted-foreground px-1.5">
+        {row.original.status === "Active" ? (
+          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+        ) : row.original.status === "Expired" ?(
+          <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
+        ):(
+          <IconBan />
+        )}
+        {row.original.status}
+      </Badge>
+    ),
+  },
+   {
+      id: "actions",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <EditDrawerContent 
+              item={row.original}
+              onSave={handleUpdateDiscount}
+            />
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+]
 
   const table = useReactTable({
     data,
@@ -308,7 +478,7 @@ export function DataTableDiscount() {
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.idDiskon!.toString(),
+    getRowId: (row) => row.id.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -558,20 +728,19 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-function TableCellViewer({ item }: { item: Diskon }) {
+function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile()
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.idMotor}
+          {item.motorId}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        
-        {/* <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.idMotor}</DrawerTitle>
+        <DrawerHeader className="gap-1">
+          <DrawerTitle>{item.motorId}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -637,12 +806,12 @@ function TableCellViewer({ item }: { item: Diskon }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.idMotor} />
+              <Input id="header" defaultValue={item.motorId} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.jumlahDiskon?.toString()}>
+                <Select defaultValue={item.discountValue}>
                   <SelectTrigger id="type" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
@@ -712,7 +881,7 @@ function TableCellViewer({ item }: { item: Diskon }) {
           <DrawerClose asChild>
             <Button variant="outline">Done</Button>
           </DrawerClose>
-        </DrawerFooter> */}
+        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   )

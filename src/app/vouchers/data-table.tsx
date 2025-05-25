@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import * as React from "react";
+import * as React from "react"
 import {
   DndContext,
   KeyboardSensor,
@@ -11,15 +11,15 @@ import {
   useSensors,
   type DragEndEvent,
   type UniqueIdentifier,
-} from "@dnd-kit/core";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+} from "@dnd-kit/core"
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import {
   SortableContext,
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import {
   IconChevronDown,
   IconSearch,
@@ -36,7 +36,7 @@ import {
   IconBan,
   IconPlus,
   IconTrendingUp,
-} from "@tabler/icons-react";
+} from "@tabler/icons-react"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -51,21 +51,21 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import { toast } from "sonner";
-import { z } from "zod";
+} from "@tanstack/react-table"
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { toast } from "sonner"
+import { z } from "zod"
 
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/components/ui/chart"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Drawer,
   DrawerClose,
@@ -75,7 +75,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
+} from "@/components/ui/drawer"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -83,17 +83,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+} from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
 import {
   Table,
   TableBody,
@@ -101,17 +101,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/components/ui/table"
 import {
-  StatusVoucher,
-  Voucher,
-  VoucherFilteredGetRequest,
-} from "@/lib/api-client";
-import { formatDateToLongDate } from "@/lib/utils";
-import ApiService from "@/lib/api-client/wrapper";
-import { LoadingOverlay } from "@/components/loading-overlay";
-import { TambahVoucherDialog } from "./voucher-dialog";
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
 
 export const schema = z.object({
   id: z.number(),
@@ -121,13 +117,13 @@ export const schema = z.object({
   endDate: z.string(),
   usage: z.string(),
   status: z.string(),
-});
+})
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
     id,
-  });
+  })
 
   return (
     <Button
@@ -140,13 +136,13 @@ function DragHandle({ id }: { id: number }) {
       <IconGripVertical className="text-muted-foreground size-3" />
       <span className="sr-only">Drag to reorder</span>
     </Button>
-  );
+  )
 }
 
-function DraggableRow({ row }: { row: Row<Voucher> }) {
+function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.idVoucher!,
-  });
+    id: row.original.id,
+  })
 
   return (
     <TableRow
@@ -165,132 +161,144 @@ function DraggableRow({ row }: { row: Row<Voucher> }) {
         </TableCell>
       ))}
     </TableRow>
-  );
+  )
 }
 
-export function DataTableVoucher({}) {
-  const [loading, setLoading] = React.useState(true);
-  const [data, setData] = React.useState<Voucher[]>([]);
-  const [rowSelection, setRowSelection] = React.useState({});
+export function DataTableVoucher({
+  data: initialData,
+}: {
+  data: z.infer<typeof schema>[]
+}) {
+  const [data, setData] = React.useState(() => initialData)
+  const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+    React.useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  );
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  )
+  const [sorting, setSorting] = React.useState<SortingState>([])
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
-  });
-  const [query, setQuery] = React.useState<VoucherFilteredGetRequest>({
-    search: "",
-    status: undefined,
-  });
-
-  const sortableId = React.useId();
+  })
+  const sortableId = React.useId()
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {})
-  );
+  )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ idVoucher }) => idVoucher!) || [],
+    () => data?.map(({ id }) => id) || [],
     [data]
-  );
+  )
 
-  const apiService = ApiService.getInstance();
-  const controller = new AbortController();
+  const handleUpdateVoucher = async (updatedVoucher: z.infer<typeof schema>) => {
+    try {
+      setData(currentData => 
+        currentData.map(item => 
+          item.id === updatedVoucher.id ? updatedVoucher : item
+        )
+      )
+    } catch (error) {
+      console.error('Error updating voucher:', error)
+      toast.error('Failed to update voucher')
+    }
+  }
 
-  const columns: ColumnDef<Voucher>[] = [
-    // {
-    //   id: "drag",
-    //   header: () => null,
-    //   cell: ({ row }) => <DragHandle id={row.original.idVoucher!} />,
-    // },
-    // {
-    //   id: "select",
-    //   header: ({ table }) => (
-    //     <div className="flex items-center justify-center">
-    //       <Checkbox
-    //         checked={
-    //           table.getIsAllPageRowsSelected() ||
-    //           (table.getIsSomePageRowsSelected() && "indeterminate")
-    //         }
-    //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //         aria-label="Select all"
-    //       />
-    //     </div>
-    //   ),
-    //   cell: ({ row }) => (
-    //     <div className="flex items-center justify-center">
-    //       <Checkbox
-    //         checked={row.getIsSelected()}
-    //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //         aria-label="Select row"
-    //       />
-    //     </div>
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
-    {
-      accessorKey: "voucherCode",
-      header: () => <div className="w-full text-left">Voucher Code</div>,
-      cell: ({ row }) => {
-        return <TableCellViewer item={row.original} />;
-      },
-      enableHiding: false,
+  const columns: ColumnDef<z.infer<typeof schema>>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
+  {
+    id: "select",
+    header: ({ table }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "voucherCode",
+    header: () => <div className="w-full text-left">Voucher Code</div>,
+    cell: ({ row }) => {
+      return <TableCellViewer item={row.original} />
     },
-    {
-      accessorKey: "vouhcerName",
-      header: () => <div className="w-30 text-left">Voucher Name</div>,
-      cell: ({ row }) => <div className="w-9">{row.original.namaVoucher}</div>,
-    },
-    {
-      accessorKey: "startDate",
-      header: () => <div className="w-50 text text-left">Start Date</div>,
-      cell: ({ row }) => (
-        <div className="w-9">
-          {formatDateToLongDate(row.original.tanggalMulai!)}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "endDate",
-      header: () => <div className="w-full text-left">End Date</div>,
-      cell: ({ row }) => (
-        <div className="w-9">
-          {formatDateToLongDate(row.original.tanggalAkhir!)}
-        </div>
-      ),
-    },
-    // {
-    //   accessorKey: "usage",
-    //   header: () => <div className="w-full text-left">Usage</div>,
-    //   cell: ({ row }) => (
-    //     <div className="w-9">
-    //         {row.original.usage}
-    //     </div>
-    //   ),
-    // },
-    {
-      accessorKey: "status",
-      header: () => <div className="w-full text-left">Status</div>,
-      cell: ({ row }) => (
-        <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.statusVoucher === StatusVoucher.Aktif ? (
-            <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-          ) : row.original.statusVoucher === StatusVoucher.NonAktif ? (
-            <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
-          ) : (
-            <IconBan />
-          )}
-          {row.original.statusVoucher?.toString()}
-        </Badge>
-      ),
-    },
-    {
+    enableHiding: false,
+  },
+  {
+    accessorKey: "vouhcerName",
+    header: () => <div className="w-30 text-left">Voucher Name</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.voucherName}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "startDate",
+    header: () => <div className="w-50 text text-left">Start Date</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.startDate}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "endDate",
+    header: () => <div className="w-full text-left">End Date</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.endDate}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "usage",
+    header: () => <div className="w-full text-left">Usage</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.usage}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: () => <div className="w-full text-left">Status</div>,
+    cell: ({ row }) => (
+      <Badge variant="outline" className="text-muted-foreground px-1.5">
+        {row.original.status === "Active" ? (
+          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+        ) : row.original.status === "Expired" ?(
+          <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
+        ):(
+          <IconBan />
+        )}
+        {row.original.status}
+      </Badge>
+    ),
+  },
+  {
       id: "actions",
       cell: ({ row }) => (
         <DropdownMenu>
@@ -305,33 +313,17 @@ export function DataTableVoucher({}) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <EditDrawerContent 
+              item={row.original}
+              onSave={handleUpdateVoucher}
+            />
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() => {
-                setLoading(true);
-                ApiService.getInstance()
-                  .voucherApi.voucherGenericIdDelete({
-                    id: row.original.idVoucher!,
-                  })
-                  .then(() => {
-                    toast("Voucher deleted");
-                    refresh()
-                  })
-                  .catch(() => {
-                    setLoading(false);
-                    toast.error("Failed to delete Voucher");
-                  });
-              }}
-            >
-              Delete
-            </DropdownMenuItem>
+            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
     },
-  ];
+]
 
   const table = useReactTable({
     data,
@@ -343,7 +335,7 @@ export function DataTableVoucher({}) {
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.idVoucher!.toString(),
+    getRowId: (row) => row.id.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -356,30 +348,16 @@ export function DataTableVoucher({}) {
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  });
-
-  React.useEffect(() => {
-    refresh();
-  }, [query]);
-
-  function refresh() {
-    setLoading(true);
-    apiService.voucherApi
-      .voucherFilteredGet(query, { signal: controller.signal })
-      .then((res) => {
-        setData(res);
-        setLoading(false);
-      });
-  }
+  })
 
   function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
+    const { active, over } = event
     if (active && over && active.id !== over.id) {
       setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id);
-        const newIndex = dataIds.indexOf(over.id);
-        return arrayMove(data, oldIndex, newIndex);
-      });
+        const oldIndex = dataIds.indexOf(active.id)
+        const newIndex = dataIds.indexOf(over.id)
+        return arrayMove(data, oldIndex, newIndex)
+      })
     }
   }
 
@@ -389,43 +367,50 @@ export function DataTableVoucher({}) {
       className="w-full flex-col justify-start gap-6"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
+        <Label htmlFor="view-selector" className="sr-only">
+          View
+        </Label>
+        <Select defaultValue="outline">
+          <SelectTrigger
+            className="flex w-fit @4xl/main:hidden"
+            size="sm"
+            id="view-selector"
+          >
+            <SelectValue placeholder="Select a view" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="outline">Outline</SelectItem>
+            <SelectItem value="past-performance">Past Performance</SelectItem>
+            <SelectItem value="key-personnel">Key Personnel</SelectItem>
+            <SelectItem value="focus-documents">Focus Documents</SelectItem>
+          </SelectContent>
+        </Select>
+        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
+          <TabsTrigger value="outline">Outline</TabsTrigger>
+          <TabsTrigger value="past-performance">
+            Past Performance <Badge variant="secondary">3</Badge>
+          </TabsTrigger>
+          <TabsTrigger value="key-personnel">
+            Key Personnel <Badge variant="secondary">2</Badge>
+          </TabsTrigger>
+          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
+        </TabsList>
         <div className="flex items-center gap-2">
           <div className="relative">
             <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search .."
-              value={query.search}
-              onChange={(event) =>
-                setQuery({ ...query, search: event.target.value })
-              }
-              className="h-9 w-[150px] lg:w-[250px] pl-8"
-            />
-          </div>
-          {/* <Button variant="outline" size="sm">
+              <Input
+                   placeholder="Search by Id .."
+                   value={(table.getColumn("voucherCode")?.getFilterValue() as string) ?? ""}
+                   onChange={(event) =>
+                      table.getColumn("voucherCode")?.setFilterValue(event.target.value)
+                    }
+                    className="h-9 w-[150px] lg:w-[250px] pl-8"
+                />                
+            </div>
+          <Button variant="outline" size="sm">
             <IconPlus />
-            <span className="hidden lg:inline">Add Voucher</span>
-          </Button> */}
-          <Select
-            defaultValue="All"
-            onValueChange={(event) =>
-              setQuery({
-                ...query,
-                status: event == "All" ? undefined : StatusVoucher[event],
-              })
-            }
-          >
-            <SelectTrigger className="flex w-fit" size="sm" id="view-selector">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={"All"}>Status: All</SelectItem>
-              <SelectItem value={StatusVoucher.Aktif}>Status: Aktif</SelectItem>
-              <SelectItem value={StatusVoucher.NonAktif}>
-                Status: Non Aktif
-              </SelectItem>
-            </SelectContent>
-          </Select>
-          <TambahVoucherDialog refresh={refresh} />
+            <span className="hidden lg:inline">Add Section</span>
+          </Button>
         </div>
       </div>
       <TabsContent
@@ -433,57 +418,55 @@ export function DataTableVoucher({}) {
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
         <div className="overflow-hidden rounded-lg border">
-          <LoadingOverlay loading={loading}>
-            <DndContext
-              collisionDetection={closestCenter}
-              modifiers={[restrictToVerticalAxis]}
-              onDragEnd={handleDragEnd}
-              sensors={sensors}
-              id={sortableId}
-            >
-              <Table>
-                <TableHeader className="bg-muted sticky top-0 z-10">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <TableHead key={header.id} colSpan={header.colSpan}>
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                          </TableHead>
-                        );
-                      })}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                  {table.getRowModel().rows?.length ? (
-                    <SortableContext
-                      items={dataIds}
-                      strategy={verticalListSortingStrategy}
+          <DndContext
+            collisionDetection={closestCenter}
+            modifiers={[restrictToVerticalAxis]}
+            onDragEnd={handleDragEnd}
+            sensors={sensors}
+            id={sortableId}
+          >
+            <Table>
+              <TableHeader className="bg-muted sticky top-0 z-10">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} colSpan={header.colSpan}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      )
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody className="**:data-[slot=table-cell]:first:w-8">
+                {table.getRowModel().rows?.length ? (
+                  <SortableContext
+                    items={dataIds}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {table.getRowModel().rows.map((row) => (
+                      <DraggableRow key={row.id} row={row} />
+                    ))}
+                  </SortableContext>
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
                     >
-                      {table.getRowModel().rows.map((row) => (
-                        <DraggableRow key={row.id} row={row} />
-                      ))}
-                    </SortableContext>
-                  ) : (
-                    <TableRow>
-                      <TableCell
-                        colSpan={columns.length}
-                        className="h-24 text-center"
-                      >
-                        No results.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </DndContext>
-          </LoadingOverlay>
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </DndContext>
         </div>
         <div className="flex items-center justify-between px-4">
           <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
@@ -498,7 +481,7 @@ export function DataTableVoucher({}) {
               <Select
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={(value) => {
-                  table.setPageSize(Number(value));
+                  table.setPageSize(Number(value))
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
@@ -579,8 +562,10 @@ export function DataTableVoucher({}) {
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
     </Tabs>
-  );
+  )
 }
+
+
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -589,7 +574,7 @@ const chartData = [
   { month: "April", desktop: 73, mobile: 190 },
   { month: "May", desktop: 209, mobile: 130 },
   { month: "June", desktop: 214, mobile: 140 },
-];
+]
 
 const chartConfig = {
   desktop: {
@@ -600,21 +585,21 @@ const chartConfig = {
     label: "Mobile",
     color: "var(--primary)",
   },
-} satisfies ChartConfig;
+} satisfies ChartConfig
 
-function TableCellViewer({ item }: { item: Voucher }) {
-  const isMobile = useIsMobile();
+function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+  const isMobile = useIsMobile()
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.kodeVoucher}
+          {item.voucherCode}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.kodeVoucher}</DrawerTitle>
+          <DrawerTitle>{item.voucherCode}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
@@ -680,12 +665,12 @@ function TableCellViewer({ item }: { item: Voucher }) {
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.kodeVoucher!} />
+              <Input id="header" defaultValue={item.voucherCode} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.namaVoucher!}>
+                <Select defaultValue={item.voucherName}>
                   <SelectTrigger id="type" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
@@ -711,7 +696,7 @@ function TableCellViewer({ item }: { item: Voucher }) {
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="status">Status</Label>
-                <Select defaultValue={formatDateToLongDate(item.tanggalMulai!)}>
+                <Select defaultValue={item.startDate}>
                   <SelectTrigger id="status" className="w-full">
                     <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
@@ -726,19 +711,16 @@ function TableCellViewer({ item }: { item: Voucher }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="target">Target</Label>
-                <Input
-                  id="target"
-                  defaultValue={formatDateToLongDate(item.tanggalAkhir!)}
-                />
+                <Input id="target" defaultValue={item.endDate} />
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={"item.usage"} />
+                <Input id="limit" defaultValue={item.usage} />
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <Label htmlFor="reviewer">Reviewer</Label>
-              <Select defaultValue={item.statusVoucher}>
+              <Select defaultValue={item.status}>
                 <SelectTrigger id="reviewer" className="w-full">
                   <SelectValue placeholder="Select a reviewer" />
                 </SelectTrigger>
@@ -761,5 +743,147 @@ function TableCellViewer({ item }: { item: Voucher }) {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
+  )
+} 
+
+function EditDrawerContent(
+  { 
+    item, 
+    onSave 
+  }: { 
+    item: z.infer<typeof schema>
+    onSave?: (updatedData: z.infer<typeof schema>) => void
+  }
+) {
+  const isMobile = useIsMobile()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [formData, setFormData] = React.useState({
+    voucherCode: item.voucherCode,
+    voucherName: item.voucherName, 
+    startDate: item.startDate,
+    endDate: item.endDate,
+    usage: item.usage,
+    status: item.status
+  })
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true)
+      const updatedVoucher = {
+        ...item,
+        ...formData
+      }
+      onSave?.(updatedVoucher)
+      toast.success('Voucher updated successfully')
+    } catch (error) {
+      toast.error('Failed to update voucher')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Drawer direction={isMobile ? "bottom" : "right"}>
+      <DrawerTrigger asChild>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Edit
+        </DropdownMenuItem>
+      </DrawerTrigger>
+      <DrawerContent className="h-[85vh] sm:max-w-[500px]">
+        <DrawerHeader>
+          <DrawerTitle>Edit Voucher</DrawerTitle>
+          <DrawerDescription>
+            Make changes to voucher code: {item.voucherCode}
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="voucherCode">Voucher Code</Label>
+              <Input 
+                id="voucherCode"
+                value={formData.voucherCode}
+                onChange={(e) => handleChange('voucherCode', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="voucherName">Voucher Name</Label>
+              <Input
+                id="voucherName"
+                value={formData.voucherName}
+                onChange={(e) => handleChange('voucherName', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={formData.startDate}
+                onChange={(e) => handleChange('startDate', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={formData.endDate}
+                onChange={(e) => handleChange('endDate', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="usage">Usage</Label>
+              <Input
+                id="usage"
+                value={formData.usage}
+                onChange={(e) => handleChange('usage', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value) => handleChange('status', value)}
+              >
+                <SelectTrigger id="status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Expired">Expired</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+        <DrawerFooter>
+          <Button 
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <IconLoader className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Save changes'
+            )}
+          </Button>
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
 }
