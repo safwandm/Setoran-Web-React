@@ -173,12 +173,42 @@ const columns: ColumnDef<Pengguna>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "userName",
+    accessorKey: "name",
     header: "Name",
   
     cell: ({ row }) => (
       <div className="w-">
-          {row.original.userName}
+          {row.original.nama}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+  
+    cell: ({ row }) => (
+      <div className="w-">
+          {row.original.email}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "sim",
+    header: "SIM Number",
+  
+    cell: ({ row }) => (
+      <div className="w-">
+          {row.original.pelanggan?.nomorSIM}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "notelp",
+    header: "Phone Number",
+  
+    cell: ({ row }) => (
+      <div className="w-">
+          {row.original.nomorTelepon}
       </div>
     ),
   },
@@ -336,7 +366,7 @@ export function DataTableUser() {
   const apiService = ApiService.getInstance()
 
   React.useEffect(() => {
-    apiService.penggunaApi.penggunaGetAllGet().then(res => {
+    apiService.penggunaApi.penggunaGetAllGet({ withPelanggan: true }).then(res => {
       setData(res.filter(itm => itm.pelanggan))
     })
   }, [])
