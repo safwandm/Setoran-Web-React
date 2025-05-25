@@ -108,7 +108,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { StatusVoucher, Voucher } from "@/lib/api-client"
+import { StatusVoucher, Voucher, VoucherFilteredGetRequest } from "@/lib/api-client"
 import { formatDateToLongDate } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import { LoadingOverlay } from "@/components/loading-overlay"
@@ -302,7 +302,10 @@ export function DataTableVoucher(
     pageIndex: 0,
     pageSize: 10,
   })
-  const [search, setSearch] = React.useState("")
+  const [query, setQuery] = React.useState<VoucherFilteredGetRequest>({
+    search: "",
+    status: undefined
+  })
 
   const sortableId = React.useId()
   const sensors = useSensors(
@@ -321,11 +324,11 @@ export function DataTableVoucher(
 
   React.useEffect(() => {
     setLoading(true)
-    apiService.voucherApi.voucherFilteredGet({ search: search }, { signal: controller.signal }).then(res => {
+    apiService.voucherApi.voucherFilteredGet(query, { signal: controller.signal }).then(res => {
       setData(res)
       setLoading(false)
     })
-  }, [search])
+  }, [query])
 
   const table = useReactTable({
     data,
@@ -369,32 +372,14 @@ export function DataTableVoucher(
       className="w-full flex-col justify-start gap-6"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
-        <Label htmlFor="view-selector" className="sr-only">
-          View
-        </Label>
-        <Select defaultValue="outline">
-          <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
-            size="sm"
-            id="view-selector"
-          >
-            <SelectValue placeholder="Select a view" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="outline">Outline</SelectItem>
-            <SelectItem value="past-performance">Past Performance</SelectItem>
-            <SelectItem value="key-personnel">Key Personnel</SelectItem>
-            <SelectItem value="focus-documents">Focus Documents</SelectItem>
-          </SelectContent>
-        </Select>
         <div className="flex items-center gap-2">
           <div className="relative">
             <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                    placeholder="Search .."
-                   value={search}
+                   value={query.search}
                    onChange={(event) =>
-                      setSearch(event.target.value)
+                      setQuery({ ... query, search: event.target.value})
                     }
                     className="h-9 w-[150px] lg:w-[250px] pl-8"
                 />                
@@ -403,6 +388,22 @@ export function DataTableVoucher(
             <IconPlus />
             <span className="hidden lg:inline">Add Voucher</span>
           </Button> */}
+        <Select defaultValue="All" onValueChange={(event) =>
+          setQuery({ ... query, status: event == "All" ? undefined : StatusVoucher[event]})
+        }>
+          <SelectTrigger
+            className="flex w-fit"
+            size="sm"
+            id="view-selector"
+          >
+            <SelectValue placeholder="All" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={"All"}>Status: All</SelectItem>
+            <SelectItem value={StatusVoucher.Aktif}>Status: Aktif</SelectItem>
+            <SelectItem value={StatusVoucher.NonAktif}>Status: Non Aktif</SelectItem>
+          </SelectContent>
+        </Select>
           <TambahVoucherDialog />
         </div>
       </div>
