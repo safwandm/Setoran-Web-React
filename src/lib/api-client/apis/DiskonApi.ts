@@ -36,6 +36,10 @@ export interface DiskonGenericIdGetRequest {
     id: number;
 }
 
+export interface DiskonGetAllGetRequest {
+    withMotor?: boolean;
+}
+
 export interface DiskonPostRequest {
     postDiskonDTO?: PostDiskonDTO;
 }
@@ -123,6 +127,42 @@ export class DiskonApi extends runtime.BaseAPI {
      */
     async diskonGenericIdGet(requestParameters: DiskonGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Diskon> {
         const response = await this.diskonGenericIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async diskonGetAllGetRaw(requestParameters: DiskonGetAllGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Diskon>>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['withMotor'] != null) {
+            queryParameters['withMotor'] = requestParameters['withMotor'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/Diskon/getAll`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DiskonFromJSON));
+    }
+
+    /**
+     */
+    async diskonGetAllGet(requestParameters: DiskonGetAllGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Diskon>> {
+        const response = await this.diskonGetAllGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -399,7 +399,7 @@ export function DataTableUser() {
             </Select>
           </div>
         <div className="flex items-center">
-          <div className="ml-auto">
+          {/* <div className="ml-auto">
             <div className="relative">
               <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -411,7 +411,7 @@ export function DataTableUser() {
               className="h-9 w-[150px] lg:w-[250px] pl-8"
             />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <TabsContent

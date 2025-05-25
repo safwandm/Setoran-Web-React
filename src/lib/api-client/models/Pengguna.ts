@@ -191,7 +191,7 @@ export interface Pengguna {
      * @type {number}
      * @memberof Pengguna
      */
-    umur?: number | null;
+    readonly umur?: number | null;
     /**
      * 
      * @type {string}
@@ -263,7 +263,7 @@ export function PenggunaToJSON(json: any): Pengguna {
     return PenggunaToJSONTyped(json, false);
 }
 
-export function PenggunaToJSONTyped(value?: Pengguna | null, ignoreDiscriminator: boolean = false): any {
+export function PenggunaToJSONTyped(value?: Omit<Pengguna, 'umur'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -293,7 +293,6 @@ export function PenggunaToJSONTyped(value?: Pengguna | null, ignoreDiscriminator
         'nama': value['nama'],
         'tanggalLahir': value['tanggalLahir'] == null ? undefined : ((value['tanggalLahir'] as any).toISOString()),
         'nomorTelepon': value['nomorTelepon'],
-        'umur': value['umur'],
         'nomorKTP': value['nomorKTP'],
         'alamat': value['alamat'],
         'idGambar': value['idGambar'],

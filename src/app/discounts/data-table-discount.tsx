@@ -110,6 +110,7 @@ import {
 } from "@/components/ui/tabs"
 import { Diskon, StatusDiskon } from "@/lib/api-client"
 import { formatDateToLongDate } from "@/lib/utils"
+import ApiService from "@/lib/api-client/wrapper"
 
 
 // Create a separate component for the drag handle
@@ -165,10 +166,42 @@ const columns: ColumnDef<Diskon>[] = [
   //   enableHiding: false,
   // },
   {
+    accessorKey: "idDiskon",
+    header: () => <div className="w-full text-left">Discount ID</div>,
+    cell: ({ row }) => {
+      return row.original.idDiskon
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "namaDiskon",
+    header: () => <div className="w-full text-left">Discount Name</div>,
+    cell: ({ row }) => {
+      return row.original.nama
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "descDiskon",
+    header: () => <div className="w-full text-left">Discount Description</div>,
+    cell: ({ row }) => {
+      return row.original.deskripsi
+    },
+    enableHiding: false,
+  },
+  {
     accessorKey: "motorId",
     header: () => <div className="w-full text-left">Motor ID</div>,
     cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />
+      return row.original.idMotor
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "motorName",
+    header: () => <div className="w-full text-left">Motor Name</div>,
+    cell: ({ row }) => {
+      return row.original.motor?.model
     },
     enableHiding: false,
   },
@@ -274,6 +307,7 @@ function DraggableRow({ row }: { row: Row<Diskon> }) {
 }
 
 export function DataTableDiscount() {
+  const [loading, setLoading] = React.useState(true)
   const [data, setData] = React.useState<Diskon[]>([])
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -323,6 +357,16 @@ export function DataTableDiscount() {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
+  const apiService = ApiService.getInstance()
+
+  React.useEffect(() => {
+    setLoading(true)
+    apiService.diskonApi.diskonGetAllGet({ withMotor: true }).then(res => {
+      setData(res)
+      setLoading(false)
+    })
+  }, [])
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     if (active && over && active.id !== over.id) {
@@ -358,7 +402,7 @@ export function DataTableDiscount() {
             <SelectItem value="focus-documents">Focus Documents</SelectItem>
           </SelectContent>
         </Select>
-        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
+        {/* <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
           <TabsTrigger value="outline">Outline</TabsTrigger>
           <TabsTrigger value="past-performance">
             Past Performance <Badge variant="secondary">3</Badge>
@@ -367,9 +411,9 @@ export function DataTableDiscount() {
             Key Personnel <Badge variant="secondary">2</Badge>
           </TabsTrigger>
           <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
-        </TabsList>
+        </TabsList> */}
         <div className="flex items-center gap-2">
-             <div className="relative">
+             {/* <div className="relative">
                 <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                       <Input
                         placeholder="Search by Id .."
@@ -379,10 +423,10 @@ export function DataTableDiscount() {
                         }
                         className="h-9 w-[150px] lg:w-[250px] pl-8"
                       />
-              </div>
+              </div> */}
           <Button variant="outline" size="sm">
             <IconPlus />
-            <span className="hidden lg:inline">Add Section</span>
+            <span className="hidden lg:inline">Add Discount</span>
           </Button>
         </div>
       </div>
