@@ -46,7 +46,8 @@ const InputField = ({
   </div>
 );
 
-export function TambahVoucherDialog() {
+export function TambahVoucherDialog({ refresh=() => {} }) {
+  const [open, setOpen] = useState(false)
   const [formData, setFormData] = useState<PostVoucherDTO>({
     kodeVoucher: "",
     namaVoucher: "",
@@ -87,13 +88,18 @@ export function TambahVoucherDialog() {
     }
 
     apiService.voucherApi.voucherPost({ postVoucherDTO: data }).then(() => {
-        toast("Voucher successfully added")
+      toast("Voucher successfully added")
+      refresh()
+      setOpen(false)
+    }).catch(err => {
+      toast.error("Failed to add voucher")
+      console.log(err)
     })
   };
 
   return (
-    <Dialog>
-      <DialogTrigger className={buttonVariants({ variant: "outline", size: "sm" })}>
+    <Dialog open={open}>
+      <DialogTrigger className={buttonVariants({ variant: "outline", size: "sm" })} onClick={() => {setOpen(true)}}>
         <IconPlus />
         <span className="hidden lg:inline">Add Voucher</span>
       </DialogTrigger>

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   DndContext,
   KeyboardSensor,
@@ -11,15 +11,15 @@ import {
   useSensors,
   type DragEndEvent,
   type UniqueIdentifier,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   SortableContext,
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   IconChevronDown,
   IconSearch,
@@ -36,7 +36,7 @@ import {
   IconBan,
   IconPlus,
   IconTrendingUp,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -51,21 +51,21 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-import { toast } from "sonner"
-import { z } from "zod"
+} from "@tanstack/react-table";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { useIsMobile } from "@/hooks/use-mobile"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/chart";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Drawer,
   DrawerClose,
@@ -75,7 +75,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -83,17 +83,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -101,18 +101,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import { StatusVoucher, Voucher, VoucherFilteredGetRequest } from "@/lib/api-client"
-import { formatDateToLongDate } from "@/lib/utils"
-import ApiService from "@/lib/api-client/wrapper"
-import { LoadingOverlay } from "@/components/loading-overlay"
-import { TambahVoucherDialog } from "./voucher-dialog"
+  StatusVoucher,
+  Voucher,
+  VoucherFilteredGetRequest,
+} from "@/lib/api-client";
+import { formatDateToLongDate } from "@/lib/utils";
+import ApiService from "@/lib/api-client/wrapper";
+import { LoadingOverlay } from "@/components/loading-overlay";
+import { TambahVoucherDialog } from "./voucher-dialog";
 
 export const schema = z.object({
   id: z.number(),
@@ -122,13 +121,13 @@ export const schema = z.object({
   endDate: z.string(),
   usage: z.string(),
   status: z.string(),
-})
+});
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
     id,
-  })
+  });
 
   return (
     <Button
@@ -141,129 +140,13 @@ function DragHandle({ id }: { id: number }) {
       <IconGripVertical className="text-muted-foreground size-3" />
       <span className="sr-only">Drag to reorder</span>
     </Button>
-  )
+  );
 }
-
-const columns: ColumnDef<Voucher>[] = [
-  // {
-  //   id: "drag",
-  //   header: () => null,
-  //   cell: ({ row }) => <DragHandle id={row.original.idVoucher!} />,
-  // },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
-  {
-    accessorKey: "voucherCode",
-    header: () => <div className="w-full text-left">Voucher Code</div>,
-    cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "vouhcerName",
-    header: () => <div className="w-30 text-left">Voucher Name</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.namaVoucher}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "startDate",
-    header: () => <div className="w-50 text text-left">Start Date</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {formatDateToLongDate(row.original.tanggalMulai!)}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "endDate",
-    header: () => <div className="w-full text-left">End Date</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {formatDateToLongDate(row.original.tanggalAkhir!)}
-      </div>
-    ),
-  },
-  // {
-  //   accessorKey: "usage",
-  //   header: () => <div className="w-full text-left">Usage</div>,
-  //   cell: ({ row }) => (
-  //     <div className="w-9">
-  //         {row.original.usage}
-  //     </div>
-  //   ),
-  // },
-  {
-    accessorKey: "status",
-    header: () => <div className="w-full text-left">Status</div>,
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.statusVoucher === StatusVoucher.Aktif ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : row.original.statusVoucher === StatusVoucher.NonAktif ?(
-          <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
-        ):(
-          <IconBan />
-        )}
-        {row.original.statusVoucher?.toString()}
-      </Badge>
-    ),
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={() => ApiService.getInstance().voucherApi.voucherGenericIdDelete({ id: row.original.idVoucher! })}>Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
-]
 
 function DraggableRow({ row }: { row: Row<Voucher> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.idVoucher!,
-  })
+  });
 
   return (
     <TableRow
@@ -282,53 +165,173 @@ function DraggableRow({ row }: { row: Row<Voucher> }) {
         </TableCell>
       ))}
     </TableRow>
-  )
+  );
 }
 
-export function DataTableVoucher(
-  {  }
-) {
-
-  const [loading, setLoading] = React.useState(true)
-  const [data, setData] = React.useState<Voucher[]>([])
-  const [rowSelection, setRowSelection] = React.useState({})
+export function DataTableVoucher({}) {
+  const [loading, setLoading] = React.useState(true);
+  const [data, setData] = React.useState<Voucher[]>([]);
+  const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
-  })
+  });
   const [query, setQuery] = React.useState<VoucherFilteredGetRequest>({
     search: "",
-    status: undefined
-  })
+    status: undefined,
+  });
 
-  const sortableId = React.useId()
+  const sortableId = React.useId();
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {})
-  )
+  );
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
     () => data?.map(({ idVoucher }) => idVoucher!) || [],
     [data]
-  )
+  );
 
-  const apiService = ApiService.getInstance()
+  const apiService = ApiService.getInstance();
   const controller = new AbortController();
 
-  React.useEffect(() => {
-    setLoading(true)
-    apiService.voucherApi.voucherFilteredGet(query, { signal: controller.signal }).then(res => {
-      setData(res)
-      setLoading(false)
-    })
-  }, [query])
+  const columns: ColumnDef<Voucher>[] = [
+    // {
+    //   id: "drag",
+    //   header: () => null,
+    //   cell: ({ row }) => <DragHandle id={row.original.idVoucher!} />,
+    // },
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <div className="flex items-center justify-center">
+    //       <Checkbox
+    //         checked={
+    //           table.getIsAllPageRowsSelected() ||
+    //           (table.getIsSomePageRowsSelected() && "indeterminate")
+    //         }
+    //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //         aria-label="Select all"
+    //       />
+    //     </div>
+    //   ),
+    //   cell: ({ row }) => (
+    //     <div className="flex items-center justify-center">
+    //       <Checkbox
+    //         checked={row.getIsSelected()}
+    //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //         aria-label="Select row"
+    //       />
+    //     </div>
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
+    {
+      accessorKey: "voucherCode",
+      header: () => <div className="w-full text-left">Voucher Code</div>,
+      cell: ({ row }) => {
+        return <TableCellViewer item={row.original} />;
+      },
+      enableHiding: false,
+    },
+    {
+      accessorKey: "vouhcerName",
+      header: () => <div className="w-30 text-left">Voucher Name</div>,
+      cell: ({ row }) => <div className="w-9">{row.original.namaVoucher}</div>,
+    },
+    {
+      accessorKey: "startDate",
+      header: () => <div className="w-50 text text-left">Start Date</div>,
+      cell: ({ row }) => (
+        <div className="w-9">
+          {formatDateToLongDate(row.original.tanggalMulai!)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "endDate",
+      header: () => <div className="w-full text-left">End Date</div>,
+      cell: ({ row }) => (
+        <div className="w-9">
+          {formatDateToLongDate(row.original.tanggalAkhir!)}
+        </div>
+      ),
+    },
+    // {
+    //   accessorKey: "usage",
+    //   header: () => <div className="w-full text-left">Usage</div>,
+    //   cell: ({ row }) => (
+    //     <div className="w-9">
+    //         {row.original.usage}
+    //     </div>
+    //   ),
+    // },
+    {
+      accessorKey: "status",
+      header: () => <div className="w-full text-left">Status</div>,
+      cell: ({ row }) => (
+        <Badge variant="outline" className="text-muted-foreground px-1.5">
+          {row.original.statusVoucher === StatusVoucher.Aktif ? (
+            <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+          ) : row.original.statusVoucher === StatusVoucher.NonAktif ? (
+            <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
+          ) : (
+            <IconBan />
+          )}
+          {row.original.statusVoucher?.toString()}
+        </Badge>
+      ),
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => {
+                setLoading(true);
+                ApiService.getInstance()
+                  .voucherApi.voucherGenericIdDelete({
+                    id: row.original.idVoucher!,
+                  })
+                  .then(() => {
+                    toast("Voucher deleted");
+                    refresh()
+                  })
+                  .catch(() => {
+                    setLoading(false);
+                    toast.error("Failed to delete Voucher");
+                  });
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+  ];
 
   const table = useReactTable({
     data,
@@ -353,16 +356,30 @@ export function DataTableVoucher(
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+  });
+
+  React.useEffect(() => {
+    refresh();
+  }, [query]);
+
+  function refresh() {
+    setLoading(true);
+    apiService.voucherApi
+      .voucherFilteredGet(query, { signal: controller.signal })
+      .then((res) => {
+        setData(res);
+        setLoading(false);
+      });
+  }
 
   function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event
+    const { active, over } = event;
     if (active && over && active.id !== over.id) {
       setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex)
-      })
+        const oldIndex = dataIds.indexOf(active.id);
+        const newIndex = dataIds.indexOf(over.id);
+        return arrayMove(data, oldIndex, newIndex);
+      });
     }
   }
 
@@ -375,36 +392,40 @@ export function DataTableVoucher(
         <div className="flex items-center gap-2">
           <div className="relative">
             <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                   placeholder="Search .."
-                   value={query.search}
-                   onChange={(event) =>
-                      setQuery({ ... query, search: event.target.value})
-                    }
-                    className="h-9 w-[150px] lg:w-[250px] pl-8"
-                />                
-            </div>
+            <Input
+              placeholder="Search .."
+              value={query.search}
+              onChange={(event) =>
+                setQuery({ ...query, search: event.target.value })
+              }
+              className="h-9 w-[150px] lg:w-[250px] pl-8"
+            />
+          </div>
           {/* <Button variant="outline" size="sm">
             <IconPlus />
             <span className="hidden lg:inline">Add Voucher</span>
           </Button> */}
-        <Select defaultValue="All" onValueChange={(event) =>
-          setQuery({ ... query, status: event == "All" ? undefined : StatusVoucher[event]})
-        }>
-          <SelectTrigger
-            className="flex w-fit"
-            size="sm"
-            id="view-selector"
+          <Select
+            defaultValue="All"
+            onValueChange={(event) =>
+              setQuery({
+                ...query,
+                status: event == "All" ? undefined : StatusVoucher[event],
+              })
+            }
           >
-            <SelectValue placeholder="All" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={"All"}>Status: All</SelectItem>
-            <SelectItem value={StatusVoucher.Aktif}>Status: Aktif</SelectItem>
-            <SelectItem value={StatusVoucher.NonAktif}>Status: Non Aktif</SelectItem>
-          </SelectContent>
-        </Select>
-          <TambahVoucherDialog />
+            <SelectTrigger className="flex w-fit" size="sm" id="view-selector">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={"All"}>Status: All</SelectItem>
+              <SelectItem value={StatusVoucher.Aktif}>Status: Aktif</SelectItem>
+              <SelectItem value={StatusVoucher.NonAktif}>
+                Status: Non Aktif
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <TambahVoucherDialog refresh={refresh} />
         </div>
       </div>
       <TabsContent
@@ -434,7 +455,7 @@ export function DataTableVoucher(
                                   header.getContext()
                                 )}
                           </TableHead>
-                        )
+                        );
                       })}
                     </TableRow>
                   ))}
@@ -477,7 +498,7 @@ export function DataTableVoucher(
               <Select
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={(value) => {
-                  table.setPageSize(Number(value))
+                  table.setPageSize(Number(value));
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
@@ -558,7 +579,7 @@ export function DataTableVoucher(
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
     </Tabs>
-  )
+  );
 }
 
 const chartData = [
@@ -568,7 +589,7 @@ const chartData = [
   { month: "April", desktop: 73, mobile: 190 },
   { month: "May", desktop: 209, mobile: 130 },
   { month: "June", desktop: 214, mobile: 140 },
-]
+];
 
 const chartConfig = {
   desktop: {
@@ -579,10 +600,10 @@ const chartConfig = {
     label: "Mobile",
     color: "var(--primary)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 function TableCellViewer({ item }: { item: Voucher }) {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
@@ -705,7 +726,10 @@ function TableCellViewer({ item }: { item: Voucher }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={formatDateToLongDate(item.tanggalAkhir!)} />
+                <Input
+                  id="target"
+                  defaultValue={formatDateToLongDate(item.tanggalAkhir!)}
+                />
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="limit">Limit</Label>
@@ -737,5 +761,5 @@ function TableCellViewer({ item }: { item: Voucher }) {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }

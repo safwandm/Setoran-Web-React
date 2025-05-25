@@ -106,6 +106,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mitra, MitraMotorDTO, StatusMitra } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
 import Link from "next/link";
+import { LoadingOverlay } from "@/components/loading-overlay";
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -164,9 +165,7 @@ const columns: ColumnDef<MitraMotorDTO>[] = [
     header: () => <div className="w-20 text-left">Mitra ID</div>,
     cell: ({ row }) => {
       return (
-        <Link
-          href={`/pengguna/${row.original.mitra?.pengguna?.id}`}
-        >
+        <Link href={`/pengguna/${row.original.mitra?.pengguna?.id}`}>
           <Button
             variant="link"
             className="text-foreground w-fit px-0 text-left"
@@ -254,6 +253,7 @@ function DraggableRow({ row }: { row: Row<MitraMotorDTO> }) {
 }
 
 export function TableMitra() {
+  const [loading, setLoading] = React.useState(true);
   const [data, setData] = React.useState<MitraMotorDTO[]>([]);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -306,8 +306,10 @@ export function TableMitra() {
   const apiService = ApiService.getInstance();
 
   React.useEffect(() => {
+    setLoading(true);
     apiService.mitraApi.mitraMitraMotorGet().then((res) => {
       setData(res);
+      setLoading(false);
     });
   }, []);
 
@@ -355,56 +357,59 @@ export function TableMitra() {
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
         <div className="overflow-hidden rounded-lg border">
-          <DndContext
-            collisionDetection={closestCenter}
-            modifiers={[restrictToVerticalAxis]}
-            onDragEnd={handleDragEnd}
-            sensors={sensors}
-            id={sortableId}
-          >
-            <Table>
-              <TableHeader className="bg-muted sticky top-0 z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} colSpan={header.colSpan}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                {table.getRowModel().rows?.length ? (
-                  <SortableContext
-                    items={dataIds}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {table.getRowModel().rows.map((row) => (
-                      <DraggableRow key={row.id} row={row} />
-                    ))}
-                  </SortableContext>
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
+          <LoadingOverlay loading={loading}>
+            <DndContext
+              collisionDetection={closestCenter}
+              modifiers={[restrictToVerticalAxis]}
+              onDragEnd={handleDragEnd}
+              sensors={sensors}
+              id={sortableId}
+            >
+              <Table>
+                <TableHeader className="bg-muted sticky top-0 z-10">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead key={header.id} colSpan={header.colSpan}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </TableHead>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+                <TableBody className="**:data-[slot=table-cell]:first:w-8">
+                  {table.getRowModel().rows?.length ? (
+                    <SortableContext
+                      items={dataIds}
+                      strategy={verticalListSortingStrategy}
                     >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </DndContext>
+                      {table.getRowModel().rows.map((row) => (
+                        <DraggableRow key={row.id} row={row} />
+                      ))}
+                    </SortableContext>
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </DndContext>
+          </LoadingOverlay>
         </div>
+
         <div className="flex items-center justify-between px-4">
           <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
             {table.getFilteredSelectedRowModel().rows.length} of{" "}
