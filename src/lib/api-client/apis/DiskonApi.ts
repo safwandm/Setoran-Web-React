@@ -15,72 +15,47 @@
 
 import * as runtime from '../runtime';
 import type {
-  Pelanggan,
-  PostPelangganDTO,
+  Diskon,
+  PostDiskonDTO,
+  PutDiskonDTO,
 } from '../models/index';
 import {
-    PelangganFromJSON,
-    PelangganToJSON,
-    PostPelangganDTOFromJSON,
-    PostPelangganDTOToJSON,
+    DiskonFromJSON,
+    DiskonToJSON,
+    PostDiskonDTOFromJSON,
+    PostDiskonDTOToJSON,
+    PutDiskonDTOFromJSON,
+    PutDiskonDTOToJSON,
 } from '../models/index';
 
-export interface PelangganGenericIdDeleteRequest {
+export interface DiskonGenericIdDeleteRequest {
     id: number;
 }
 
-export interface PelangganGenericIdGetRequest {
+export interface DiskonGenericIdGetRequest {
     id: number;
 }
 
-export interface PelangganPutRequest {
-    postPelangganDTO?: PostPelangganDTO;
+export interface DiskonPostRequest {
+    postDiskonDTO?: PostDiskonDTO;
+}
+
+export interface DiskonPutRequest {
+    putDiskonDTO?: PutDiskonDTO;
 }
 
 /**
  * 
  */
-export class PelangganApi extends runtime.BaseAPI {
+export class DiskonApi extends runtime.BaseAPI {
 
     /**
      */
-    async pelangganCurrentPelangganGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pelanggan>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/Pelanggan/currentPelanggan`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => PelangganFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async pelangganCurrentPelangganGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pelanggan> {
-        const response = await this.pelangganCurrentPelangganGetRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async pelangganGenericIdDeleteRaw(requestParameters: PelangganGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async diskonGenericIdDeleteRaw(requestParameters: DiskonGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling pelangganGenericIdDelete().'
+                'Required parameter "id" was null or undefined when calling diskonGenericIdDelete().'
             );
         }
 
@@ -97,7 +72,7 @@ export class PelangganApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Pelanggan/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/Diskon/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -108,17 +83,17 @@ export class PelangganApi extends runtime.BaseAPI {
 
     /**
      */
-    async pelangganGenericIdDelete(requestParameters: PelangganGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.pelangganGenericIdDeleteRaw(requestParameters, initOverrides);
+    async diskonGenericIdDelete(requestParameters: DiskonGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.diskonGenericIdDeleteRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async pelangganGenericIdGetRaw(requestParameters: PelangganGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pelanggan>> {
+    async diskonGenericIdGetRaw(requestParameters: DiskonGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Diskon>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling pelangganGenericIdGet().'
+                'Required parameter "id" was null or undefined when calling diskonGenericIdGet().'
             );
         }
 
@@ -135,25 +110,25 @@ export class PelangganApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Pelanggan/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/Diskon/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PelangganFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => DiskonFromJSON(jsonValue));
     }
 
     /**
      */
-    async pelangganGenericIdGet(requestParameters: PelangganGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pelanggan> {
-        const response = await this.pelangganGenericIdGetRaw(requestParameters, initOverrides);
+    async diskonGenericIdGet(requestParameters: DiskonGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Diskon> {
+        const response = await this.diskonGenericIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async pelangganPutRaw(requestParameters: PelangganPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async diskonPostRaw(requestParameters: DiskonPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Diskon>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -169,11 +144,46 @@ export class PelangganApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Pelanggan`,
+            path: `/Diskon`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PostDiskonDTOToJSON(requestParameters['postDiskonDTO']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DiskonFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async diskonPost(requestParameters: DiskonPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Diskon> {
+        const response = await this.diskonPostRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async diskonPutRaw(requestParameters: DiskonPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json-patch+json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/Diskon`,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: PostPelangganDTOToJSON(requestParameters['postPelangganDTO']),
+            body: PutDiskonDTOToJSON(requestParameters['putDiskonDTO']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -181,8 +191,8 @@ export class PelangganApi extends runtime.BaseAPI {
 
     /**
      */
-    async pelangganPut(requestParameters: PelangganPutRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.pelangganPutRaw(requestParameters, initOverrides);
+    async diskonPut(requestParameters: DiskonPutRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.diskonPutRaw(requestParameters, initOverrides);
     }
 
 }

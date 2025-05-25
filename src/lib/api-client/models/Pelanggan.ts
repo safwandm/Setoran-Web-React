@@ -20,6 +20,13 @@ import {
     PenggunaToJSON,
     PenggunaToJSONTyped,
 } from './Pengguna';
+import type { Voucher } from './Voucher';
+import {
+    VoucherFromJSON,
+    VoucherFromJSONTyped,
+    VoucherToJSON,
+    VoucherToJSONTyped,
+} from './Voucher';
 
 /**
  * 
@@ -51,6 +58,12 @@ export interface Pelanggan {
      * @memberof Pelanggan
      */
     nomorSIM?: string | null;
+    /**
+     * 
+     * @type {Array<Voucher>}
+     * @memberof Pelanggan
+     */
+    usedVouchers?: Array<Voucher> | null;
 }
 
 /**
@@ -74,6 +87,7 @@ export function PelangganFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'idPengguna': json['idPengguna'] == null ? undefined : json['idPengguna'],
         'pengguna': json['pengguna'] == null ? undefined : PenggunaFromJSON(json['pengguna']),
         'nomorSIM': json['nomorSIM'] == null ? undefined : json['nomorSIM'],
+        'usedVouchers': json['usedVouchers'] == null ? undefined : ((json['usedVouchers'] as Array<any>).map(VoucherFromJSON)),
     };
 }
 
@@ -92,6 +106,7 @@ export function PelangganToJSONTyped(value?: Pelanggan | null, ignoreDiscriminat
         'idPengguna': value['idPengguna'],
         'pengguna': PenggunaToJSON(value['pengguna']),
         'nomorSIM': value['nomorSIM'],
+        'usedVouchers': value['usedVouchers'] == null ? undefined : ((value['usedVouchers'] as Array<any>).map(VoucherToJSON)),
     };
 }
 

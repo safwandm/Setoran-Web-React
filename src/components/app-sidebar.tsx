@@ -38,6 +38,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useCurrentUserStore } from "@/lib/stores/current-user";
 
 const data = {
   user: {
@@ -167,6 +168,9 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  const currentUser = useCurrentUserStore((state) => state.currentUser)
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -190,7 +194,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={{name: currentUser?.nama || "", email: currentUser?.email || "", avatar: "/avatars/shadcn.jpg"}} />
       </SidebarFooter>
     </Sidebar>
   )

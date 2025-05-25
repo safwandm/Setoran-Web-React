@@ -66,10 +66,10 @@ export interface Notifikasi {
     navigasi?: TargetNavigasi;
     /**
      * 
-     * @type {string}
+     * @type {{ [key: string]: string; }}
      * @memberof Notifikasi
      */
-    dataNavigasi?: string | null;
+    dataNavigasi?: { [key: string]: string; } | null;
     /**
      * 
      * @type {boolean}
@@ -82,6 +82,12 @@ export interface Notifikasi {
      * @memberof Notifikasi
      */
     pengguna?: Pengguna;
+    /**
+     * 
+     * @type {Date}
+     * @memberof Notifikasi
+     */
+    waktuNotifikasi?: Date;
 }
 
 
@@ -111,6 +117,7 @@ export function NotifikasiFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'dataNavigasi': json['dataNavigasi'] == null ? undefined : json['dataNavigasi'],
         'isRead': json['isRead'] == null ? undefined : json['isRead'],
         'pengguna': json['pengguna'] == null ? undefined : PenggunaFromJSON(json['pengguna']),
+        'waktuNotifikasi': json['waktuNotifikasi'] == null ? undefined : (new Date(json['waktuNotifikasi'])),
     };
 }
 
@@ -133,6 +140,7 @@ export function NotifikasiToJSONTyped(value?: Notifikasi | null, ignoreDiscrimin
         'dataNavigasi': value['dataNavigasi'],
         'isRead': value['isRead'],
         'pengguna': PenggunaToJSON(value['pengguna']),
+        'waktuNotifikasi': value['waktuNotifikasi'] == null ? undefined : ((value['waktuNotifikasi']).toISOString()),
     };
 }
 

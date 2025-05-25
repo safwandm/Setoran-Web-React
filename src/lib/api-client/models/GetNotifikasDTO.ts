@@ -59,16 +59,22 @@ export interface GetNotifikasDTO {
     navigasi?: TargetNavigasi;
     /**
      * 
-     * @type {string}
+     * @type {{ [key: string]: string; }}
      * @memberof GetNotifikasDTO
      */
-    dataNavigasi?: string | null;
+    dataNavigasi?: { [key: string]: string; } | null;
     /**
      * 
      * @type {boolean}
      * @memberof GetNotifikasDTO
      */
     isRead?: boolean;
+    /**
+     * 
+     * @type {Date}
+     * @memberof GetNotifikasDTO
+     */
+    waktuNotifikasi?: Date;
 }
 
 
@@ -97,6 +103,7 @@ export function GetNotifikasDTOFromJSONTyped(json: any, ignoreDiscriminator: boo
         'navigasi': json['navigasi'] == null ? undefined : TargetNavigasiFromJSON(json['navigasi']),
         'dataNavigasi': json['dataNavigasi'] == null ? undefined : json['dataNavigasi'],
         'isRead': json['isRead'] == null ? undefined : json['isRead'],
+        'waktuNotifikasi': json['waktuNotifikasi'] == null ? undefined : (new Date(json['waktuNotifikasi'])),
     };
 }
 
@@ -118,6 +125,7 @@ export function GetNotifikasDTOToJSONTyped(value?: GetNotifikasDTO | null, ignor
         'navigasi': TargetNavigasiToJSON(value['navigasi']),
         'dataNavigasi': value['dataNavigasi'],
         'isRead': value['isRead'],
+        'waktuNotifikasi': value['waktuNotifikasi'] == null ? undefined : ((value['waktuNotifikasi']).toISOString()),
     };
 }
 

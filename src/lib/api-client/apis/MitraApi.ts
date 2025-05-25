@@ -15,72 +15,43 @@
 
 import * as runtime from '../runtime';
 import type {
-  Pelanggan,
-  PostPelangganDTO,
+  Mitra,
+  MitraMotorDTO,
+  PostMitraDTO,
 } from '../models/index';
 import {
-    PelangganFromJSON,
-    PelangganToJSON,
-    PostPelangganDTOFromJSON,
-    PostPelangganDTOToJSON,
+    MitraFromJSON,
+    MitraToJSON,
+    MitraMotorDTOFromJSON,
+    MitraMotorDTOToJSON,
+    PostMitraDTOFromJSON,
+    PostMitraDTOToJSON,
 } from '../models/index';
 
-export interface PelangganGenericIdDeleteRequest {
+export interface MitraGenericIdDeleteRequest {
     id: number;
 }
 
-export interface PelangganGenericIdGetRequest {
+export interface MitraGenericIdGetRequest {
     id: number;
 }
 
-export interface PelangganPutRequest {
-    postPelangganDTO?: PostPelangganDTO;
+export interface MitraPutRequest {
+    postMitraDTO?: PostMitraDTO;
 }
 
 /**
  * 
  */
-export class PelangganApi extends runtime.BaseAPI {
+export class MitraApi extends runtime.BaseAPI {
 
     /**
      */
-    async pelangganCurrentPelangganGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pelanggan>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/Pelanggan/currentPelanggan`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => PelangganFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async pelangganCurrentPelangganGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pelanggan> {
-        const response = await this.pelangganCurrentPelangganGetRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async pelangganGenericIdDeleteRaw(requestParameters: PelangganGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async mitraGenericIdDeleteRaw(requestParameters: MitraGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling pelangganGenericIdDelete().'
+                'Required parameter "id" was null or undefined when calling mitraGenericIdDelete().'
             );
         }
 
@@ -97,7 +68,7 @@ export class PelangganApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Pelanggan/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/Mitra/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -108,17 +79,17 @@ export class PelangganApi extends runtime.BaseAPI {
 
     /**
      */
-    async pelangganGenericIdDelete(requestParameters: PelangganGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.pelangganGenericIdDeleteRaw(requestParameters, initOverrides);
+    async mitraGenericIdDelete(requestParameters: MitraGenericIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.mitraGenericIdDeleteRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async pelangganGenericIdGetRaw(requestParameters: PelangganGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Pelanggan>> {
+    async mitraGenericIdGetRaw(requestParameters: MitraGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Mitra>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling pelangganGenericIdGet().'
+                'Required parameter "id" was null or undefined when calling mitraGenericIdGet().'
             );
         }
 
@@ -135,25 +106,57 @@ export class PelangganApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Pelanggan/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/Mitra/generic/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PelangganFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => MitraFromJSON(jsonValue));
     }
 
     /**
      */
-    async pelangganGenericIdGet(requestParameters: PelangganGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Pelanggan> {
-        const response = await this.pelangganGenericIdGetRaw(requestParameters, initOverrides);
+    async mitraGenericIdGet(requestParameters: MitraGenericIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Mitra> {
+        const response = await this.mitraGenericIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async pelangganPutRaw(requestParameters: PelangganPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async mitraMitraMotorGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<MitraMotorDTO>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/Mitra/mitraMotor`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(MitraMotorDTOFromJSON));
+    }
+
+    /**
+     */
+    async mitraMitraMotorGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<MitraMotorDTO>> {
+        const response = await this.mitraMitraMotorGetRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async mitraPutRaw(requestParameters: MitraPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -169,11 +172,11 @@ export class PelangganApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Pelanggan`,
+            path: `/Mitra`,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: PostPelangganDTOToJSON(requestParameters['postPelangganDTO']),
+            body: PostMitraDTOToJSON(requestParameters['postMitraDTO']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -181,8 +184,8 @@ export class PelangganApi extends runtime.BaseAPI {
 
     /**
      */
-    async pelangganPut(requestParameters: PelangganPutRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.pelangganPutRaw(requestParameters, initOverrides);
+    async mitraPut(requestParameters: MitraPutRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.mitraPutRaw(requestParameters, initOverrides);
     }
 
 }

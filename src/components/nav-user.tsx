@@ -55,6 +55,11 @@ export function NavUser({
     router.push("/account")
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem("access_token")
+    window.location.reload()
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
