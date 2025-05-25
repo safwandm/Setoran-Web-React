@@ -1,8 +1,15 @@
 "use client"
 
 import { DataTableTransaction } from "./data-table-transactions"
+import { usetTitle } from "@/components/layout"
+import { useEffect } from "react"
 
 export default function Page() {
+  const setTitle = usetTitle()
+
+  useEffect(() => {
+    setTitle("Transactions")
+  })
 
   return (
         <div className="flex flex-1 flex-col">

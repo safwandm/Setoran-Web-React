@@ -2,8 +2,15 @@
 
 import data from "./data.json"
 import { DataTableDiscount } from "./data-table-discount"
+import { usetTitle } from "@/components/layout"
+import { useEffect } from "react"
 
 export default function Page() {
+  const setTitle = usetTitle()
+
+  useEffect(() => {
+    setTitle("Discounts")
+  })
 
   return (
    

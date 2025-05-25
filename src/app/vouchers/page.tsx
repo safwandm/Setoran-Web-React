@@ -1,8 +1,15 @@
 "use client"
 
 import { DataTableVoucher } from "./data-table"
+import { usetTitle } from "@/components/layout"
+import { useEffect } from "react"
 
 export default function Page() {
+  const setTitle = usetTitle()
+
+  useEffect(() => {
+    setTitle("Vouchers")
+  })
 
   return (
 

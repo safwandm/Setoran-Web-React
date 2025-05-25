@@ -6,8 +6,15 @@ import { SectionCardsDasboard } from "./section-cards-dashboard"
 
 import data from './data.json'
 import typedMitraData from './dataMitra.json'
+import { usetTitle } from "@/components/layout"
+import { useEffect } from "react"
 
 export default function Page() {
+  const setTitle = usetTitle()
+
+  useEffect(() => {
+    setTitle("Dashboard")
+  })
 
   return (
   
