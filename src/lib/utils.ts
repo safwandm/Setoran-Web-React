@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { Motor } from "./api-client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -18,4 +19,8 @@ export function formatDateToLongDate(date: Date | undefined | null) {
   const year = date.getUTCFullYear();
 
   return `${day} ${month} ${year}`;
+}
+
+export function formatMotorName(motor: Motor) {
+  return `${motor.brand} ${motor.model} ${motor.tahun}`
 }

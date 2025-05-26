@@ -112,6 +112,7 @@ import { Diskon, StatusDiskon } from "@/lib/api-client"
 import { formatDateToLongDate } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import EditDiskonDrawer from "@/components/forms/discount-drawer"
+import { TambahDiskonDialog } from "./diskon-dialog"
 
 
 // Create a separate component for the drag handle
@@ -360,12 +361,16 @@ export function DataTableDiscount() {
 
   const apiService = ApiService.getInstance()
 
-  React.useEffect(() => {
+  const refresh = () => {
     setLoading(true)
     apiService.diskonApi.diskonGetAllGet({ withMotor: true }).then(res => {
       setData(res)
       setLoading(false)
     })
+  }
+
+  React.useEffect(() => {
+    refresh()
   }, [])
 
   function handleDragEnd(event: DragEndEvent) {
@@ -425,10 +430,7 @@ export function DataTableDiscount() {
                         className="h-9 w-[150px] lg:w-[250px] pl-8"
                       />
               </div> */}
-          <Button variant="outline" size="sm">
-            <IconPlus />
-            <span className="hidden lg:inline">Add Discount</span>
-          </Button>
+          <TambahDiskonDialog refresh={refresh}/>
         </div>
       </div>
       <TabsContent

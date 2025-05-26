@@ -108,6 +108,7 @@ import {
 } from "@/components/ui/tabs"
 import { Motor } from "@/lib/api-client"
 import ApiService from "@/lib/api-client/wrapper"
+import { formatMotorName } from "@/lib/utils"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -174,7 +175,7 @@ const columns: ColumnDef<Motor>[] = [
     header: () => <div className="w-30 text-left">Motor Name</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.model}
+          {formatMotorName(row.original)}
       </div>
     ),
   },
