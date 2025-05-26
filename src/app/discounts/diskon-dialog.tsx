@@ -136,7 +136,7 @@ export function TambahDiskonDialog({ refresh = () => {} }) {
               />
               <InputField
                 name="jumlahDiskon"
-                label="Jumlah Diskon (%)"
+                label="Jumlah Diskon"
                 type="number"
                 value={formData.jumlahDiskon}
                 onChange={handleChange}
@@ -175,11 +175,15 @@ export async function validate(formData: PostDiskonDTO) {
   const errors: any = {};
 
   if (!formData.nama) {
-    errors.nama = "Nama diskon wajib diisi";
+    errors.nama = "Required!";
   }
 
-  if (!formData.jumlahDiskon || formData.jumlahDiskon <= 0 || formData.jumlahDiskon > 100) {
-    errors.jumlahDiskon = "Diskon harus di antara 1 hingga 100 persen";
+  if (!formData.jumlahDiskon || formData.jumlahDiskon <= 0) {
+    errors.jumlahDiskon = "Diskon harus di atas 0";
+  }
+
+  if (!formData.tanggalMulai || !formData.tanggalAkhir) {
+    errors.tanggal = "Required!"
   }
 
   return errors;
@@ -231,10 +235,10 @@ export function MotorSelector({ selectMotor }: { selectMotor: (motor: number) =>
                         }}
                     >
                         <Check
-                        className={cn(
-                            "mr-2 h-4 w-4",
-                            selectedMotor?.idMotor === motor.idMotor ? "opacity-100" : "opacity-0"
-                        )}
+                          className={cn(
+                              "mr-2 h-4 w-4",
+                              selectedMotor?.idMotor === motor.idMotor ? "opacity-100" : "opacity-0"
+                          )}
                         />
                         {nama}
                     </CommandItem>
