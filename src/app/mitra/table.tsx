@@ -254,14 +254,18 @@ export function TableMitra() {
       accessorKey: "alamat",
       header: () => <div className="w-30 text-left">Address</div>,
       cell: ({ row }) => (
-        <div className="w-9">{row.original.mitra!.pengguna?.alamat}</div>
+        <div className="whitespace-normal break-words w-auto max-w-[200px]">
+          {row.original.mitra!.pengguna?.alamat}
+        </div>
       ),
     },
     {
       accessorKey: "email",
-      header: () => <div className="w-30 text-left">Email</div>,
+      header: () => <div className="w-50 text-left">Email</div>,
       cell: ({ row }) => (
-        <div className="w-9">{row.original.mitra!.pengguna?.email}</div>
+        <div className="w-14">
+          {row.original.mitra!.pengguna?.email}
+        </div>
       ),
     },
     {
@@ -273,8 +277,8 @@ export function TableMitra() {
     },
     {
       accessorKey: "Vehicle",
-      header: () => <div className="w-30 text-left">Vehicle count</div>,
-      cell: ({ row }) => <div className="w-9">{row.original.jumlahMotor}</div>,
+      header: () => <div className="w-20 text-left">Vehicle count</div>,
+      cell: ({ row }) => <div className="w-5">{row.original.jumlahMotor}</div>,
     },
   ];
 
@@ -332,7 +336,7 @@ export function TableMitra() {
         </div>
         <div className="flex items-center">
           <div className="ml-auto">
-            <div className="relative">
+            {/* <div className="relative">
               <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search by Id .."
@@ -344,7 +348,7 @@ export function TableMitra() {
                 }
                 className="h-9 w-[150px] lg:w-[250px] pl-8"
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
