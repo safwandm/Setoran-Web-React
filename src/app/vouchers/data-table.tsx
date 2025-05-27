@@ -180,7 +180,7 @@ export function DataTableVoucher({}) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 20,
   });
   const [query, setQuery] = React.useState<VoucherFilteredGetRequest>({
     search: "",

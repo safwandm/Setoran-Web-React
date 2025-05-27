@@ -335,7 +335,7 @@ export function DataTableDashboard({
   const [mitraSorting, setMitraSorting] = React.useState<SortingState>([])
   const [mitraPagination, setMitraPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 20,
   })
 
   const [data, setData] = React.useState(() => initialData)
@@ -348,7 +348,7 @@ export function DataTableDashboard({
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 20,
   })
   const sortableId = React.useId()
   const sensors = useSensors(
