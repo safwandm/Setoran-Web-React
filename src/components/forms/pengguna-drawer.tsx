@@ -24,7 +24,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "../ui/switch"
 import { Separator } from "../ui/separator"
 import { LoadingOverlay } from "../loading-overlay"
-import { formatDateToLongDate } from "@/lib/utils"
+import { formatDateToLongDate, getGambar } from "@/lib/utils"
 
 export default function EditPenggunaDrawer(
   { 
@@ -93,7 +93,7 @@ export default function EditPenggunaDrawer(
           {buttonText ?? idPengguna}
         </Button>
       </DrawerTrigger>
-      <DrawerContent className=" sm:max-w-[500px]">
+      <DrawerContent className=" sm:max-w-[500px] overflow-scroll">
         <DrawerHeader>
           <DrawerTitle>{editing ? "Edit User" : "User Detail"}</DrawerTitle>
           { editing ? <DrawerDescription>
@@ -102,6 +102,9 @@ export default function EditPenggunaDrawer(
         </DrawerHeader>
         <LoadingOverlay loading={loading}>
             <div className="p-4 space-y-4 overflow-y-auto">
+              <div className="w-full flex justify-center">
+                <ClickableAvatar pengguna={pengguna} refresh={refresh} />
+              </div>
           {/* <Card>
             <CardHeader>
               <CardTitle>Pengguna</CardTitle>
@@ -281,5 +284,47 @@ export default function EditPenggunaDrawer(
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  )
+}
+
+import { useRef } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+
+export function ClickableAvatar({ pengguna, refresh }:{ pengguna: Pengguna, refresh: () => void }) {
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const apiService = ApiService.getInstance()
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      apiService.penggunaApi.penggunaUpdateProfileImageIdPost({ id: pengguna.id!, file: file }).then(res => {
+        refresh()
+      })
+    }
+  }
+
+  return (
+    <div>
+      <Avatar
+        onClick={handleAvatarClick}
+        className="cursor-pointer w-20 h-20 hover:ring-2 hover:ring-primary transition"
+      >
+        <AvatarImage src={getGambar(pengguna.nama!, pengguna.idGambar!)} alt="User Avatar" />
+        {/* <AvatarFallback>U</AvatarFallback> */}
+      </Avatar>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        ref={fileInputRef}
+        className="hidden"
+      />
+    </div>
   )
 }
