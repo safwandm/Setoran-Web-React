@@ -311,6 +311,7 @@ function DraggableRow({ row }: { row: Row<Diskon> }) {
 export function DataTableDiscount() {
   const [loading, setLoading] = React.useState(true)
   const [data, setData] = React.useState<Diskon[]>([])
+  const [search, setSearch] = React.useState('');
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -334,8 +335,23 @@ export function DataTableDiscount() {
     [data]
   )
 
-  const table = useReactTable({
-    data,
+  const filteredData: Diskon[] = React.useMemo(() => {
+    if (!search) return data;
+  
+    const lowerSearch = search.toLowerCase();
+  
+    return data.filter((row) =>
+      Object.values(row).some((value) =>{
+        console.log(value.idMotor)
+        if (value.idMotor !== undefined)
+          return formatMotorName(value).toLowerCase().includes(lowerSearch)
+        return String(value).toLowerCase().includes(lowerSearch)
+      })
+    );
+  }, [data, search]);
+
+  const table = useReactTable<Diskon>({
+    data: filteredData,
     columns,
     state: {
       sorting,
@@ -419,17 +435,17 @@ export function DataTableDiscount() {
           <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
         </TabsList> */}
         <div className="flex items-center gap-2">
-             {/* <div className="relative">
+             <div className="relative">
                 <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Search by Id .."
-                        value={(table.getColumn("motorId")?.getFilterValue() as string) ?? ""}
+                        placeholder="Search .."
+                        value={search ?? ""}
                         onChange={(event) =>
-                          table.getColumn("motorId")?.setFilterValue(event.target.value)
+                          setSearch(event.target.value)
                         }
                         className="h-9 w-[150px] lg:w-[250px] pl-8"
                       />
-              </div> */}
+              </div>
           <TambahDiskonDialog refresh={refresh}/>
         </div>
       </div>
