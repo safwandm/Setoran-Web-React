@@ -1,5 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile"
-import { Pengguna, PostPelangganDTO, PostPenggunaDTO, Transaksi } from "@/lib/api-client"
+import { Pengguna, PostPelangganDTO, PostPenggunaDTO, StatusMitra, Transaksi } from "@/lib/api-client"
 import ApiService from "@/lib/api-client/wrapper"
 import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -29,11 +29,13 @@ export default function EditPenggunaDrawer(
   { 
     idPengguna, 
     onSave,
-    buttonText 
+    buttonText,
+    editing=true 
   }: { 
     idPengguna: string
     onSave?: (updatedData: Pengguna) => void
     buttonText: string | undefined
+    editing?: boolean
   }
 ) {
   const isMobile = useIsMobile()
@@ -92,13 +94,13 @@ export default function EditPenggunaDrawer(
       </DrawerTrigger>
       <DrawerContent className=" sm:max-w-[500px]">
         <DrawerHeader>
-          <DrawerTitle>Edit User</DrawerTitle>
-          <DrawerDescription>
+          <DrawerTitle>{editing ? "Edit User" : "User Detail"}</DrawerTitle>
+          { editing ? <DrawerDescription>
             Make changes to pengguna ID: {idPengguna}
-          </DrawerDescription>
+          </DrawerDescription> : ""}
         </DrawerHeader>
         <LoadingOverlay loading={loading}>
-            <div className="p-4 space-y-4 overflow-y-auto max-h-[70vh]">
+            <div className="p-4 space-y-4 overflow-y-auto">
           {/* <Card>
             <CardHeader>
               <CardTitle>Pengguna</CardTitle>
@@ -109,6 +111,7 @@ export default function EditPenggunaDrawer(
               <Input
                 value={pengguna.nama ?? ""}
                 onChange={(e) => handleChange("nama", e.target.value)}
+                readOnly={!editing}
               />
             </div>
             <div>
@@ -121,6 +124,7 @@ export default function EditPenggunaDrawer(
                     : ""
                 }
                 onChange={(e) => handleChange("tanggalLahir", e.target.value)}
+                readOnly={!editing}
               />
             </div>
             <div>
@@ -129,6 +133,7 @@ export default function EditPenggunaDrawer(
                 type="number"
                 value={pengguna.umur ?? ""}
                 onChange={(e) => handleChange("umur", Number(e.target.value))}
+                readOnly={!editing}
               />
             </div>
             <div>
@@ -136,6 +141,7 @@ export default function EditPenggunaDrawer(
               <Input
                 value={pengguna.nomorTelepon ?? ""}
                 onChange={(e) => handleChange("nomorTelepon", e.target.value)}
+                readOnly={!editing}
               />
             </div>
             <div>
@@ -143,12 +149,14 @@ export default function EditPenggunaDrawer(
               <Input
                 value={pengguna.nomorKTP ?? ""}
                 onChange={(e) => handleChange("nomorKTP", e.target.value)}
+                readOnly={!editing}
               />
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={pengguna.isAdmin ?? false}
                 onCheckedChange={(value) => handleChange("isAdmin", value)}
+                disabled={!editing}
               />
               <Label className="py-2">Admin</Label>
             </div>
@@ -175,6 +183,7 @@ export default function EditPenggunaDrawer(
                         },
                       }))
                     }
+                    readOnly={!editing}
                   />
                 </div>
                 <div>
@@ -190,6 +199,7 @@ export default function EditPenggunaDrawer(
                         },
                       }))
                     }
+                    readOnly={!editing}
                   />
                 </div>
                 <p>
@@ -213,19 +223,28 @@ export default function EditPenggunaDrawer(
                   <Input value={pengguna.mitra.idMitra ?? ""} />
                 </div>
                 <div>
-                  {/* <Label className="py-2">Status:</Label> */}
-                  {/* <Input
-                          value={pengguna.mitra.status ?? ""}
-                          onChange={(e) =>
-                            setPengguna((prev) => ({
-                              ...prev,
-                              mitra: {
-                                ...prev.mitra!,
-                                status: e.target.value,
-                              },
-                            }))
-                          }
-                        /> */}
+                  <Label className="py-2">Status:</Label>
+                  <Select 
+                    value={pengguna.mitra.status}
+                    onValueChange={(value) => {
+                      setPengguna({
+                        ...pengguna,
+                        mitra: {
+                          ...pengguna.mitra,
+                          status: value as StatusMitra
+                        }
+                      })
+                    }}
+                    disabled={!editing}
+                  >
+                    <SelectTrigger id="status">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={StatusMitra.Aktif}>Active</SelectItem>
+                      <SelectItem value={StatusMitra.NonAktif}>Non Active</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
           //   </CardContent>
@@ -242,7 +261,7 @@ export default function EditPenggunaDrawer(
     </div>
     </LoadingOverlay>
         <DrawerFooter>
-          <Button 
+        { editing ? <Button 
             onClick={handleSave}
             disabled={isLoading}
           >
@@ -254,9 +273,9 @@ export default function EditPenggunaDrawer(
             ) : (
               'Save changes'
             )}
-          </Button>
+          </Button> : ""}
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">{editing ? "Cancel": "Close"}</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
