@@ -20,6 +20,7 @@ import { IconLoader } from "@tabler/icons-react";
 import { LoadingOverlay } from "../loading-overlay";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { formatMotorName } from "@/lib/utils";
+import { validateDiscount } from "@/app/discounts/diskon-dialog";
 
 export default function EditDiskonDrawer({
   idDiskon,
@@ -56,6 +57,13 @@ export default function EditDiskonDrawer({
 
   const handleSave = async () => {
     try {
+      var errors = await validateDiscount(diskon)
+      if (Object.keys(errors).length !== 0) {
+        toast.error("Invalid input");
+        return;
+      }
+      console.log(errors, diskon)
+
       setIsLoading(true);
       await apiService.diskonApi.diskonPut({ putDiskonDTO: diskon });
       onSave?.({ ...diskon });

@@ -290,47 +290,47 @@ export function DataTableVoucher({}) {
         </Badge>
       ),
     },
-    {
-      id: "actions",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-              size="icon"
-            >
-              <IconDotsVertical />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() => {
-                setLoading(true);
-                ApiService.getInstance()
-                  .voucherApi.voucherGenericIdDelete({
-                    id: row.original.idVoucher!,
-                  })
-                  .then(() => {
-                    toast("Voucher deleted");
-                    refresh()
-                  })
-                  .catch(() => {
-                    setLoading(false);
-                    toast.error("Failed to delete Voucher");
-                  });
-              }}
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
+    // {
+    //   id: "actions",
+    //   cell: ({ row }) => (
+    //     <DropdownMenu>
+    //       <DropdownMenuTrigger asChild>
+    //         <Button
+    //           variant="ghost"
+    //           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+    //           size="icon"
+    //         >
+    //           <IconDotsVertical />
+    //           <span className="sr-only">Open menu</span>
+    //         </Button>
+    //       </DropdownMenuTrigger>
+    //       <DropdownMenuContent align="end" className="w-32">
+    //         <DropdownMenuItem>Edit</DropdownMenuItem>
+    //         <DropdownMenuSeparator />
+    //         <DropdownMenuItem
+    //           variant="destructive"
+    //           onClick={() => {
+    //             setLoading(true);
+    //             ApiService.getInstance()
+    //               .voucherApi.voucherGenericIdDelete({
+    //                 id: row.original.idVoucher!,
+    //               })
+    //               .then(() => {
+    //                 toast("Voucher deleted");
+    //                 refresh()
+    //               })
+    //               .catch(() => {
+    //                 setLoading(false);
+    //                 toast.error("Failed to delete Voucher");
+    //               });
+    //           }}
+    //         >
+    //           Delete
+    //         </DropdownMenuItem>
+    //       </DropdownMenuContent>
+    //     </DropdownMenu>
+    //   ),
+    // },
   ];
 
   const table = useReactTable({
