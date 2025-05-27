@@ -39,6 +39,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useCurrentUserStore } from "@/lib/stores/current-user";
+import { BASE_PATH } from "@/lib/api-client/wrapper";
 
 const data = {
   user: {
@@ -194,7 +195,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={{name: currentUser?.nama || "", email: currentUser?.email || "", avatar: "/avatars/shadcn.jpg"}} />
+        <NavUser user={{name: currentUser?.nama || "", email: currentUser?.email || "", avatar: (currentUser?.idGambar ? `${BASE_PATH}/storage/fetch/${currentUser?.idGambar}` : `${BASE_PATH}/avatar?name=${currentUser?.nama}`)}} />
       </SidebarFooter>
     </Sidebar>
   )

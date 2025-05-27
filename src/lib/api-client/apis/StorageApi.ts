@@ -51,7 +51,7 @@ export class StorageApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Storage/fetch/{fileName}`.replace(`{${"fileName"}}`, encodeURIComponent(String(requestParameters['fileName']))),
+            path: `/storage/fetch/fetch/{fileName}`.replace(`{${"fileName"}}`, encodeURIComponent(String(requestParameters['fileName']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -102,7 +102,7 @@ export class StorageApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/Storage/store`,
+            path: `/storage/fetch/store`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

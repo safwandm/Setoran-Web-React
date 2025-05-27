@@ -50,6 +50,11 @@ export interface PenggunaPutRequest {
     postPenggunaDTO?: PostPenggunaDTO;
 }
 
+export interface PenggunaUpdateProfileImageIdPostRequest {
+    id: string;
+    file?: Blob;
+}
+
 /**
  * 
  */
@@ -311,6 +316,70 @@ export class PenggunaApi extends runtime.BaseAPI {
      */
     async penggunaPut(requestParameters: PenggunaPutRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.penggunaPutRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
+    async penggunaUpdateProfileImageIdPostRaw(requestParameters: PenggunaUpdateProfileImageIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling penggunaUpdateProfileImageIdPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters['file'] != null) {
+            formParams.append('file', requestParameters['file'] as any);
+        }
+
+        const response = await this.request({
+            path: `/Pengguna/updateProfileImage/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async penggunaUpdateProfileImageIdPost(requestParameters: PenggunaUpdateProfileImageIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.penggunaUpdateProfileImageIdPostRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
 }
