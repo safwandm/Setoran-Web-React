@@ -83,7 +83,7 @@ export function TambahDiskonDialog({ refresh = () => {} }) {
       tanggalAkhir: dateRangeValue.to,
     };
 
-    const err = await validate(data);
+    const err = await validateDiscount(data);
     if (Object.keys(err).length !== 0) {
       setErrors(err);
       return;
@@ -171,7 +171,7 @@ export function TambahDiskonDialog({ refresh = () => {} }) {
   );
 }
 
-export async function validate(formData: PostDiskonDTO) {
+export async function validateDiscount(formData: PostDiskonDTO) {
   const errors: any = {};
 
   if (!formData.nama) {
