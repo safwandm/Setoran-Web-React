@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from './AuthApi';
+export * from './AvatarApi';
 export * from './DiskonApi';
 export * from './MitraApi';
 export * from './MotorApi';

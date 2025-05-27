@@ -57,11 +57,11 @@ export function RegisterRequestFromJSONTyped(json: any, ignoreDiscriminator: boo
     };
 }
 
-export function RegisterRequestToJSON(json: any): RegisterRequest {
-    return RegisterRequestToJSONTyped(json, false);
-}
+  export function RegisterRequestToJSON(json: any): RegisterRequest {
+      return RegisterRequestToJSONTyped(json, false);
+  }
 
-export function RegisterRequestToJSONTyped(value?: RegisterRequest | null, ignoreDiscriminator: boolean = false): any {
+  export function RegisterRequestToJSONTyped(value?: RegisterRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

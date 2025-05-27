@@ -100,11 +100,11 @@ export function PostDiskonDTOFromJSONTyped(json: any, ignoreDiscriminator: boole
     };
 }
 
-export function PostDiskonDTOToJSON(json: any): PostDiskonDTO {
-    return PostDiskonDTOToJSONTyped(json, false);
-}
+  export function PostDiskonDTOToJSON(json: any): PostDiskonDTO {
+      return PostDiskonDTOToJSONTyped(json, false);
+  }
 
-export function PostDiskonDTOToJSONTyped(value?: PostDiskonDTO | null, ignoreDiscriminator: boolean = false): any {
+  export function PostDiskonDTOToJSONTyped(value?: PostDiskonDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

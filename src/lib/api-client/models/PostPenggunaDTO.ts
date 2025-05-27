@@ -98,11 +98,11 @@ export function PostPenggunaDTOFromJSONTyped(json: any, ignoreDiscriminator: boo
     };
 }
 
-export function PostPenggunaDTOToJSON(json: any): PostPenggunaDTO {
-    return PostPenggunaDTOToJSONTyped(json, false);
-}
+  export function PostPenggunaDTOToJSON(json: any): PostPenggunaDTO {
+      return PostPenggunaDTOToJSONTyped(json, false);
+  }
 
-export function PostPenggunaDTOToJSONTyped(value?: PostPenggunaDTO | null, ignoreDiscriminator: boolean = false): any {
+  export function PostPenggunaDTOToJSONTyped(value?: PostPenggunaDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

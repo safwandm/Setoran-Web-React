@@ -107,11 +107,11 @@ export function PutDiskonDTOFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-export function PutDiskonDTOToJSON(json: any): PutDiskonDTO {
-    return PutDiskonDTOToJSONTyped(json, false);
-}
+  export function PutDiskonDTOToJSON(json: any): PutDiskonDTO {
+      return PutDiskonDTOToJSONTyped(json, false);
+  }
 
-export function PutDiskonDTOToJSONTyped(value?: PutDiskonDTO | null, ignoreDiscriminator: boolean = false): any {
+  export function PutDiskonDTOToJSONTyped(value?: PutDiskonDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

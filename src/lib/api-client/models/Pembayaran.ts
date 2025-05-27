@@ -91,11 +91,11 @@ export function PembayaranFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     };
 }
 
-export function PembayaranToJSON(json: any): Pembayaran {
-    return PembayaranToJSONTyped(json, false);
-}
+  export function PembayaranToJSON(json: any): Pembayaran {
+      return PembayaranToJSONTyped(json, false);
+  }
 
-export function PembayaranToJSONTyped(value?: Pembayaran | null, ignoreDiscriminator: boolean = false): any {
+  export function PembayaranToJSONTyped(value?: Pembayaran | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

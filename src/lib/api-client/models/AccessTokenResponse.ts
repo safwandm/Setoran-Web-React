@@ -72,11 +72,11 @@ export function AccessTokenResponseFromJSONTyped(json: any, ignoreDiscriminator:
     };
 }
 
-export function AccessTokenResponseToJSON(json: any): AccessTokenResponse {
-    return AccessTokenResponseToJSONTyped(json, false);
-}
+  export function AccessTokenResponseToJSON(json: any): AccessTokenResponse {
+      return AccessTokenResponseToJSONTyped(json, false);
+  }
 
-export function AccessTokenResponseToJSONTyped(value?: Omit<AccessTokenResponse, 'tokenType'> | null, ignoreDiscriminator: boolean = false): any {
+  export function AccessTokenResponseToJSONTyped(value?: Omit<AccessTokenResponse, 'tokenType'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

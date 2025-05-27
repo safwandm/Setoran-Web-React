@@ -1,4 +1,5 @@
 apis/AuthApi.ts
+apis/AvatarApi.ts
 apis/DiskonApi.ts
 apis/MitraApi.ts
 apis/MotorApi.ts

@@ -112,11 +112,11 @@ export function UlasanFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ul
     };
 }
 
-export function UlasanToJSON(json: any): Ulasan {
-    return UlasanToJSONTyped(json, false);
-}
+  export function UlasanToJSON(json: any): Ulasan {
+      return UlasanToJSONTyped(json, false);
+  }
 
-export function UlasanToJSONTyped(value?: Ulasan | null, ignoreDiscriminator: boolean = false): any {
+  export function UlasanToJSONTyped(value?: Ulasan | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

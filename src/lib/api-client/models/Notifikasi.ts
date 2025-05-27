@@ -121,11 +121,11 @@ export function NotifikasiFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     };
 }
 
-export function NotifikasiToJSON(json: any): Notifikasi {
-    return NotifikasiToJSONTyped(json, false);
-}
+  export function NotifikasiToJSON(json: any): Notifikasi {
+      return NotifikasiToJSONTyped(json, false);
+  }
 
-export function NotifikasiToJSONTyped(value?: Notifikasi | null, ignoreDiscriminator: boolean = false): any {
+  export function NotifikasiToJSONTyped(value?: Notifikasi | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

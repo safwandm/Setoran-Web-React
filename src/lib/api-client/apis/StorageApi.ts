@@ -68,7 +68,7 @@ export class StorageApi extends runtime.BaseAPI {
 
     /**
      */
-    async storageStorePostRaw(requestParameters: StorageStorePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async storageStorePostRaw(requestParameters: StorageStorePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -109,13 +109,18 @@ export class StorageApi extends runtime.BaseAPI {
             body: formParams,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
     }
 
     /**
      */
-    async storageStorePost(requestParameters: StorageStorePostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.storageStorePostRaw(requestParameters, initOverrides);
+    async storageStorePost(requestParameters: StorageStorePostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.storageStorePostRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
 }

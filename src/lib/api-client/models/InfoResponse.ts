@@ -57,11 +57,11 @@ export function InfoResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-export function InfoResponseToJSON(json: any): InfoResponse {
-    return InfoResponseToJSONTyped(json, false);
-}
+  export function InfoResponseToJSON(json: any): InfoResponse {
+      return InfoResponseToJSONTyped(json, false);
+  }
 
-export function InfoResponseToJSONTyped(value?: InfoResponse | null, ignoreDiscriminator: boolean = false): any {
+  export function InfoResponseToJSONTyped(value?: InfoResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

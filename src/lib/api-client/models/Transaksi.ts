@@ -119,11 +119,11 @@ export function TransaksiFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     };
 }
 
-export function TransaksiToJSON(json: any): Transaksi {
-    return TransaksiToJSONTyped(json, false);
-}
+  export function TransaksiToJSON(json: any): Transaksi {
+      return TransaksiToJSONTyped(json, false);
+  }
 
-export function TransaksiToJSONTyped(value?: Transaksi | null, ignoreDiscriminator: boolean = false): any {
+  export function TransaksiToJSONTyped(value?: Transaksi | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

@@ -62,11 +62,11 @@ export function PutPembayaranDTOFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-export function PutPembayaranDTOToJSON(json: any): PutPembayaranDTO {
-    return PutPembayaranDTOToJSONTyped(json, false);
-}
+  export function PutPembayaranDTOToJSON(json: any): PutPembayaranDTO {
+      return PutPembayaranDTOToJSONTyped(json, false);
+  }
 
-export function PutPembayaranDTOToJSONTyped(value?: PutPembayaranDTO | null, ignoreDiscriminator: boolean = false): any {
+  export function PutPembayaranDTOToJSONTyped(value?: PutPembayaranDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
