@@ -184,7 +184,7 @@ export default function EditPenggunaDrawer(
                         },
                       }))
                     }
-                    readOnly={!editing}
+                    readOnly={true}
                   />
                 </div>
                 <div>
@@ -236,7 +236,7 @@ export default function EditPenggunaDrawer(
                         }
                       })
                     }}
-                    disabled={!editing}
+                    disabled={true}
                   >
                     <SelectTrigger id="status">
                       <SelectValue placeholder="Select status" />
