@@ -24,6 +24,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "../ui/switch"
 import { Separator } from "../ui/separator"
 import { LoadingOverlay } from "../loading-overlay"
+import { formatDateToLongDate } from "@/lib/utils"
 
 export default function EditPenggunaDrawer(
   { 
@@ -123,7 +124,7 @@ export default function EditPenggunaDrawer(
                     ? new Date(pengguna.tanggalLahir).toISOString().split("T")[0]
                     : ""
                 }
-                onChange={(e) => handleChange("tanggalLahir", e.target.value)}
+                onChange={(e) => handleChange("tanggalLahir", new Date(e.target.value))}
                 readOnly={!editing}
               />
             </div>
