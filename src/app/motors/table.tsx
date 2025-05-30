@@ -138,7 +138,7 @@ const columns: ColumnDef<Motor>[] = [
     accessorKey: "idMotor",
     header: () => <div className="w-20 text-left">ID Motor</div>,
     cell: ({ row }) => {
-      return <EditMotorDrawer idMotor={row.original.idMitra!} buttonText={row.original.idMitra?.toString()} />
+      return <EditMotorDrawer idMotor={row.original.idMotor!} buttonText={row.original.idMotor?.toString()} />
     },
     enableHiding: false,
   },

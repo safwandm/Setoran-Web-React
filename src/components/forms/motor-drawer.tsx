@@ -58,7 +58,7 @@ export const StatusMotor = {
 } as const;
 
 export const TransmisiMotor = {
-    Automatic: 'Automatic',
+    Automatic: 'Matic',
     Manual: 'Manual'
 } as const;
 
@@ -194,7 +194,7 @@ export default function EditMotorDrawer({
                 </SelectTrigger>
                 <SelectContent>
                   {Object.keys(TransmisiMotor).map((key, index) => (
-                    <SelectItem key={index} value={key}>{TransmisiMotor[key]}</SelectItem>
+                    <SelectItem key={TransmisiMotor[key]} value={TransmisiMotor[key]}>{TransmisiMotor[key]}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -207,7 +207,7 @@ export default function EditMotorDrawer({
                 </SelectTrigger>
                 <SelectContent>
                   {Object.keys(StatusMotor).map((key, index) => (
-                    <SelectItem key={index} value={key}>{StatusMotor[key]}</SelectItem>
+                    <SelectItem key={StatusMotor[key]} value={StatusMotor[key]}>{StatusMotor[key]}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
