@@ -112,6 +112,7 @@ import { formatDateToLongDate } from "@/lib/utils";
 import ApiService from "@/lib/api-client/wrapper";
 import { LoadingOverlay } from "@/components/loading-overlay";
 import { TambahVoucherDialog } from "./voucher-dialog";
+import EditVoucherDrawer from "@/components/forms/voucher-drawer";
 
 export const schema = z.object({
   id: z.number(),
@@ -238,7 +239,7 @@ export function DataTableVoucher({}) {
       accessorKey: "voucherCode",
       header: () => <div className="w-full text-left">Voucher Code</div>,
       cell: ({ row }) => {
-        return <TableCellViewer item={row.original} />;
+        return <EditVoucherDrawer idVoucher={row.original.idVoucher!} buttonText={row.original.kodeVoucher!} onSave={refresh} />;
       },
       enableHiding: false,
     },

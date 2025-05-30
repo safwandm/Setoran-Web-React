@@ -82,7 +82,7 @@ export function TambahVoucherDialog({ refresh=() => {} }) {
         tanggalAkhir: dateRangeValue.to
     }
 
-    var err = await validate(data)
+    var err = await validateVoucher(data)
     if (Object.keys(err).length !== 0) {
         setErrors(err)
         return
@@ -173,7 +173,7 @@ export function TambahVoucherDialog({ refresh=() => {} }) {
   );
 }
 
-export async function validate(formData: Voucher) {
+export async function validateVoucher(formData: Voucher) {
     let errors: any = {}
 
     if (!formData.kodeVoucher) {

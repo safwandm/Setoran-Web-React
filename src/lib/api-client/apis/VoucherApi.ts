@@ -54,9 +54,8 @@ export interface VoucherGetByCodeCodeGetRequest {
     code: string;
 }
 
-export interface VoucherIdPutRequest {
+export interface VoucherIdVoucherPutRequest {
     idVoucher: number;
-    id: string;
     postVoucherDTO?: PostVoucherDTO;
 }
 
@@ -306,18 +305,11 @@ export class VoucherApi extends runtime.BaseAPI {
 
     /**
      */
-    async voucherIdPutRaw(requestParameters: VoucherIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async voucherIdVoucherPutRaw(requestParameters: VoucherIdVoucherPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['idVoucher'] == null) {
             throw new runtime.RequiredError(
                 'idVoucher',
-                'Required parameter "idVoucher" was null or undefined when calling voucherIdPut().'
-            );
-        }
-
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling voucherIdPut().'
+                'Required parameter "idVoucher" was null or undefined when calling voucherIdVoucherPut().'
             );
         }
 
@@ -336,7 +328,7 @@ export class VoucherApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/Voucher/{id}`.replace(`{${"idVoucher"}}`, encodeURIComponent(String(requestParameters['idVoucher']))).replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/Voucher/{idVoucher}`.replace(`{${"idVoucher"}}`, encodeURIComponent(String(requestParameters['idVoucher']))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -348,8 +340,8 @@ export class VoucherApi extends runtime.BaseAPI {
 
     /**
      */
-    async voucherIdPut(requestParameters: VoucherIdPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.voucherIdPutRaw(requestParameters, initOverrides);
+    async voucherIdVoucherPut(requestParameters: VoucherIdVoucherPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.voucherIdVoucherPutRaw(requestParameters, initOverrides);
     }
 
     /**
