@@ -20,6 +20,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Button } from "../ui/button"
 import { IconLoader } from "@tabler/icons-react"
 
+export const StatusTransaksi = {
+  Created: 'dibuat',
+  Ongoing: 'berlangsung',
+  Cancelled: 'batal',
+  Finished: 'selesai'
+} as const;
+
 export default function EditTransactionDrawer(
   { 
     idTransaksi, 

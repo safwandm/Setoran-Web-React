@@ -111,7 +111,7 @@ import ApiService from "@/lib/api-client/wrapper"
 import { formatMotorName } from "@/lib/utils"
 import EditPenggunaDrawer from "@/components/forms/pengguna-drawer"
 import { LoadingOverlay } from "@/components/loading-overlay"
-import EditMotorDrawer from "@/components/forms/motor-drawer"
+import EditMotorDrawer, { StatusMotor } from "@/components/forms/motor-drawer"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -210,14 +210,19 @@ const columns: ColumnDef<Motor>[] = [
     header: () => <div className="w-30 text-left">Status</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.statusMotor === "Tersedia" ? (
+        {row.original.statusMotor === StatusMotor.Available ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-blue-400" />
-        ) : row.original.statusMotor === "For Rent" ? (
+        ) : row.original.statusMotor === StatusMotor.Rented ? (
           <IconUser className="" />
-        ) : row.original.statusMotor === "Under Construction" ? (
+        ) : row.original.statusMotor === StatusMotor.Reserved ? (
           <IconBuildingWarehouse className=" text-muted-foreground" />
+        ) :
+        row.original.statusMotor === StatusMotor.UnderMaintenance ? (
+          <IconCircleCheckFilled className=" text-blue-500" />
         ):
-        <IconCircleCheckFilled className=" text-muted-foreground" />
+        row.original.statusMotor === StatusMotor.NotAvailable ? (
+          <IconCircleCheckFilled className=" text-red-500" />
+        ) : null
         }
         {row.original.statusMotor}
       </Badge>
