@@ -311,7 +311,10 @@ function DraggableRow({ row }: { row: Row<Diskon> }) {
 export function DataTableDiscount() {
   const [loading, setLoading] = React.useState(true)
   const [data, setData] = React.useState<Diskon[]>([])
-  const [search, setSearch] = React.useState('');
+  const [filter, setFilter] = React.useState({
+    search: "",
+    status: ""
+  })
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -336,19 +339,20 @@ export function DataTableDiscount() {
   )
 
   const filteredData: Diskon[] = React.useMemo(() => {
-    if (!search) return data;
+    if (!filter.search) return data;
   
-    const lowerSearch = search.toLowerCase();
+    const lowerSearch = filter.search.toLowerCase();
   
-    return data.filter((row) =>
-      Object.values(row).some((value) =>{
-        console.log(value.idMotor)
+    return data.filter((row) => {
+      console.log(filter.status, row.statusDiskon, (filter.status == "All" || row.statusDiskon == filter.status))
+      return (filter.status === "All" || row.statusDiskon == filter.status) && Object.values(row).some((value) =>{
         if (value.idMotor !== undefined)
           return formatMotorName(value).toLowerCase().includes(lowerSearch)
         return String(value).toLowerCase().includes(lowerSearch)
       })
+    }
     );
-  }, [data, search]);
+  }, [data, filter]);
 
   const table = useReactTable<Diskon>({
     data: filteredData,
@@ -435,22 +439,19 @@ export function DataTableDiscount() {
           <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
         </TabsList> */}
         <div className="flex items-center gap-2">
-          {/* <div className="relative">
+          <div className="relative">
             <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search .."
-              value={}
-              onValueChange={() => {}}
+              value={filter.search}
+              onChange={(event) => setFilter({ ...filter, search: event.target.value })}
               className="h-9 w-[150px] lg:w-[250px] pl-8"
             />
-          </div> */}
-          {/* <Button variant="outline" size="sm">
-            <IconPlus />
-            <span className="hidden lg:inline">Add Voucher</span>
-          </Button> */}
-          <Select
+          </div>
+          {/* <Select
             defaultValue="All"
             onValueChange={(e) => {
+              setFilter( { ...filter, status: e })
             }}
           >
             <SelectTrigger className="flex w-fit" size="sm" id="view-selector">
@@ -463,7 +464,7 @@ export function DataTableDiscount() {
                 Status: Non Aktif
               </SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
           <TambahDiskonDialog refresh={refresh}/>
         </div>
       </div>
