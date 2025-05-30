@@ -134,57 +134,89 @@ function DragHandle({ id }: { id: number }) {
 }
 
 const columns: ColumnDef<Motor>[] = [
-  // {
-  //   id: "drag",
-  //   header: () => null,
-  //   cell: ({ row }) => <DragHandle id={row.original.idMotor || 0} />,
-  // },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
-    accessorKey: "motorId",
-    header: () => <div className="w-20 text-left">Motor ID</div>,
+    accessorKey: "idMotor",
+    header: () => <div className="w-20 text-left">ID Motor</div>,
     cell: ({ row }) => {
       return <EditMotorDrawer idMotor={row.original.idMitra!} buttonText={row.original.idMitra?.toString()} />
     },
     enableHiding: false,
   },
   {
-    accessorKey: "motorName",
-    header: () => <div className="w-30 text-left">Motor Name</div>,
+    accessorKey: "platNomor",
+    header: () => <div className="w-30 text-left">Plat Nomor</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {formatMotorName(row.original)}
+          {row.original.platNomor}
       </div>
     ),
   },
   {
-    accessorKey: "mitraName",
-    header: () => <div className="w-30 text-left">Mitra Name</div>,
+    accessorKey: "nomorSTNK",
+    header: () => <div className="w-30 text-left">Nomor STNK</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.nomorSTNK}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "nomorBPKB",
+    header: () => <div className="w-30 text-left">Nomor BPKB</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.nomorBPKB}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "model",
+    header: () => <div className="w-30 text-left">Model</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.model}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "brand",
+    header: () => <div className="w-30 text-left">Brand</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.brand}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "tipe",
+    header: () => <div className="w-30 text-left">Tipe</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.tipe}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "tahun",
+    header: () => <div className="w-30 text-left">Tahun</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.tahun}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "transmisi",
+    header: () => <div className="w-30 text-left">Transmisi</div>,
+    cell: ({ row }) => (
+      <div className="w-9">
+          {row.original.transmisi}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "idMitra",
+    header: () => <div className="w-30 text-left">ID Mitra</div>,
     cell: ({ row }) => {
       // TODO: agak boros request mungkin bikin dto + nama langsung
       const [pengguna, setPengguna] = React.useState<Pengguna>({})
@@ -206,8 +238,8 @@ const columns: ColumnDef<Motor>[] = [
     )},
   },
   {
-    accessorKey: "status",
-    header: () => <div className="w-30 text-left">Status</div>,
+    accessorKey: "statusMotor",
+    header: () => <div className="w-30 text-left">Status Motor</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
         {row.original.statusMotor === StatusMotor.Available ? (
@@ -229,47 +261,14 @@ const columns: ColumnDef<Motor>[] = [
     ),
   },
   {
-    accessorKey: "price",
-    header: () => <div className="w-30 text-left">Price</div>,
+    accessorKey: "hargaHarian",
+    header: () => <div className="w-30 text-left">Harga Harian</div>,
     cell: ({ row }) => (
       <div className="w-9">
           {row.original.hargaHarian}
       </div>
     ),
   },
-  // {
-  //   accessorKey: "rented",
-  //   header: "Rented",
-  //   cell: ({ row }) => (
-  //     <div className="w-9">
-  //         {row.original.rented}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   id: "actions",
-  //   cell: () => (
-  //     <DropdownMenu>
-  //       <DropdownMenuTrigger asChild>
-  //         <Button
-  //           variant="ghost"
-  //           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-  //           size="icon"
-  //         >
-  //           <IconDotsVertical />
-  //           <span className="sr-only">Open menu</span>
-  //         </Button>
-  //       </DropdownMenuTrigger>
-  //       <DropdownMenuContent align="end" className="w-32">
-  //         <DropdownMenuItem>Edit</DropdownMenuItem>
-  //         <DropdownMenuItem>Make a copy</DropdownMenuItem>
-  //         <DropdownMenuItem>Favorite</DropdownMenuItem>
-  //         <DropdownMenuSeparator />
-  //         <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-  //       </DropdownMenuContent>
-  //     </DropdownMenu>
-  //   ),
-  // },
 ]
 
 function DraggableRow({ row }: { row: Row<Motor> }) {
