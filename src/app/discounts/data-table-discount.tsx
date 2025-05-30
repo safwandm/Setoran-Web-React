@@ -419,17 +419,35 @@ export function DataTableDiscount() {
           <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
         </TabsList> */}
         <div className="flex items-center gap-2">
-             {/* <div className="relative">
-                <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="Search by Id .."
-                        value={(table.getColumn("motorId")?.getFilterValue() as string) ?? ""}
-                        onChange={(event) =>
-                          table.getColumn("motorId")?.setFilterValue(event.target.value)
-                        }
-                        className="h-9 w-[150px] lg:w-[250px] pl-8"
-                      />
-              </div> */}
+          {/* <div className="relative">
+            <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search .."
+              value={}
+              onValueChange={() => {}}
+              className="h-9 w-[150px] lg:w-[250px] pl-8"
+            />
+          </div> */}
+          {/* <Button variant="outline" size="sm">
+            <IconPlus />
+            <span className="hidden lg:inline">Add Voucher</span>
+          </Button> */}
+          <Select
+            defaultValue="All"
+            onValueChange={(e) => {
+            }}
+          >
+            <SelectTrigger className="flex w-fit" size="sm" id="view-selector">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={"All"}>Status: All</SelectItem>
+              <SelectItem value={StatusDiskon.Aktif}>Status: Aktif</SelectItem>
+              <SelectItem value={StatusDiskon.NonAktif}>
+                Status: Non Aktif
+              </SelectItem>
+            </SelectContent>
+          </Select>
           <TambahDiskonDialog refresh={refresh}/>
         </div>
       </div>
