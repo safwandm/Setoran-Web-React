@@ -49,16 +49,31 @@ const InputField = ({
   </div>
 );
 
+export const StatusMotor = {
+  Available: 'Tersedia',
+  Rented: 'Disewa',
+  Reserved: 'Dipesan',
+  UnderMaintenance: 'Dalam Perbaikan',
+  NotAvailable: 'Tidak Tersedia'
+} as const;
+
+export const TransmisiMotor = {
+    Automatic: 'Automatic',
+    Manual: 'Manual'
+} as const;
+
 export default function EditMotorDrawer({
   idMotor,
   onSave,
   buttonText,
-  inDropdown = false
+  inDropdown = false,
+  editing=true 
 }: {
   idMotor: number;
   onSave?: (updatedData: Motor) => void;
   buttonText?: string;
   inDropdown?: boolean | null | undefined;
+  editing?: boolean
 }) {
   const isMobile = useIsMobile();
   const [motor, setMotor] = useState<Motor>({});
@@ -109,7 +124,7 @@ export default function EditMotorDrawer({
           <DropdownMenuItem>{buttonText ?? "Edit"}</DropdownMenuItem>
         ) : (
           <Button variant="link" className="text-foreground w-fit px-0 text-left">
-            {buttonText ?? `Edit Motor #${idMotor}`}
+            {buttonText ?? idMotor}
           </Button>
         )}
       </DrawerTrigger>
@@ -178,8 +193,9 @@ export default function EditMotorDrawer({
                   <SelectValue placeholder="Select transmission" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="automatic">Automatic</SelectItem>
-                  <SelectItem value="manual">Manual</SelectItem>
+                  {Object.keys(TransmisiMotor).map((key, index) => (
+                    <SelectItem key={index} value={key}>{TransmisiMotor[key]}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -190,8 +206,9 @@ export default function EditMotorDrawer({
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="rented">Rented</SelectItem>
-                  <SelectItem value="available">Available</SelectItem>
+                  {Object.keys(StatusMotor).map((key, index) => (
+                    <SelectItem key={index} value={key}>{StatusMotor[key]}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

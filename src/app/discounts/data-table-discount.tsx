@@ -113,6 +113,7 @@ import { formatDateToLongDate, formatMotorName } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import EditDiskonDrawer from "@/components/forms/discount-drawer"
 import { TambahDiskonDialog } from "./diskon-dialog"
+import EditMotorDrawer from "@/components/forms/motor-drawer"
 
 
 // Create a separate component for the drag handle
@@ -195,7 +196,7 @@ const columns: ColumnDef<Diskon>[] = [
     accessorKey: "motorId",
     header: () => <div className="w-full text-left">Motor ID</div>,
     cell: ({ row }) => {
-      return row.original.idMotor
+      return <EditMotorDrawer idMotor={row.original.idMotor!} editing={false} />
     },
     enableHiding: false,
   },
