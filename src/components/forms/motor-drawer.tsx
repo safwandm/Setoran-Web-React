@@ -35,6 +35,7 @@ const InputField = ({
   value,
   onChange,
   error,
+  disabled
 }: any) => (
   <div className="space-y-1">
     <Label htmlFor={name}>{label}</Label>
@@ -44,6 +45,7 @@ const InputField = ({
       type={type}
       value={value}
       onChange={onChange}
+      disabled={disabled}
     />
     {error && <p className="text-sm text-red-600">{error}</p>}
   </div>
@@ -130,8 +132,8 @@ export default function EditMotorDrawer({
       </DrawerTrigger>
       <DrawerContent className="sm:max-w-[500px]">
         <DrawerHeader>
-          <DrawerTitle>Edit Motor</DrawerTitle>
-          <DrawerDescription>Make changes to Motor ID: {idMotor}</DrawerDescription>
+          <DrawerTitle>{editing ? "Edit Motor" : "Detail Motor"}</DrawerTitle>
+          <DrawerDescription>{editing && `Make changes to Motor ID: ${idMotor}`}</DrawerDescription>
         </DrawerHeader>
         <LoadingOverlay loading={loading}>
           <div className="p-4 space-y-4 overflow-y-auto max-h-[70vh]">
@@ -141,6 +143,7 @@ export default function EditMotorDrawer({
               value={motor.platNomor ?? ""}
               onChange={(e) => handleChange("platNomor", e.target.value)}
               error={errors?.platNomor}
+              disabled={!editing}
             />
             {/* Add other InputFields for Motor properties */}
             <InputField
@@ -149,6 +152,7 @@ export default function EditMotorDrawer({
               value={motor.nomorSTNK ?? ""}
               onChange={(e) => handleChange("nomorSTNK", e.target.value)}
               error={errors?.nomorSTNK}
+              disabled={!editing}
             />
             <InputField
               name="nomorBPKB"
@@ -156,6 +160,7 @@ export default function EditMotorDrawer({
               value={motor.nomorBPKB ?? ""}
               onChange={(e) => handleChange("nomorBPKB", e.target.value)}
               error={errors?.nomorBPKB}
+              disabled={!editing}
             />
             <InputField
               name="model"
@@ -163,6 +168,7 @@ export default function EditMotorDrawer({
               value={motor.model ?? ""}
               onChange={(e) => handleChange("model", e.target.value)}
               error={errors?.model}
+              disabled={!editing}
             />
             <InputField
               name="brand"
@@ -170,6 +176,7 @@ export default function EditMotorDrawer({
               value={motor.brand ?? ""}
               onChange={(e) => handleChange("brand", e.target.value)}
               error={errors?.brand}
+              disabled={!editing}
             />
             <InputField
               name="tipe"
@@ -177,6 +184,7 @@ export default function EditMotorDrawer({
               value={motor.tipe ?? ""}
               onChange={(e) => handleChange("tipe", e.target.value)}
               error={errors?.tipe}
+              disabled={!editing}
             />
             <InputField
               name="tahun"
@@ -185,10 +193,11 @@ export default function EditMotorDrawer({
               value={motor.tahun ?? 0}
               onChange={(e) => handleChange("tahun", parseInt(e.target.value))}
               error={errors?.tahun}
+              disabled={!editing}
             />
             <div className="space-y-1">
               <Label htmlFor="transmisi">Transmission</Label>
-              <Select value={motor.transmisi || ""} onValueChange={(value) => handleChange("transmisi", value)}>
+              <Select value={motor.transmisi || ""} onValueChange={(value) => handleChange("transmisi", value)} disabled={!editing}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select transmission" />
                 </SelectTrigger>
@@ -201,7 +210,7 @@ export default function EditMotorDrawer({
             </div>
             <div className="space-y-1">
               <Label htmlFor="statusMotor">Status</Label>
-              <Select value={motor.statusMotor || ""} onValueChange={(value) => handleChange("statusMotor", value)}>
+              <Select value={motor.statusMotor || ""} onValueChange={(value) => handleChange("statusMotor", value)} disabled={!editing}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
@@ -219,6 +228,7 @@ export default function EditMotorDrawer({
               value={motor.hargaHarian ?? 0}
               onChange={(e) => handleChange("hargaHarian", parseInt(e.target.value))}
               error={errors?.hargaHarian}
+              disabled={!editing}
             />
           </div>
         </LoadingOverlay>
