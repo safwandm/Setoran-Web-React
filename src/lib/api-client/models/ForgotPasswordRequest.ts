@@ -49,11 +49,11 @@ export function ForgotPasswordRequestFromJSONTyped(json: any, ignoreDiscriminato
     };
 }
 
-export function ForgotPasswordRequestToJSON(json: any): ForgotPasswordRequest {
-    return ForgotPasswordRequestToJSONTyped(json, false);
-}
+  export function ForgotPasswordRequestToJSON(json: any): ForgotPasswordRequest {
+      return ForgotPasswordRequestToJSONTyped(json, false);
+  }
 
-export function ForgotPasswordRequestToJSONTyped(value?: ForgotPasswordRequest | null, ignoreDiscriminator: boolean = false): any {
+  export function ForgotPasswordRequestToJSONTyped(value?: ForgotPasswordRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

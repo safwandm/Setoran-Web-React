@@ -25,17 +25,15 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { usetTitle } from "@/components/layout"
+import { Pengguna, PostPenggunaDTO } from "@/lib/api-client"
+import { LoadingOverlay } from "@/components/loading-overlay"
+import ApiService, { BASE_PATH } from "@/lib/api-client/wrapper"
+import { useCurrentUserStore } from "@/lib/stores/current-user"
 
 export default function AccountPage() {
   const setTitle = usetTitle()
   const [isLoading, setIsLoading] = useState(false)
-
-  const [profile, setProfile] = useState({
-    fullName: "John Doe",
-    email: "john@example.com",
-    phone: "+62123456789",
-    avatar: "/placeholder-avatar.png"
-  })
+  const [pengguna, setPengguna] = useState<Pengguna>({})
 
   const [passwords, setPasswords] = useState({
     currentPassword: "",
@@ -43,28 +41,34 @@ export default function AccountPage() {
     confirmPassword: ""
   })
 
+  const currentUser = useCurrentUserStore((state) => state.currentUser)
+  const refreshCurrentUser = useCurrentUserStore((state) => state.refresh)
+
+  const apiService = ApiService.getInstance()
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setProfile(prev => ({
-          ...prev,
-          avatar: reader.result as string
-        }))
-        toast.success("Profile picture updated")
-      }
-      reader.readAsDataURL(file)
+      setIsLoading(true)
+      apiService.penggunaApi.penggunaUpdateProfileImageIdPost({ file: file, id: pengguna.id! }).then(res => {
+        toast.success("Profile picture updated!")
+        setPengguna({ ... pengguna, idGambar: res })
+        setIsLoading(false)
+        refreshCurrentUser()
+      })
     }
   }
 
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      toast.success("Profile updated successfully")
-    }, 1000)
+
+    apiService.penggunaApi.penggunaPut({ postPenggunaDTO: { id: pengguna.id!,  nama: pengguna.nama, nomorTelepon: pengguna.nomorTelepon } })
+      .then(res => {
+        toast.success("Profile updated successfully")
+        refreshCurrentUser()
+        setIsLoading(false)
+      })
   }
 
   const handlePasswordUpdate = (e: React.FormEvent) => {
@@ -85,18 +89,27 @@ export default function AccountPage() {
     }, 1000)
   }
 
+  const refresh = () => {
+    setIsLoading(true)
+    ApiService.getInstance().penggunaApi.penggunaCurrentPenggunaGet().then(res => {
+      setPengguna(res)
+      setIsLoading(false)
+    })
+  }
+
   useEffect(() => {
     setTitle("Account Setting")
+    refresh()
   }, [])
 
   return (
         <div>
           <div className="flex flex-1 flex-col p-4 md:p-6">
             <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="mb-4 gap-2">
+              {/* <TabsList className="mb-4 gap-2">
                 <TabsTrigger value="profile">Profile</TabsTrigger>
                 <TabsTrigger value="password">Password</TabsTrigger>
-              </TabsList>
+              </TabsList> */}
               <TabsContent value="profile">
                 <Card>
                   <CardHeader>
@@ -107,61 +120,64 @@ export default function AccountPage() {
                   </CardHeader>
                   <form onSubmit={handleProfileUpdate}>
                     <CardContent className="space-y-6">
-                      <div className="flex items-center gap-4">
-                        <img
-                          src={profile.avatar}
-                          alt="Profile"
-                          className="h-20 w-20 rounded-full object-cover"
-                        />
-                        <Label
-                          htmlFor="avatar"
-                          className="flex cursor-pointer items-center gap-2 text-sm font-medium text-primary hover:text-primary/80"
-                        >
-                          <IconUpload className="h-4 w-4" />
-                          Change Picture
-                          <Input
-                            id="avatar"
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={handleImageUpload}
-                          />
-                        </Label>
-                      </div>
-                      <div className="grid gap-4">
-                        <div className="grid gap-2">
-                          <Label htmlFor="fullName">Full Name</Label>
-                          <Input
-                            id="fullName"
-                            value={profile.fullName}
-                            onChange={(e) =>
-                              setProfile({ ...profile, fullName: e.target.value })
-                            }
-                          />
+                      <LoadingOverlay loading={isLoading}>
+                        <div className="flex items-center gap-4">
+                              <img
+                              src={pengguna.idGambar != undefined ? `${BASE_PATH}/storage/fetch/${pengguna.idGambar}` : `${BASE_PATH}/avatar?name=${pengguna.nama}`}
+                              alt="Profile"
+                              className="h-20 w-20 rounded-full object-cover"
+                            />
+                          <Label
+                            htmlFor="avatar"
+                            className="flex cursor-pointer items-center gap-2 text-sm font-medium text-primary hover:text-primary/80"
+                          >
+                            <IconUpload className="h-4 w-4" />
+                            Change Picture
+                            <Input
+                              id="avatar"
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={handleImageUpload}
+                            />
+                          </Label>
                         </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="email">Email</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            value={profile.email}
-                            onChange={(e) =>
-                              setProfile({ ...profile, email: e.target.value })
-                            }
-                          />
+                        <div className="grid gap-4 pt-5">
+                          <div className="grid gap-2">
+                            <Label htmlFor="fullName">Full Name</Label>
+                            <Input
+                              id="fullName"
+                              value={pengguna.nama!}
+                              onChange={(e) =>
+                                setPengguna({ ... pengguna, nama: e.target.value })
+                              }
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                              id="email"
+                              type="email"
+                              value={pengguna.email!}
+                              onChange={(e) =>
+                                setPengguna({ ...pengguna, email: e.target.value })
+                              }
+                              disabled={true}
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="phone">Phone Number</Label>
+                            <Input
+                              id="phone"
+                              type="tel"
+                              value={pengguna.nomorTelepon!}
+                              onChange={(e) =>
+                                setPengguna({ ...pengguna, nomorTelepon: e.target.value })
+                              }
+                            />
+                          </div>
                         </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="phone">Phone Number</Label>
-                          <Input
-                            id="phone"
-                            type="tel"
-                            value={profile.phone}
-                            onChange={(e) =>
-                              setProfile({ ...profile, phone: e.target.value })
-                            }
-                          />
-                        </div>
-                      </div>
+                      </LoadingOverlay>
                     </CardContent>
                     <CardFooter className="flex justify-end px-6 py-4">
                       <Button className="grid gap-10" type="submit" disabled={isLoading} >

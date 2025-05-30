@@ -91,11 +91,11 @@ export function PelangganFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     };
 }
 
-export function PelangganToJSON(json: any): Pelanggan {
-    return PelangganToJSONTyped(json, false);
-}
+  export function PelangganToJSON(json: any): Pelanggan {
+      return PelangganToJSONTyped(json, false);
+  }
 
-export function PelangganToJSONTyped(value?: Pelanggan | null, ignoreDiscriminator: boolean = false): any {
+  export function PelangganToJSONTyped(value?: Pelanggan | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

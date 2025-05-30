@@ -2,12 +2,12 @@ import dotenv from 'dotenv';
 dotenv.config()
 
 import { Configuration } from './runtime';
-import { AuthApi, DiskonApi, MitraApi, MotorApi, NotifikasiApi, PelangganApi, PenggunaApi, SetoranAPINETApi, TransaksiApi } from './apis';
+import { AuthApi, DiskonApi, MitraApi, MotorApi, NotifikasiApi, PelangganApi, PenggunaApi, SetoranAPINETApi, StorageApi, TransaksiApi } from './apis';
 import { VoucherApi } from './apis';
 // register api lain kalau butuh
 
 // biar konfigurasi simple, kalau mau dev local buat .env
-const BASE_PATH = process.env.NEXT_PUBLIC_BACKEND_HOST || "https://160.19.167.222:5104"
+export const BASE_PATH = process.env.NEXT_PUBLIC_BACKEND_HOST || "https://160.19.167.222:5104"
 
 class ApiService {
   private static instance: ApiService;
@@ -23,6 +23,7 @@ class ApiService {
   public notifikasiApi!: NotifikasiApi;
   public transaksiApi!: TransaksiApi;
   public diskonApi!: DiskonApi;
+  public storageApi!: StorageApi;
 
   private constructor(config?: Configuration) {
     if (config == undefined)
@@ -47,6 +48,7 @@ class ApiService {
     this.notifikasiApi = new NotifikasiApi(this.config);
     this.transaksiApi = new TransaksiApi(this.config);
     this.diskonApi = new DiskonApi(this.config);
+    this.storageApi = new StorageApi(this.config);
   }
 
   public static getInstance(): ApiService {

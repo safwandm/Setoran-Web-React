@@ -154,11 +154,11 @@ export function MotorFromJSONTyped(json: any, ignoreDiscriminator: boolean): Mot
     };
 }
 
-export function MotorToJSON(json: any): Motor {
-    return MotorToJSONTyped(json, false);
-}
+  export function MotorToJSON(json: any): Motor {
+      return MotorToJSONTyped(json, false);
+  }
 
-export function MotorToJSONTyped(value?: Motor | null, ignoreDiscriminator: boolean = false): any {
+  export function MotorToJSONTyped(value?: Motor | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

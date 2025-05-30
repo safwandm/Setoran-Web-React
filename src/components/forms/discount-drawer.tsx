@@ -19,6 +19,8 @@ import { Button } from "../ui/button";
 import { IconLoader } from "@tabler/icons-react";
 import { LoadingOverlay } from "../loading-overlay";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
+import { formatMotorName } from "@/lib/utils";
+import { validateDiscount } from "@/app/discounts/diskon-dialog";
 
 export default function EditDiskonDrawer({
   idDiskon,
@@ -55,6 +57,13 @@ export default function EditDiskonDrawer({
 
   const handleSave = async () => {
     try {
+      var errors = await validateDiscount(diskon)
+      if (Object.keys(errors).length !== 0) {
+        toast.error("Invalid input");
+        return;
+      }
+      console.log(errors, diskon)
+
       setIsLoading(true);
       await apiService.diskonApi.diskonPut({ putDiskonDTO: diskon });
       onSave?.({ ...diskon });
@@ -85,21 +94,28 @@ export default function EditDiskonDrawer({
         <LoadingOverlay loading={loading}>
           <div className="p-4 space-y-4 overflow-y-auto max-h-[70vh]">
             <div>
-              <Label className="py-2">Nama:</Label>
+              <Label className="py-2">Name:</Label>
               <Input
                 value={diskon.nama ?? ""}
                 onChange={(e) => handleChange("nama", e.target.value)}
               />
             </div>
             <div>
-              <Label className="py-2">Deskripsi:</Label>
+              <Label className="py-2">Description:</Label>
               <Input
                 value={diskon.deskripsi ?? ""}
                 onChange={(e) => handleChange("deskripsi", e.target.value)}
               />
             </div>
             <div>
-              <Label className="py-2">Jumlah Diskon (%):</Label>
+              <Label className="py-2">For Motor Id:</Label>
+              <Input
+                value={diskon.idMotor}
+                readOnly={true}
+              />
+            </div>
+            <div>
+              <Label className="py-2">Discount amount:</Label>
               <Input
                 type="number"
                 value={diskon.jumlahDiskon ?? 0}
@@ -107,7 +123,7 @@ export default function EditDiskonDrawer({
               />
             </div>
             <div>
-              <Label className="py-2">Tanggal Mulai:</Label>
+              <Label className="py-2">Start Date:</Label>
               <Input
                 type="date"
                 value={diskon.tanggalMulai ? new Date(diskon.tanggalMulai).toISOString().split("T")[0] : ""}
@@ -115,7 +131,7 @@ export default function EditDiskonDrawer({
               />
             </div>
             <div>
-              <Label className="py-2">Tanggal Akhir:</Label>
+              <Label className="py-2">End Date:</Label>
               <Input
                 type="date"
                 value={diskon.tanggalAkhir ? new Date(diskon.tanggalAkhir).toISOString().split("T")[0] : ""}

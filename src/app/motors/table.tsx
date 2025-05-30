@@ -106,9 +106,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { Motor } from "@/lib/api-client"
+import { Motor, Pengguna } from "@/lib/api-client"
 import ApiService from "@/lib/api-client/wrapper"
 import { formatMotorName } from "@/lib/utils"
+import EditPenggunaDrawer from "@/components/forms/pengguna-drawer"
+import { LoadingOverlay } from "@/components/loading-overlay"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -182,11 +184,25 @@ const columns: ColumnDef<Motor>[] = [
   {
     accessorKey: "mitraName",
     header: () => <div className="w-30 text-left">Mitra Name</div>,
-    cell: ({ row }) => (
-      <div className="w-9">
-          {row.original.idMitra}
-      </div>
-    ),
+    cell: ({ row }) => {
+      // TODO: agak boros request mungkin bikin dto + nama langsung
+      const [pengguna, setPengguna] = React.useState<Pengguna>({})
+      const [loading, setLoading] = React.useState(true)
+
+      React.useEffect(() => {
+        ApiService.getInstance().penggunaApi.penggunaFromMitraGet({ idMitra: row.original.idMitra! }).then(res => {
+          setPengguna(res)
+          setLoading(false)
+        })
+      }, [])
+
+      return (
+        <div className="w-9">
+          <LoadingOverlay loading={loading}>
+            {pengguna.id ? <EditPenggunaDrawer idPengguna={pengguna.id} buttonText={pengguna.nama!} editing={false} /> : ""}
+          </LoadingOverlay>
+        </div>
+    )},
   },
   {
     accessorKey: "status",
@@ -286,7 +302,7 @@ export function TableMotors() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 20,
   })
   const sortableId = React.useId()
   const sensors = useSensors(

@@ -1,5 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile"
-import { Pengguna, PostPelangganDTO, PostPenggunaDTO, Transaksi } from "@/lib/api-client"
+import { Pengguna, PostPelangganDTO, PostPenggunaDTO, StatusMitra, Transaksi } from "@/lib/api-client"
 import ApiService from "@/lib/api-client/wrapper"
 import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -24,16 +24,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "../ui/switch"
 import { Separator } from "../ui/separator"
 import { LoadingOverlay } from "../loading-overlay"
+import { formatDateToLongDate, getGambar } from "@/lib/utils"
 
 export default function EditPenggunaDrawer(
   { 
     idPengguna, 
     onSave,
-    buttonText 
+    buttonText,
+    editing=true 
   }: { 
     idPengguna: string
     onSave?: (updatedData: Pengguna) => void
     buttonText: string | undefined
+    editing?: boolean
   }
 ) {
   const isMobile = useIsMobile()
@@ -90,15 +93,18 @@ export default function EditPenggunaDrawer(
           {buttonText ?? idPengguna}
         </Button>
       </DrawerTrigger>
-      <DrawerContent className=" sm:max-w-[500px]">
+      <DrawerContent className=" sm:max-w-[500px] overflow-scroll">
         <DrawerHeader>
-          <DrawerTitle>Edit User</DrawerTitle>
-          <DrawerDescription>
+          <DrawerTitle>{editing ? "Edit User" : "User Detail"}</DrawerTitle>
+          { editing ? <DrawerDescription>
             Make changes to pengguna ID: {idPengguna}
-          </DrawerDescription>
+          </DrawerDescription> : ""}
         </DrawerHeader>
         <LoadingOverlay loading={loading}>
-            <div className="p-4 space-y-4 overflow-y-auto max-h-[70vh]">
+            <div className="p-4 space-y-4 overflow-y-auto">
+              <div className="w-full flex justify-center">
+                <ClickableAvatar pengguna={pengguna} refresh={refresh} />
+              </div>
           {/* <Card>
             <CardHeader>
               <CardTitle>Pengguna</CardTitle>
@@ -109,6 +115,7 @@ export default function EditPenggunaDrawer(
               <Input
                 value={pengguna.nama ?? ""}
                 onChange={(e) => handleChange("nama", e.target.value)}
+                readOnly={!editing}
               />
             </div>
             <div>
@@ -120,7 +127,8 @@ export default function EditPenggunaDrawer(
                     ? new Date(pengguna.tanggalLahir).toISOString().split("T")[0]
                     : ""
                 }
-                onChange={(e) => handleChange("tanggalLahir", e.target.value)}
+                onChange={(e) => handleChange("tanggalLahir", new Date(e.target.value))}
+                readOnly={!editing}
               />
             </div>
             <div>
@@ -129,6 +137,7 @@ export default function EditPenggunaDrawer(
                 type="number"
                 value={pengguna.umur ?? ""}
                 onChange={(e) => handleChange("umur", Number(e.target.value))}
+                readOnly={!editing}
               />
             </div>
             <div>
@@ -136,6 +145,7 @@ export default function EditPenggunaDrawer(
               <Input
                 value={pengguna.nomorTelepon ?? ""}
                 onChange={(e) => handleChange("nomorTelepon", e.target.value)}
+                readOnly={!editing}
               />
             </div>
             <div>
@@ -143,12 +153,14 @@ export default function EditPenggunaDrawer(
               <Input
                 value={pengguna.nomorKTP ?? ""}
                 onChange={(e) => handleChange("nomorKTP", e.target.value)}
+                readOnly={!editing}
               />
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={pengguna.isAdmin ?? false}
                 onCheckedChange={(value) => handleChange("isAdmin", value)}
+                disabled={!editing}
               />
               <Label className="py-2">Admin</Label>
             </div>
@@ -175,6 +187,7 @@ export default function EditPenggunaDrawer(
                         },
                       }))
                     }
+                    readOnly={true}
                   />
                 </div>
                 <div>
@@ -190,6 +203,7 @@ export default function EditPenggunaDrawer(
                         },
                       }))
                     }
+                    readOnly={!editing}
                   />
                 </div>
                 <p>
@@ -213,19 +227,28 @@ export default function EditPenggunaDrawer(
                   <Input value={pengguna.mitra.idMitra ?? ""} />
                 </div>
                 <div>
-                  {/* <Label className="py-2">Status:</Label> */}
-                  {/* <Input
-                          value={pengguna.mitra.status ?? ""}
-                          onChange={(e) =>
-                            setPengguna((prev) => ({
-                              ...prev,
-                              mitra: {
-                                ...prev.mitra!,
-                                status: e.target.value,
-                              },
-                            }))
-                          }
-                        /> */}
+                  <Label className="py-2">Status:</Label>
+                  <Select 
+                    value={pengguna.mitra.status}
+                    onValueChange={(value) => {
+                      setPengguna({
+                        ...pengguna,
+                        mitra: {
+                          ...pengguna.mitra,
+                          status: value as StatusMitra
+                        }
+                      })
+                    }}
+                    disabled={true}
+                  >
+                    <SelectTrigger id="status">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={StatusMitra.Aktif}>Active</SelectItem>
+                      <SelectItem value={StatusMitra.NonAktif}>Non Active</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
           //   </CardContent>
@@ -242,7 +265,7 @@ export default function EditPenggunaDrawer(
     </div>
     </LoadingOverlay>
         <DrawerFooter>
-          <Button 
+        { editing ? <Button 
             onClick={handleSave}
             disabled={isLoading}
           >
@@ -254,12 +277,54 @@ export default function EditPenggunaDrawer(
             ) : (
               'Save changes'
             )}
-          </Button>
+          </Button> : ""}
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">{editing ? "Cancel": "Close"}</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  )
+}
+
+import { useRef } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+
+export function ClickableAvatar({ pengguna, refresh }:{ pengguna: Pengguna, refresh: () => void }) {
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const apiService = ApiService.getInstance()
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      apiService.penggunaApi.penggunaUpdateProfileImageIdPost({ id: pengguna.id!, file: file }).then(res => {
+        refresh()
+      })
+    }
+  }
+
+  return (
+    <div>
+      <Avatar
+        onClick={handleAvatarClick}
+        className="cursor-pointer w-20 h-20 hover:ring-2 hover:ring-primary transition"
+      >
+        <AvatarImage src={getGambar(pengguna.nama!, pengguna.idGambar!)} alt="User Avatar" />
+        {/* <AvatarFallback>U</AvatarFallback> */}
+      </Avatar>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        ref={fileInputRef}
+        className="hidden"
+      />
+    </div>
   )
 }

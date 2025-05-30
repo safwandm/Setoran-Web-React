@@ -107,11 +107,11 @@ export function GetNotifikasDTOFromJSONTyped(json: any, ignoreDiscriminator: boo
     };
 }
 
-export function GetNotifikasDTOToJSON(json: any): GetNotifikasDTO {
-    return GetNotifikasDTOToJSONTyped(json, false);
-}
+  export function GetNotifikasDTOToJSON(json: any): GetNotifikasDTO {
+      return GetNotifikasDTOToJSONTyped(json, false);
+  }
 
-export function GetNotifikasDTOToJSONTyped(value?: GetNotifikasDTO | null, ignoreDiscriminator: boolean = false): any {
+  export function GetNotifikasDTOToJSONTyped(value?: GetNotifikasDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

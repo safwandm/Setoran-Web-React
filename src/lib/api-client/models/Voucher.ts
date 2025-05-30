@@ -114,11 +114,11 @@ export function VoucherFromJSONTyped(json: any, ignoreDiscriminator: boolean): V
     };
 }
 
-export function VoucherToJSON(json: any): Voucher {
-    return VoucherToJSONTyped(json, false);
-}
+  export function VoucherToJSON(json: any): Voucher {
+      return VoucherToJSONTyped(json, false);
+  }
 
-export function VoucherToJSONTyped(value?: Voucher | null, ignoreDiscriminator: boolean = false): any {
+  export function VoucherToJSONTyped(value?: Voucher | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

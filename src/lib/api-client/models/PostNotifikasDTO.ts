@@ -93,11 +93,11 @@ export function PostNotifikasDTOFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-export function PostNotifikasDTOToJSON(json: any): PostNotifikasDTO {
-    return PostNotifikasDTOToJSONTyped(json, false);
-}
+  export function PostNotifikasDTOToJSON(json: any): PostNotifikasDTO {
+      return PostNotifikasDTOToJSONTyped(json, false);
+  }
 
-export function PostNotifikasDTOToJSONTyped(value?: PostNotifikasDTO | null, ignoreDiscriminator: boolean = false): any {
+  export function PostNotifikasDTOToJSONTyped(value?: PostNotifikasDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

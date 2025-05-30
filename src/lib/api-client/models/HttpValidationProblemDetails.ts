@@ -85,11 +85,11 @@ export function HttpValidationProblemDetailsFromJSONTyped(json: any, ignoreDiscr
     };
 }
 
-export function HttpValidationProblemDetailsToJSON(json: any): HttpValidationProblemDetails {
-    return HttpValidationProblemDetailsToJSONTyped(json, false);
-}
+  export function HttpValidationProblemDetailsToJSON(json: any): HttpValidationProblemDetails {
+      return HttpValidationProblemDetailsToJSONTyped(json, false);
+  }
 
-export function HttpValidationProblemDetailsToJSONTyped(value?: HttpValidationProblemDetails | null, ignoreDiscriminator: boolean = false): any {
+  export function HttpValidationProblemDetailsToJSONTyped(value?: HttpValidationProblemDetails | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

@@ -259,11 +259,11 @@ export function PenggunaFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     };
 }
 
-export function PenggunaToJSON(json: any): Pengguna {
-    return PenggunaToJSONTyped(json, false);
-}
+  export function PenggunaToJSON(json: any): Pengguna {
+      return PenggunaToJSONTyped(json, false);
+  }
 
-export function PenggunaToJSONTyped(value?: Omit<Pengguna, 'umur'> | null, ignoreDiscriminator: boolean = false): any {
+  export function PenggunaToJSONTyped(value?: Omit<Pengguna, 'umur'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

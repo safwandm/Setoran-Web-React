@@ -121,11 +121,11 @@ export function DiskonFromJSONTyped(json: any, ignoreDiscriminator: boolean): Di
     };
 }
 
-export function DiskonToJSON(json: any): Diskon {
-    return DiskonToJSONTyped(json, false);
-}
+  export function DiskonToJSON(json: any): Diskon {
+      return DiskonToJSONTyped(json, false);
+  }
 
-export function DiskonToJSONTyped(value?: Diskon | null, ignoreDiscriminator: boolean = false): any {
+  export function DiskonToJSONTyped(value?: Diskon | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

@@ -109,7 +109,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { Diskon, StatusDiskon } from "@/lib/api-client"
-import { formatDateToLongDate } from "@/lib/utils"
+import { formatDateToLongDate, formatMotorName } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import EditDiskonDrawer from "@/components/forms/discount-drawer"
 import { TambahDiskonDialog } from "./diskon-dialog"
@@ -203,13 +203,13 @@ const columns: ColumnDef<Diskon>[] = [
     accessorKey: "motorName",
     header: () => <div className="w-full text-left">Motor Name</div>,
     cell: ({ row }) => {
-      return row.original.motor?.model
+      return formatMotorName(row.original.motor!)
     },
     enableHiding: false,
   },
   {
     accessorKey: "discountValue",
-    header: () => <div className="w-30 text-left">Discount Value</div>,
+    header: () => <div className="w-30 text-left">Discount Amount</div>,
     cell: ({ row }) => (
       <div className="w-9">
           {row.original.jumlahDiskon}
@@ -311,6 +311,7 @@ function DraggableRow({ row }: { row: Row<Diskon> }) {
 export function DataTableDiscount() {
   const [loading, setLoading] = React.useState(true)
   const [data, setData] = React.useState<Diskon[]>([])
+  const [search, setSearch] = React.useState('');
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -320,7 +321,7 @@ export function DataTableDiscount() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 20,
   })
   const sortableId = React.useId()
   const sensors = useSensors(
@@ -334,8 +335,23 @@ export function DataTableDiscount() {
     [data]
   )
 
-  const table = useReactTable({
-    data,
+  const filteredData: Diskon[] = React.useMemo(() => {
+    if (!search) return data;
+  
+    const lowerSearch = search.toLowerCase();
+  
+    return data.filter((row) =>
+      Object.values(row).some((value) =>{
+        console.log(value.idMotor)
+        if (value.idMotor !== undefined)
+          return formatMotorName(value).toLowerCase().includes(lowerSearch)
+        return String(value).toLowerCase().includes(lowerSearch)
+      })
+    );
+  }, [data, search]);
+
+  const table = useReactTable<Diskon>({
+    data: filteredData,
     columns,
     state: {
       sorting,

@@ -99,11 +99,11 @@ export function PostVoucherDTOFromJSONTyped(json: any, ignoreDiscriminator: bool
     };
 }
 
-export function PostVoucherDTOToJSON(json: any): PostVoucherDTO {
-    return PostVoucherDTOToJSONTyped(json, false);
-}
+  export function PostVoucherDTOToJSON(json: any): PostVoucherDTO {
+      return PostVoucherDTOToJSONTyped(json, false);
+  }
 
-export function PostVoucherDTOToJSONTyped(value?: PostVoucherDTO | null, ignoreDiscriminator: boolean = false): any {
+  export function PostVoucherDTOToJSONTyped(value?: PostVoucherDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

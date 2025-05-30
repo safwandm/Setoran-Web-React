@@ -73,11 +73,11 @@ export function PostTransaksiDTOFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-export function PostTransaksiDTOToJSON(json: any): PostTransaksiDTO {
-    return PostTransaksiDTOToJSONTyped(json, false);
-}
+  export function PostTransaksiDTOToJSON(json: any): PostTransaksiDTO {
+      return PostTransaksiDTOToJSONTyped(json, false);
+  }
 
-export function PostTransaksiDTOToJSONTyped(value?: PostTransaksiDTO | null, ignoreDiscriminator: boolean = false): any {
+  export function PostTransaksiDTOToJSONTyped(value?: PostTransaksiDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
