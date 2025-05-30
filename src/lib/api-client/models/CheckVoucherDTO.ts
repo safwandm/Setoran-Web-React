@@ -63,11 +63,11 @@ export function CheckVoucherDTOFromJSONTyped(json: any, ignoreDiscriminator: boo
     };
 }
 
-  export function CheckVoucherDTOToJSON(json: any): CheckVoucherDTO {
-      return CheckVoucherDTOToJSONTyped(json, false);
-  }
+export function CheckVoucherDTOToJSON(json: any): CheckVoucherDTO {
+    return CheckVoucherDTOToJSONTyped(json, false);
+}
 
-  export function CheckVoucherDTOToJSONTyped(value?: CheckVoucherDTO | null, ignoreDiscriminator: boolean = false): any {
+export function CheckVoucherDTOToJSONTyped(value?: CheckVoucherDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

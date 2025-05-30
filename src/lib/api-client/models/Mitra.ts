@@ -86,11 +86,11 @@ export function MitraFromJSONTyped(json: any, ignoreDiscriminator: boolean): Mit
     };
 }
 
-  export function MitraToJSON(json: any): Mitra {
-      return MitraToJSONTyped(json, false);
-  }
+export function MitraToJSON(json: any): Mitra {
+    return MitraToJSONTyped(json, false);
+}
 
-  export function MitraToJSONTyped(value?: Mitra | null, ignoreDiscriminator: boolean = false): any {
+export function MitraToJSONTyped(value?: Mitra | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

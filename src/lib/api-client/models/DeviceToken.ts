@@ -77,11 +77,11 @@ export function DeviceTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean
     };
 }
 
-  export function DeviceTokenToJSON(json: any): DeviceToken {
-      return DeviceTokenToJSONTyped(json, false);
-  }
+export function DeviceTokenToJSON(json: any): DeviceToken {
+    return DeviceTokenToJSONTyped(json, false);
+}
 
-  export function DeviceTokenToJSONTyped(value?: DeviceToken | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceTokenToJSONTyped(value?: DeviceToken | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

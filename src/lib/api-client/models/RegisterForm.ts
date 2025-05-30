@@ -65,11 +65,11 @@ export function RegisterFormFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-  export function RegisterFormToJSON(json: any): RegisterForm {
-      return RegisterFormToJSONTyped(json, false);
-  }
+export function RegisterFormToJSON(json: any): RegisterForm {
+    return RegisterFormToJSONTyped(json, false);
+}
 
-  export function RegisterFormToJSONTyped(value?: RegisterForm | null, ignoreDiscriminator: boolean = false): any {
+export function RegisterFormToJSONTyped(value?: RegisterForm | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

@@ -121,11 +121,11 @@ export function PutMotorDTOFromJSONTyped(json: any, ignoreDiscriminator: boolean
     };
 }
 
-  export function PutMotorDTOToJSON(json: any): PutMotorDTO {
-      return PutMotorDTOToJSONTyped(json, false);
-  }
+export function PutMotorDTOToJSON(json: any): PutMotorDTO {
+    return PutMotorDTOToJSONTyped(json, false);
+}
 
-  export function PutMotorDTOToJSONTyped(value?: PutMotorDTO | null, ignoreDiscriminator: boolean = false): any {
+export function PutMotorDTOToJSONTyped(value?: PutMotorDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

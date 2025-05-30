@@ -129,11 +129,11 @@ export function MotorFormFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     };
 }
 
-  export function MotorFormToJSON(json: any): MotorForm {
-      return MotorFormToJSONTyped(json, false);
-  }
+export function MotorFormToJSON(json: any): MotorForm {
+    return MotorFormToJSONTyped(json, false);
+}
 
-  export function MotorFormToJSONTyped(value?: MotorForm | null, ignoreDiscriminator: boolean = false): any {
+export function MotorFormToJSONTyped(value?: MotorForm | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

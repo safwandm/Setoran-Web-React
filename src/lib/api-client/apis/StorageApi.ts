@@ -30,7 +30,7 @@ export class StorageApi extends runtime.BaseAPI {
 
     /**
      */
-    async storageFetchFileNameGetRaw(requestParameters: StorageFetchFileNameGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async storageFetchFileNameGetRaw(requestParameters: StorageFetchFileNameGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         if (requestParameters['fileName'] == null) {
             throw new runtime.RequiredError(
                 'fileName',
@@ -51,19 +51,24 @@ export class StorageApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/storage/fetch/fetch/{fileName}`.replace(`{${"fileName"}}`, encodeURIComponent(String(requestParameters['fileName']))),
+            path: `/Storage/fetch/{fileName}`.replace(`{${"fileName"}}`, encodeURIComponent(String(requestParameters['fileName']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
     }
 
     /**
      */
-    async storageFetchFileNameGet(requestParameters: StorageFetchFileNameGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.storageFetchFileNameGetRaw(requestParameters, initOverrides);
+    async storageFetchFileNameGet(requestParameters: StorageFetchFileNameGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.storageFetchFileNameGetRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
@@ -102,7 +107,7 @@ export class StorageApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/storage/fetch/store`,
+            path: `/Storage/store`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

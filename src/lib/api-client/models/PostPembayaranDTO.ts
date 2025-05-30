@@ -57,11 +57,11 @@ export function PostPembayaranDTOFromJSONTyped(json: any, ignoreDiscriminator: b
     };
 }
 
-  export function PostPembayaranDTOToJSON(json: any): PostPembayaranDTO {
-      return PostPembayaranDTOToJSONTyped(json, false);
-  }
+export function PostPembayaranDTOToJSON(json: any): PostPembayaranDTO {
+    return PostPembayaranDTOToJSONTyped(json, false);
+}
 
-  export function PostPembayaranDTOToJSONTyped(value?: PostPembayaranDTO | null, ignoreDiscriminator: boolean = false): any {
+export function PostPembayaranDTOToJSONTyped(value?: PostPembayaranDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

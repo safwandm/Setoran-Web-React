@@ -49,11 +49,11 @@ export function ResendConfirmationEmailRequestFromJSONTyped(json: any, ignoreDis
     };
 }
 
-  export function ResendConfirmationEmailRequestToJSON(json: any): ResendConfirmationEmailRequest {
-      return ResendConfirmationEmailRequestToJSONTyped(json, false);
-  }
+export function ResendConfirmationEmailRequestToJSON(json: any): ResendConfirmationEmailRequest {
+    return ResendConfirmationEmailRequestToJSONTyped(json, false);
+}
 
-  export function ResendConfirmationEmailRequestToJSONTyped(value?: ResendConfirmationEmailRequest | null, ignoreDiscriminator: boolean = false): any {
+export function ResendConfirmationEmailRequestToJSONTyped(value?: ResendConfirmationEmailRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

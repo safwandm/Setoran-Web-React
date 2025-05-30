@@ -65,11 +65,11 @@ export function PostMitraDTOFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-  export function PostMitraDTOToJSON(json: any): PostMitraDTO {
-      return PostMitraDTOToJSONTyped(json, false);
-  }
+export function PostMitraDTOToJSON(json: any): PostMitraDTO {
+    return PostMitraDTOToJSONTyped(json, false);
+}
 
-  export function PostMitraDTOToJSONTyped(value?: PostMitraDTO | null, ignoreDiscriminator: boolean = false): any {
+export function PostMitraDTOToJSONTyped(value?: PostMitraDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

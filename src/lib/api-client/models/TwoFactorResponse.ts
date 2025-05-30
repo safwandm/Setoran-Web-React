@@ -80,11 +80,11 @@ export function TwoFactorResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     };
 }
 
-  export function TwoFactorResponseToJSON(json: any): TwoFactorResponse {
-      return TwoFactorResponseToJSONTyped(json, false);
-  }
+export function TwoFactorResponseToJSON(json: any): TwoFactorResponse {
+    return TwoFactorResponseToJSONTyped(json, false);
+}
 
-  export function TwoFactorResponseToJSONTyped(value?: TwoFactorResponse | null, ignoreDiscriminator: boolean = false): any {
+export function TwoFactorResponseToJSONTyped(value?: TwoFactorResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

@@ -56,11 +56,11 @@ export function PostPelangganDTOFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-  export function PostPelangganDTOToJSON(json: any): PostPelangganDTO {
-      return PostPelangganDTOToJSONTyped(json, false);
-  }
+export function PostPelangganDTOToJSON(json: any): PostPelangganDTO {
+    return PostPelangganDTOToJSONTyped(json, false);
+}
 
-  export function PostPelangganDTOToJSONTyped(value?: PostPelangganDTO | null, ignoreDiscriminator: boolean = false): any {
+export function PostPelangganDTOToJSONTyped(value?: PostPelangganDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

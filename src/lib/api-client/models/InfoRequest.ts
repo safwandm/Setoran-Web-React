@@ -62,11 +62,11 @@ export function InfoRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean
     };
 }
 
-  export function InfoRequestToJSON(json: any): InfoRequest {
-      return InfoRequestToJSONTyped(json, false);
-  }
+export function InfoRequestToJSON(json: any): InfoRequest {
+    return InfoRequestToJSONTyped(json, false);
+}
 
-  export function InfoRequestToJSONTyped(value?: InfoRequest | null, ignoreDiscriminator: boolean = false): any {
+export function InfoRequestToJSONTyped(value?: InfoRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

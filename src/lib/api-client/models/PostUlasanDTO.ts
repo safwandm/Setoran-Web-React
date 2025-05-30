@@ -73,11 +73,11 @@ export function PostUlasanDTOFromJSONTyped(json: any, ignoreDiscriminator: boole
     };
 }
 
-  export function PostUlasanDTOToJSON(json: any): PostUlasanDTO {
-      return PostUlasanDTOToJSONTyped(json, false);
-  }
+export function PostUlasanDTOToJSON(json: any): PostUlasanDTO {
+    return PostUlasanDTOToJSONTyped(json, false);
+}
 
-  export function PostUlasanDTOToJSONTyped(value?: PostUlasanDTO | null, ignoreDiscriminator: boolean = false): any {
+export function PostUlasanDTOToJSONTyped(value?: PostUlasanDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

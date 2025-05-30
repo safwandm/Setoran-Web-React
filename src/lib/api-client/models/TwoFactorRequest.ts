@@ -76,11 +76,11 @@ export function TwoFactorRequestFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-  export function TwoFactorRequestToJSON(json: any): TwoFactorRequest {
-      return TwoFactorRequestToJSONTyped(json, false);
-  }
+export function TwoFactorRequestToJSON(json: any): TwoFactorRequest {
+    return TwoFactorRequestToJSONTyped(json, false);
+}
 
-  export function TwoFactorRequestToJSONTyped(value?: TwoFactorRequest | null, ignoreDiscriminator: boolean = false): any {
+export function TwoFactorRequestToJSONTyped(value?: TwoFactorRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

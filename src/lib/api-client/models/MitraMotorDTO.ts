@@ -63,11 +63,11 @@ export function MitraMotorDTOFromJSONTyped(json: any, ignoreDiscriminator: boole
     };
 }
 
-  export function MitraMotorDTOToJSON(json: any): MitraMotorDTO {
-      return MitraMotorDTOToJSONTyped(json, false);
-  }
+export function MitraMotorDTOToJSON(json: any): MitraMotorDTO {
+    return MitraMotorDTOToJSONTyped(json, false);
+}
 
-  export function MitraMotorDTOToJSONTyped(value?: MitraMotorDTO | null, ignoreDiscriminator: boolean = false): any {
+export function MitraMotorDTOToJSONTyped(value?: MitraMotorDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

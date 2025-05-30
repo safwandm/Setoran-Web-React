@@ -65,11 +65,11 @@ export function ResetPasswordRequestFromJSONTyped(json: any, ignoreDiscriminator
     };
 }
 
-  export function ResetPasswordRequestToJSON(json: any): ResetPasswordRequest {
-      return ResetPasswordRequestToJSONTyped(json, false);
-  }
+export function ResetPasswordRequestToJSON(json: any): ResetPasswordRequest {
+    return ResetPasswordRequestToJSONTyped(json, false);
+}
 
-  export function ResetPasswordRequestToJSONTyped(value?: ResetPasswordRequest | null, ignoreDiscriminator: boolean = false): any {
+export function ResetPasswordRequestToJSONTyped(value?: ResetPasswordRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
