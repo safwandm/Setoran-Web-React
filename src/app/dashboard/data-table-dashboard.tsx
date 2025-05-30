@@ -113,6 +113,9 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { get } from "http"
+import { TableMitra } from "../mitra/table"
+import { DataTableTransaction } from "../transactions/data-table-transactions"
+import { TableMotors } from "../motors/table"
 
 export const schema = z.object({
   id: z.number(),
@@ -439,14 +442,14 @@ export function DataTableDashboard({
 
   return (
     <Tabs
-      defaultValue="outline"
+      defaultValue="transaksi"
       className="w-full flex-col justify-start gap-6"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
         <Label htmlFor="view-selector" className="sr-only">
           View
         </Label>
-        <Select defaultValue="outline">
+        <Select defaultValue="transaksi">
           <SelectTrigger
             className="flex w-fit @4xl/main:hidden"
             size="sm"
@@ -455,218 +458,41 @@ export function DataTableDashboard({
             <SelectValue placeholder="Select a view" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="outline">Outline</SelectItem>
-            <SelectItem value="past-performance">Past Performance</SelectItem>
+            <SelectItem value="transaksi">Transaction</SelectItem>
+            <SelectItem value="mitra">Mitra</SelectItem>
+            <SelectItem value="motor">Motor</SelectItem>
           </SelectContent>
         </Select>
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="outline">Users</TabsTrigger>
-          <TabsTrigger value="past-performance">
-            Mitra <Badge variant="secondary">3</Badge>
+          <TabsTrigger value="transaksi">Transaction</TabsTrigger>
+          <TabsTrigger value="mitra">
+            Mitra 
+          </TabsTrigger>
+          <TabsTrigger value="motor">
+            Motor 
           </TabsTrigger>
         </TabsList>
-        {/* <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-              placeholder="Search by Id .."
-              value={(table.getColumn("userId")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("userId")?.setFilterValue(event.target.value)
-              }
-              className="h-9 w-[150px] lg:w-[250px] pl-8"
-            />
-            </div>
-          </div>
-        </div> */}
       </div>
       <TabsContent
-        value="outline"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
+          value="transaksi"
+          className="relative flex flex-col gap-4 ml-[-24px] overflow-auto lg:px-6"
+        >
+          <DataTableTransaction />
+        </TabsContent>
+      <TabsContent
+        value="mitra"
+        className="relative flex flex-col gap-4 ml-[-24px] overflow-auto lg:px-6"
       >
 
-        <div className="overflow-hidden rounded-lg border">
-          <DndContext
-            collisionDetection={closestCenter}
-            modifiers={[restrictToVerticalAxis]}
-        
-            onDragEnd={handleDragEnd}
-            sensors={sensors}
-            id={`${sortableId}-users`}
-          >
-            <Table>
-              <TableHeader className="bg-muted sticky top-0 z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} colSpan={header.colSpan}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      )
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                {table.getRowModel().rows?.length ? (
-                  <SortableContext
-                    items={dataIds}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {table.getRowModel().rows.map((row) => (
-                      <DraggableRow key={row.id} row={row} />
-                    ))}
-                  </SortableContext>
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </DndContext>
-        </div>
-        <div className="flex items-center justify-between px-4">
-          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
-          </div>
-          <div className="flex w-full items-center gap-8 lg:w-fit">
-            <div className="hidden items-center gap-2 lg:flex">
-              <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Rows per page
-              </Label>
-              <Select
-                value={`${table.getState().pagination.pageSize}`}
-                onValueChange={(value) => {
-                  table.setPageSize(Number(value))
-                }}
-              >
-                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-                  <SelectValue
-                    placeholder={table.getState().pagination.pageSize}
-                  />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {[10, 20, 30, 40, 50].map((pageSize) => (
-                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="ml-auto flex items-center gap-2 lg:ml-0">
-              <Button
-                variant="outline"
-                className="hidden h-8 w-8 p-0 lg:flex"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to first page</span>
-                <IconChevronsLeft />
-              </Button>
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to previous page</span>
-                <IconChevronLeft />
-              </Button>
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to next page</span>
-                <IconChevronRight />
-              </Button>
-              <Button
-                variant="outline"
-                className="hidden size-8 lg:flex"
-                size="icon"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to last page</span>
-                <IconChevronsRight />
-              </Button>
-            </div>
-          </div>
-        </div>
+        <TableMitra />
       </TabsContent>
       <TabsContent
-          value="past-performance"
-          className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
-        >
-          <div className="overflow-hidden rounded-lg border">
-            <DndContext
-              collisionDetection={closestCenter}
-              modifiers={[restrictToVerticalAxis]}
-              onDragEnd={handleDragEnd}
-              sensors={sensors}
-              id={sortableId}
-            >
-              <Table>
-              <TableHeader className="bg-muted sticky top-0 z-10">
-                {mitraTable.getHeaderGroups().map((headerGroup) => ( 
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id} colSpan={header.colSpan}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableHeader>
-                <TableBody>
-                  {mitraTable.getRowModel().rows?.length ? (
-                    <SortableContext
-                      items={mitraDataIds}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      {mitraTable.getRowModel().rows.map((row) => (
-                        <DraggableRow key={row.id} row={row} />
-                      ))}
-                    </SortableContext>
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={mitraColumns.length}  className="h-24 text-center">
-                        No results.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </DndContext>
-          </div>
-        </TabsContent>
+        value="motor"
+        className="relative flex flex-col gap-4 ml-[-24px] overflow-auto lg:px-6"
+      >
+
+        <TableMotors />
+      </TabsContent>
     </Tabs>
   )
 }

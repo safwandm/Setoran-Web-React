@@ -351,7 +351,7 @@ export function DataTableTransaction() {
           </div>
         <div className="flex items-center">
           <div className="ml-auto">
-            <div className="relative">
+            {/* <div className="relative">
               <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
               placeholder="Search by Id .."
@@ -361,7 +361,7 @@ export function DataTableTransaction() {
               }
               className="h-9 w-[150px] lg:w-[250px] pl-8"
             />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
