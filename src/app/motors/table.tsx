@@ -298,6 +298,10 @@ function DraggableRow({ row }: { row: Row<Motor> }) {
 
 export function TableMotors() {
   const [data, setData] = React.useState<Motor[]>([])
+  const [filter, setFilter] = React.useState({
+    search: "",
+    status: "All"
+  })
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -323,8 +327,23 @@ export function TableMotors() {
 
   const apiService = ApiService.getInstance()
 
+  const filteredData: Motor[] = React.useMemo(() => {
+    if (!filter.search) return data;
+  
+    const lowerSearch = filter.search.toLowerCase();
+  
+    return data.filter((row) => {
+      console.log(filter.status, row.statusMotor, (filter.status == "All" || row.statusMotor == filter.status))
+      return (filter.status === "All" || row.statusMotor == filter.status) && Object.values(row).some((value) =>{
+        console.log(value)
+        return String(value).toLowerCase().includes(lowerSearch)
+      })
+    }
+    );
+  }, [data, filter]);
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     state: {
       sorting,
@@ -368,29 +387,38 @@ export function TableMotors() {
       defaultValue="outline"
       className="w-full flex-col justify-start gap-6"
     >
-      {/* <div className="flex items-center justify-between px-4 lg:px-6">
-        <Select defaultValue="outline">
-        </Select>
-         <div className="flex items-center">
-            <Select defaultValue="outline">
-            </Select>
-          </div>
-        <div className="flex items-center">
-          <div className="ml-auto">
-            <div className="relative">
+      <div className="flex items-center justify-between px-4 lg:px-6">
+        <div className="flex items-center gap-2">
+          <div className="relative">
               <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
               placeholder="Search .."
-              value={(table.getColumn("motorId")?.getFilterValue() as string) ?? ""}
+              value={filter.search}
               onChange={(event) =>
-                table.getColumn("motorId")?.setFilterValue(event.target.value)
+                setFilter({ ...filter, search: event.target.value })
               }
               className="h-9 w-[150px] lg:w-[250px] pl-8"
             />
-            </div>
           </div>
+          {/* <div className="relative">
+            <Select 
+                defaultValue="All"
+                value={filter.status || ""} 
+                onValueChange={(value) => setFilter({ ...filter, status: value })}
+              >
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={"All"}>Status: All</SelectItem>
+                {Object.keys(StatusMotor).map((key, index) => (
+                  <SelectItem key={StatusMotor[key]} value={StatusMotor[key]}>Status: {StatusMotor[key]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div> */}
         </div>
-      </div> */}
+      </div>
       <TabsContent
         value="outline"
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
