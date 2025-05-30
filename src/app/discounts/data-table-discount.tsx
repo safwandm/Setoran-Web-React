@@ -315,7 +315,7 @@ export function DataTableDiscount() {
   const [data, setData] = React.useState<Diskon[]>([])
   const [filter, setFilter] = React.useState({
     search: "",
-    status: ""
+    status: "All"
   })
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
