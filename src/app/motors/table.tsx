@@ -34,6 +34,7 @@ import {
   IconLoader,
   IconTrendingUp,
   IconUser,
+  IconClipboard,
 } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -187,21 +188,21 @@ const columns: ColumnDef<Motor>[] = [
     header: () => <div className="w-30 text-left">ID Mitra</div>,
     cell: ({ row }) => {
       // TODO: agak boros request mungkin bikin dto + nama langsung
-      const [pengguna, setPengguna] = React.useState<Pengguna>({});
-      const [loading, setLoading] = React.useState(true);
+      // const [pengguna, setPengguna] = React.useState<Pengguna>({});
+      // const [loading, setLoading] = React.useState(true);
 
-      React.useEffect(() => {
-        ApiService.getInstance()
-          .penggunaApi.penggunaFromMitraGet({ idMitra: row.original.idMitra! })
-          .then((res) => {
-            setPengguna(res);
-            setLoading(false);
-          });
-      }, []);
+      // React.useEffect(() => {
+      //   ApiService.getInstance()
+      //     .penggunaApi.penggunaFromMitraGet({ idMitra: row.original.idMitra! })
+      //     .then((res) => {
+      //       setPengguna(res);
+      //       setLoading(false);
+      //     });
+      // }, []);
 
       return (
         <div className="w-9">
-          <LoadingOverlay loading={loading}>
+          {/* <LoadingOverlay loading={loading}>
             {pengguna.id ? (
               <EditPenggunaDrawer
                 idPengguna={pengguna.id}
@@ -211,7 +212,8 @@ const columns: ColumnDef<Motor>[] = [
             ) : (
               ""
             )}
-          </LoadingOverlay>
+          </LoadingOverlay> */}
+          {row.original.idMitra}
         </div>
       );
     },
@@ -231,6 +233,8 @@ const columns: ColumnDef<Motor>[] = [
           <IconCircleCheckFilled className=" text-blue-500" />
         ) : row.original.statusMotor === StatusMotor.NotAvailable ? (
           <IconCircleCheckFilled className=" text-red-500" />
+        ) : row.original.statusMotor === StatusMotor.Filed ? (
+          <IconClipboard className="" />
         ) : null}
         {row.original.statusMotor}
       </Badge>
