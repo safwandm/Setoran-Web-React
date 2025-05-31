@@ -15,6 +15,7 @@ import ApiService from "@/lib/api-client/wrapper"
 import { useEffect, useState } from "react"
 import { StatusMotor } from "@/components/forms/motor-drawer"
 import { StatusTransaksi } from "@/components/forms/transaction-drawer"
+import { formatPrice } from "@/lib/utils"
 
 export function SectionCardsDasboard() {
 
@@ -88,7 +89,7 @@ export function SectionCardsDasboard() {
         <CardHeader>
           <CardDescription>Income</CardDescription>
           <CardTitle className="mt-6 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            Rp. {info.income}
+            {info.income ? formatPrice(info.income) : 0}
           </CardTitle>
           <CardAction>
             {/* <Badge variant="outline">

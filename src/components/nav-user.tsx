@@ -95,10 +95,10 @@ export function NavUser({
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => window.location.href = "/setting"}>
+              {/* <DropdownMenuItem onClick={() => window.location.href = "/setting"}>
                 <IconSettings />
                 Setting
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
