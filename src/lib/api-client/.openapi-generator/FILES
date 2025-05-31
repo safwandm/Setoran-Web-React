@@ -3,6 +3,7 @@ apis/AvatarApi.ts
 apis/DiskonApi.ts
 apis/MitraApi.ts
 apis/MotorApi.ts
+apis/MotorImageApi.ts
 apis/NotifikasiApi.ts
 apis/PelangganApi.ts
 apis/PembayaranApi.ts
@@ -28,12 +29,14 @@ models/Mitra.ts
 models/MitraMotorDTO.ts
 models/Motor.ts
 models/MotorForm.ts
+models/MotorImage.ts
 models/Notifikasi.ts
 models/Pelanggan.ts
 models/Pembayaran.ts
 models/Pengguna.ts
 models/PostDiskonDTO.ts
 models/PostMitraDTO.ts
+models/PostMotorImageDTO.ts
 models/PostNotifikasDTO.ts
 models/PostPelangganDTO.ts
 models/PostPembayaranDTO.ts

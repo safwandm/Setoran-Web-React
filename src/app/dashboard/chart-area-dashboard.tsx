@@ -32,6 +32,7 @@ import {
 import ApiService from "@/lib/api-client/wrapper"
 import { Transaksi } from "@/lib/api-client"
 import { StatusTransaksi } from "@/components/forms/transaction-drawer"
+import { formatDateToLongDate } from "@/lib/utils"
 
 export const description = "An interactive area chart"
 
@@ -60,22 +61,24 @@ export function ChartAreaDashboard() {
     }
   }, [isMobile])
 
-  const filteredData = transaksi.filter((item) => {
-    if (item.status !== StatusTransaksi.Finished) 
-      return false
+  const filteredData = React.useMemo(() => {
+    return transaksi.filter((item) => {
+      if (item.status !== StatusTransaksi.Finished) 
+        return false
 
-    const date = new Date(item.tanggalSelesai!)
-    const referenceDate = new Date("2024-06-30")
-    let daysToSubtract = 90
-    if (timeRange === "30d") {
-      daysToSubtract = 30
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7
-    }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
-    return date >= startDate
-  })
+      const date = new Date(item.tanggalSelesai!)
+      const referenceDate = new Date()
+      let daysToSubtract = 90
+      if (timeRange === "30d") {
+        daysToSubtract = 30
+      } else if (timeRange === "7d") {
+        daysToSubtract = 7
+      }
+      const startDate = new Date(referenceDate)
+      startDate.setDate(startDate.getDate() - daysToSubtract)
+      return date >= startDate && date <= referenceDate
+    }).sort((a, b) => new Date(a.tanggalSelesai!).getTime() - new Date(b.tanggalSelesai!).getTime())
+  }, [transaksi, timeRange])
 
   return (
     <Card className="@container/card">
@@ -143,7 +146,7 @@ export function ChartAreaDashboard() {
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="date"
+              dataKey="tanggalSelesai"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -161,14 +164,15 @@ export function ChartAreaDashboard() {
               defaultIndex={isMobile ? -1 : 10}
               content={
                 <ChartTooltipContent
-                    labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })
-                    }}
+                    // labelFormatter={(value) => {
+                    //   console.log(value)
+                    //   return new Date(value).toLocaleDateString("en-US", {
+                    //     month: "short",
+                    //     day: "numeric",
+                    //   })
+                    // }}
                     formatter={(value, name) => {
-                      if (name === "mobile") {
+                      if (name === "totalHarga") {
                         return `Income ${value}`
                       }
                       return `${name} ${value}`
@@ -178,7 +182,7 @@ export function ChartAreaDashboard() {
               }
             />
             <Area
-              dataKey="mobile"
+              dataKey="totalHarga"
               type="natural"
               fill="url(#fillMobile)"
               stroke="var(--color-mobile)"

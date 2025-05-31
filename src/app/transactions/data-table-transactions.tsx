@@ -31,6 +31,8 @@ import {
   IconDotsVertical,
   IconGripVertical,
   IconLoader,
+  IconCross,
+  IconX,
 } from "@tabler/icons-react"
 import {
   ColumnDef,
@@ -92,9 +94,11 @@ import {
   TabsContent,
 } from "@/components/ui/tabs"
 import { Transaksi } from "@/lib/api-client"
-import { formatDateToLongDate } from "@/lib/utils"
+import { formatDateToLongDate, formatMotorName, formatPrice } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
-import EditTransactionDrawer from "@/components/forms/transaction-drawer"
+import EditTransactionDrawer, { StatusTransaksi } from "@/components/forms/transaction-drawer"
+import EditPenggunaDrawer from "@/components/forms/pengguna-drawer"
+import EditMotorDrawer from "@/components/forms/motor-drawer"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -173,42 +177,11 @@ export function DataTableTransaction() {
   }
 
   const columns: ColumnDef<Transaksi>[] = [
-    // {
-    //   id: "drag",
-    //   header: () => null,
-    //   cell: ({ row }) => <DragHandle id={row.original.idTransaksi!} />,
-    // },
-    // {
-    //   id: "select",
-    //   header: ({ table }) => (
-    //     <div className="flex items-center justify-center">
-    //       <Checkbox
-    //         checked={
-    //           table.getIsAllPageRowsSelected() ||
-    //           (table.getIsSomePageRowsSelected() && "indeterminate")
-    //         }
-    //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //         aria-label="Select all"
-    //       />
-    //     </div>
-    //   ),
-    //   cell: ({ row }) => (
-    //     <div className="flex items-center justify-center">
-    //       <Checkbox
-    //         checked={row.getIsSelected()}
-    //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //         aria-label="Select row"
-    //       />
-    //     </div>
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
       accessorKey: "transactionId",
       header: () => <div className="w-30 text-left">Transaction ID</div>,
       cell: ({ row }) => {
-        return <TableCellViewer item={row.original} />
+        return <EditTransactionDrawer idTransaksi={row.original.idTransaksi!} />
       },
       enableHiding: false,
       enableColumnFilter: true,
@@ -220,7 +193,7 @@ export function DataTableTransaction() {
     
       cell: ({ row }) => (
         <div className="w-4">
-            {row.original.pelanggan?.pengguna?.nama}
+            <EditPenggunaDrawer idPengguna={row.original.pelanggan!.idPengguna!} buttonText={row.original.pelanggan!.pengguna!.nama!} editing={false} />
         </div>
       ),
     },
@@ -229,7 +202,7 @@ export function DataTableTransaction() {
       header: () => <div className="w-30 text-left">Motor Name</div>,
       cell: ({ row }) => (
         <div className="w-8">
-            {row.original.motor?.model}
+            <EditMotorDrawer idMotor={row.original.motor!.idMotor!} buttonText={formatMotorName(row.original.motor!)} editing={false} />
         </div>
       ),
     },
@@ -251,45 +224,31 @@ export function DataTableTransaction() {
         </div>
       ),
     },
+        {
+      accessorKey: "totalHarga",
+      header: () => <div className="w-30 text-left">Total Price</div>,
+      cell: ({ row }) => (
+        <div className="w-8">
+            {formatPrice(row.original.totalHarga!)}
+        </div>
+      ),
+    },
     {
       accessorKey: "status",
       header: () => <div className="w-full text text-left">Status</div>,
       cell: ({ row }) => (
         <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.status === "finished" ? (
-            <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-          ) : row.original.status === "created" ? (
-            <IconArrowsCross className="dark:fill-red-400" />
+          {row.original.status === StatusTransaksi.Created ? (
+            <IconCircleCheckFilled className="" />
+          ) : row.original.status === StatusTransaksi.Ongoing ? (
+            <IconLoader className="animate-spin" />
+          ) : row.original.status === StatusTransaksi.Cancelled ? (
+            <IconX className="text-muted-foreground fill-red-400" />
           ) : (
-            <IconLoader className="animate-spin text-muted-foreground" />
+            <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
           )}
           {row.original.status}
         </Badge>
-      ),
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-              size="icon"
-            >
-              <IconDotsVertical />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32">
-            <EditTransactionDrawer 
-              idTransaksi={row.original.idTransaksi!}
-              onSave={() => refresh()}
-            />
-            <DropdownMenuSeparator />
-            {/* <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem> */}
-          </DropdownMenuContent>
-        </DropdownMenu>
       ),
     },
   ]

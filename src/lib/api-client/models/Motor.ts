@@ -20,6 +20,13 @@ import {
     MitraToJSON,
     MitraToJSONTyped,
 } from './Mitra';
+import type { MotorImage } from './MotorImage';
+import {
+    MotorImageFromJSON,
+    MotorImageFromJSONTyped,
+    MotorImageToJSON,
+    MotorImageToJSONTyped,
+} from './MotorImage';
 import type { Diskon } from './Diskon';
 import {
     DiskonFromJSON,
@@ -114,10 +121,22 @@ export interface Motor {
     diskon?: Array<Diskon> | null;
     /**
      * 
+     * @type {number}
+     * @memberof Motor
+     */
+    idMotorImage?: number | null;
+    /**
+     * 
      * @type {Mitra}
      * @memberof Motor
      */
     mitra?: Mitra;
+    /**
+     * 
+     * @type {MotorImage}
+     * @memberof Motor
+     */
+    motorImage?: MotorImage;
 }
 
 /**
@@ -150,7 +169,9 @@ export function MotorFromJSONTyped(json: any, ignoreDiscriminator: boolean): Mot
         'statusMotor': json['statusMotor'] == null ? undefined : json['statusMotor'],
         'hargaHarian': json['hargaHarian'] == null ? undefined : json['hargaHarian'],
         'diskon': json['diskon'] == null ? undefined : ((json['diskon'] as Array<any>).map(DiskonFromJSON)),
+        'idMotorImage': json['idMotorImage'] == null ? undefined : json['idMotorImage'],
         'mitra': json['mitra'] == null ? undefined : MitraFromJSON(json['mitra']),
+        'motorImage': json['motorImage'] == null ? undefined : MotorImageFromJSON(json['motorImage']),
     };
 }
 
@@ -178,7 +199,9 @@ export function MotorToJSONTyped(value?: Motor | null, ignoreDiscriminator: bool
         'statusMotor': value['statusMotor'],
         'hargaHarian': value['hargaHarian'],
         'diskon': value['diskon'] == null ? undefined : ((value['diskon'] as Array<any>).map(DiskonToJSON)),
+        'idMotorImage': value['idMotorImage'],
         'mitra': MitraToJSON(value['mitra']),
+        'motorImage': MotorImageToJSON(value['motorImage']),
     };
 }
 

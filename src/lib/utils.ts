@@ -29,3 +29,8 @@ export function formatMotorName(motor: Motor) {
 export function getGambar(name: string, idGambar?: string) {
   return idGambar ? `${BASE_PATH}/storage/fetch/${idGambar}` : `${BASE_PATH}/avatar?name=${name}`
 }
+
+export function formatPrice(price) {
+  const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
+  return formatter.format(price);
+}

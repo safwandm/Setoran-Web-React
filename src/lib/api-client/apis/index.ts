@@ -5,6 +5,7 @@ export * from './AvatarApi';
 export * from './DiskonApi';
 export * from './MitraApi';
 export * from './MotorApi';
+export * from './MotorImageApi';
 export * from './NotifikasiApi';
 export * from './PelangganApi';
 export * from './PembayaranApi';

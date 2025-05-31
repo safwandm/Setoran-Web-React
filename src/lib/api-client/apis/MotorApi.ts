@@ -229,7 +229,7 @@ export class MotorApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiMotorPostRaw(requestParameters: ApiMotorPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiMotorPostRaw(requestParameters: ApiMotorPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Motor>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -252,13 +252,14 @@ export class MotorApi extends runtime.BaseAPI {
             body: MotorFormToJSON(requestParameters['motorForm']),
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => MotorFromJSON(jsonValue));
     }
 
     /**
      */
-    async apiMotorPost(requestParameters: ApiMotorPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiMotorPostRaw(requestParameters, initOverrides);
+    async apiMotorPost(requestParameters: ApiMotorPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Motor> {
+        const response = await this.apiMotorPostRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
 }
