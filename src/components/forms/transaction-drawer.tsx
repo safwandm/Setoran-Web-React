@@ -142,6 +142,20 @@ export default function EditTransactionDrawer({
               disabled={true}
             />
             <InputField
+              name="mitraName"
+              label="Motor owner anme"
+              value={transaksi.motor?.mitra?.pengguna?.nama ?? ""}
+              error={errors?.pelanggan?.pengguna?.nama}
+              disabled={true}
+            />
+            <InputField
+              name="idMotor"
+              label="Motor ID"
+              value={transaksi.idMotor ? transaksi.idMotor : ""}
+              error={errors?.motor?.model}
+              disabled={true}
+            />
+            <InputField
               name="motorName"
               label="Motor Name"
               value={transaksi.motor ? formatMotorName(transaksi.motor!) : ""}
