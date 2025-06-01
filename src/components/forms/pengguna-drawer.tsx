@@ -239,7 +239,7 @@ export default function EditPenggunaDrawer(
                         }
                       })
                     }}
-                    disabled={true}
+                    disabled={false}
                   >
                     <SelectTrigger id="status">
                       <SelectValue placeholder="Select status" />
