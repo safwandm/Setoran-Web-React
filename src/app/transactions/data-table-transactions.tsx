@@ -97,7 +97,7 @@ import { Transaksi } from "@/lib/api-client"
 import { formatDateToLongDate, formatMotorName, formatPrice } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import EditTransactionDrawer, { StatusTransaksi } from "@/components/forms/transaction-drawer"
-import EditPenggunaDrawer from "@/components/forms/pengguna-drawer"
+import PenggunaInfoLink from "@/app/users/[idPengguna]/page"
 import EditMotorDrawer from "@/components/forms/motor-drawer"
 import { LoadingOverlay } from "@/components/loading-overlay"
 
@@ -197,7 +197,7 @@ export function DataTableTransaction() {
     
       cell: ({ row }) => (
         <div className="w-4">
-            <EditPenggunaDrawer idPengguna={row.original.pelanggan!.idPengguna!} buttonText={row.original.pelanggan!.pengguna!.nama!} editing={false} />
+            <PenggunaInfoLink idPengguna={row.original.pelanggan!.idPengguna!} buttonText={row.original.pelanggan!.pengguna!.nama!} editing={false} />
         </div>
       ),
     },

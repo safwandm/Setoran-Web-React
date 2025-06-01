@@ -105,7 +105,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Motor, Pengguna } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
 import { formatMotorName } from "@/lib/utils";
-import EditPenggunaDrawer from "@/components/forms/pengguna-drawer";
+import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page";
 import { LoadingOverlay } from "@/components/loading-overlay";
 import EditMotorDrawer, { StatusMotor } from "@/components/forms/motor-drawer";
 
@@ -204,7 +204,7 @@ const columns: ColumnDef<Motor>[] = [
         <div className="w-9">
           {/* <LoadingOverlay loading={loading}>
             {pengguna.id ? (
-              <EditPenggunaDrawer
+              <PenggunaInfoLink
                 idPengguna={pengguna.id}
                 buttonText={pengguna.nama!}
                 editing={false}

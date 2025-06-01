@@ -107,7 +107,7 @@ import { Mitra, MitraMotorDTO, StatusMitra } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
 import Link from "next/link";
 import { LoadingOverlay } from "@/components/loading-overlay";
-import EditPenggunaDrawer from "@/components/forms/pengguna-drawer";
+import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page";
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -224,7 +224,7 @@ export function TableMitra() {
       accessorKey: "mitraId",
       header: () => <div className="w-20 text-left">Mitra ID</div>,
       cell: ({ row }) => {
-        return <EditPenggunaDrawer idPengguna={row.original.mitra?.idPengguna!} buttonText={row.original.mitra?.idMitra!.toString()} onSave={() => refresh()}/>;
+        return <PenggunaInfoLink idPengguna={row.original.mitra?.idPengguna!} buttonText={row.original.mitra?.idMitra!.toString()} />;
         // <PenggunaDrawer initialPengguna={undefined} idPengguna={row.original.mitra?.idPengguna!} buttonTitle={row.original.mitra!.idMitra?.toString()} />
       },
       enableHiding: false,

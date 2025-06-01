@@ -112,7 +112,7 @@ import {
 import { Pelanggan, Pengguna } from "@/lib/api-client"
 import ApiService from "@/lib/api-client/wrapper"
 import { LoadingOverlay } from "@/components/loading-overlay"
-import EditPenggunaDrawer from "@/components/forms/pengguna-drawer"
+import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -170,7 +170,7 @@ const columns: ColumnDef<Pengguna>[] = [
     accessorKey: "userId",
     header: "User ID",
     cell: ({ row }) => {
-      return <EditPenggunaDrawer idPengguna={row.original.id!} buttonText={row.original.id!} onSave={() => window.location.reload()} />
+      return <PenggunaInfoLink idPengguna={row.original.id!} buttonText={row.original.id!} onSave={() => window.location.reload()} />
     },
     enableHiding: false,
   },
