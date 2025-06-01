@@ -93,11 +93,11 @@ import {
   Tabs,
   TabsContent,
 } from "@/components/ui/tabs"
-import { Transaksi } from "@/lib/api-client"
+import { ApiTransaksiGetRequest, Transaksi } from "@/lib/api-client"
 import { formatDateToLongDate, formatMotorName, formatPrice } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import EditTransactionDrawer, { StatusTransaksi } from "@/components/forms/transaction-drawer"
-import PenggunaInfoLink from "@/app/users/[idPengguna]/page"
+import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page"
 import EditMotorDrawer from "@/components/forms/motor-drawer"
 import { LoadingOverlay } from "@/components/loading-overlay"
 
@@ -146,9 +146,16 @@ function DraggableRow({ row }: { row: Row<Transaksi> }) {
   )
 }
 
-export function DataTableTransaction() {
+export function DataTableTransaction({
+  hidePanel,
+  initQuery
+} : {
+  hidePanel?: boolean,
+  initQuery?: ApiTransaksiGetRequest
+}) {
   const [loading, setLoading] = React.useState(true)
   const [data, setData] = React.useState<Transaksi[]>([])
+  const transactionQuery = initQuery ?? {}
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -174,7 +181,7 @@ export function DataTableTransaction() {
 
   const refresh = () => {
     setLoading(true)
-    apiService.transaksiApi.apiTransaksiGet().then(res => {
+    apiService.transaksiApi.apiTransaksiGet(transactionQuery).then(res => {
       setData(res)
       setLoading(false)
     })
@@ -197,7 +204,7 @@ export function DataTableTransaction() {
     
       cell: ({ row }) => (
         <div className="w-4">
-            <PenggunaInfoLink idPengguna={row.original.pelanggan!.idPengguna!} buttonText={row.original.pelanggan!.pengguna!.nama!} editing={false} />
+            <PenggunaInfoLink idPengguna={row.original.pelanggan!.idPengguna!} buttonText={row.original.pelanggan!.pengguna!.nama!} />
         </div>
       ),
     },
@@ -314,7 +321,7 @@ export function DataTableTransaction() {
           </div>
         <div className="flex items-center">
           <div className="ml-auto">
-            {/* <div className="relative">
+            {/* { hidePanel || <div className="relative">
               <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
               placeholder="Search by Id .."
@@ -324,7 +331,7 @@ export function DataTableTransaction() {
               }
               className="h-9 w-[150px] lg:w-[250px] pl-8"
             />
-            </div> */}
+            </div>} */}
           </div>
         </div>
       </div>

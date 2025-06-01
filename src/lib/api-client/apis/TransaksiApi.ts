@@ -26,7 +26,10 @@ import {
 } from '../models/index';
 
 export interface ApiTransaksiGetRequest {
-    query?: object;
+    idMotor?: string;
+    idPelanggan?: string;
+    idMitra?: string;
+    status?: string;
 }
 
 export interface ApiTransaksiIdGetRequest {
@@ -52,8 +55,20 @@ export class TransaksiApi extends runtime.BaseAPI {
     async apiTransaksiGetRaw(requestParameters: ApiTransaksiGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Transaksi>>> {
         const queryParameters: any = {};
 
-        if (requestParameters['query'] != null) {
-            queryParameters['query'] = requestParameters['query'];
+        if (requestParameters['idMotor'] != null) {
+            queryParameters['IdMotor'] = requestParameters['idMotor'];
+        }
+
+        if (requestParameters['idPelanggan'] != null) {
+            queryParameters['IdPelanggan'] = requestParameters['idPelanggan'];
+        }
+
+        if (requestParameters['idMitra'] != null) {
+            queryParameters['IdMitra'] = requestParameters['idMitra'];
+        }
+
+        if (requestParameters['status'] != null) {
+            queryParameters['Status'] = requestParameters['status'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

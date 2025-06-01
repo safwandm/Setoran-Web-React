@@ -43,6 +43,18 @@ export interface PostTransaksiDTO {
      * @memberof PostTransaksiDTO
      */
     tanggalSelesai: Date;
+    /**
+     * 
+     * @type {number}
+     * @memberof PostTransaksiDTO
+     */
+    idVoucher?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PostTransaksiDTO
+     */
+    idDiscount?: number | null;
 }
 
 /**
@@ -70,6 +82,8 @@ export function PostTransaksiDTOFromJSONTyped(json: any, ignoreDiscriminator: bo
         'idPelanggan': json['idPelanggan'],
         'tanggalMulai': (new Date(json['tanggalMulai'])),
         'tanggalSelesai': (new Date(json['tanggalSelesai'])),
+        'idVoucher': json['idVoucher'] == null ? undefined : json['idVoucher'],
+        'idDiscount': json['idDiscount'] == null ? undefined : json['idDiscount'],
     };
 }
 
@@ -88,6 +102,8 @@ export function PostTransaksiDTOToJSONTyped(value?: PostTransaksiDTO | null, ign
         'idPelanggan': value['idPelanggan'],
         'tanggalMulai': ((value['tanggalMulai']).toISOString()),
         'tanggalSelesai': ((value['tanggalSelesai']).toISOString()),
+        'idVoucher': value['idVoucher'],
+        'idDiscount': value['idDiscount'],
     };
 }
 

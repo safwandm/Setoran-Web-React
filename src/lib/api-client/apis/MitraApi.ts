@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   Mitra,
   MitraMotorDTO,
+  PostCreateMitraDTO,
   PostMitraDTO,
 } from '../models/index';
 import {
@@ -24,6 +25,8 @@ import {
     MitraToJSON,
     MitraMotorDTOFromJSON,
     MitraMotorDTOToJSON,
+    PostCreateMitraDTOFromJSON,
+    PostCreateMitraDTOToJSON,
     PostMitraDTOFromJSON,
     PostMitraDTOToJSON,
 } from '../models/index';
@@ -34,6 +37,10 @@ export interface MitraGenericIdDeleteRequest {
 
 export interface MitraGenericIdGetRequest {
     id: number;
+}
+
+export interface MitraPostRequest {
+    postCreateMitraDTO?: PostCreateMitraDTO;
 }
 
 export interface MitraPutRequest {
@@ -151,6 +158,41 @@ export class MitraApi extends runtime.BaseAPI {
      */
     async mitraMitraMotorGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<MitraMotorDTO>> {
         const response = await this.mitraMitraMotorGetRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async mitraPostRaw(requestParameters: MitraPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Mitra>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json-patch+json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/Mitra`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PostCreateMitraDTOToJSON(requestParameters['postCreateMitraDTO']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MitraFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async mitraPost(requestParameters: MitraPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Mitra> {
+        const response = await this.mitraPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

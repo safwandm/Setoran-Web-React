@@ -32,6 +32,7 @@ import {
 } from '../models/index';
 
 export interface ApiMotorGetRequest {
+    withImage?: boolean;
     idMitra?: string;
     status?: string;
     model?: string;
@@ -64,6 +65,10 @@ export class MotorApi extends runtime.BaseAPI {
      */
     async apiMotorGetRaw(requestParameters: ApiMotorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Motor>>> {
         const queryParameters: any = {};
+
+        if (requestParameters['withImage'] != null) {
+            queryParameters['WithImage'] = requestParameters['withImage'];
+        }
 
         if (requestParameters['idMitra'] != null) {
             queryParameters['IdMitra'] = requestParameters['idMitra'];

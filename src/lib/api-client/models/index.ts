@@ -19,6 +19,7 @@ export * from './Notifikasi';
 export * from './Pelanggan';
 export * from './Pembayaran';
 export * from './Pengguna';
+export * from './PostCreateMitraDTO';
 export * from './PostDiskonDTO';
 export * from './PostMitraDTO';
 export * from './PostMotorImageDTO';

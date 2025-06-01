@@ -34,6 +34,7 @@ models/Notifikasi.ts
 models/Pelanggan.ts
 models/Pembayaran.ts
 models/Pengguna.ts
+models/PostCreateMitraDTO.ts
 models/PostDiskonDTO.ts
 models/PostMitraDTO.ts
 models/PostMotorImageDTO.ts

@@ -102,7 +102,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Motor, Pengguna } from "@/lib/api-client";
+import { ApiMotorGetRequest, Motor, Pengguna } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
 import { formatMotorName } from "@/lib/utils";
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page";
@@ -272,13 +272,20 @@ function DraggableRow({ row }: { row: Row<Motor> }) {
   );
 }
 
-export function TableMotors() {
+export function TableMotors({
+  hidePanel,
+  motorQuery: initialQuery
+} : {
+  hidePanel?: boolean,
+  motorQuery?: ApiMotorGetRequest
+}) {
   const [loading, setLoading] = React.useState(true);
   const [data, setData] = React.useState<Motor[]>([]);
   const [filter, setFilter] = React.useState({
     search: "",
     status: "All",
   });
+  const motorQuery = initialQuery ?? {} // TODO: make this a state perhaps later
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -363,7 +370,7 @@ export function TableMotors() {
 
   React.useEffect(() => {
     setLoading(true);
-    apiService.motorApi.apiMotorGet().then((res) => {
+    apiService.motorApi.apiMotorGet(motorQuery).then((res) => {
       setData(res);
       setLoading(false);
     });
@@ -376,7 +383,7 @@ export function TableMotors() {
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-2">
-          <div className="relative">
+          { hidePanel || <div className="relative">
             <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search .."
@@ -386,7 +393,7 @@ export function TableMotors() {
               }
               className="h-9 w-[150px] lg:w-[250px] pl-8"
             />
-          </div>
+          </div>}
           {/* <div className="relative">
             <Select 
                 defaultValue="All"
