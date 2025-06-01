@@ -67,6 +67,12 @@ export interface PostPenggunaDTO {
      * @memberof PostPenggunaDTO
      */
     idGambar?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PostPenggunaDTO
+     */
+    isAdmin?: boolean | null;
 }
 
 /**
@@ -95,6 +101,7 @@ export function PostPenggunaDTOFromJSONTyped(json: any, ignoreDiscriminator: boo
         'nomorKTP': json['nomorKTP'] == null ? undefined : json['nomorKTP'],
         'alamat': json['alamat'] == null ? undefined : json['alamat'],
         'idGambar': json['idGambar'] == null ? undefined : json['idGambar'],
+        'isAdmin': json['isAdmin'] == null ? undefined : json['isAdmin'],
     };
 }
 
@@ -117,6 +124,7 @@ export function PostPenggunaDTOToJSONTyped(value?: PostPenggunaDTO | null, ignor
         'nomorKTP': value['nomorKTP'],
         'alamat': value['alamat'],
         'idGambar': value['idGambar'],
+        'isAdmin': value['isAdmin'],
     };
 }
 
