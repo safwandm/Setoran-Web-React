@@ -162,7 +162,7 @@ export default function EditMotorDrawer({
           </Button>
         )}
       </DrawerTrigger>
-      <DrawerContent className="w-[50%] sm:max-w-[500px]">
+      <DrawerContent className="w-[50%] sm:max-w-[500px] overflow-y-scroll">
         <DrawerHeader>
           <DrawerTitle>{editing ? "Edit Motor" : "Detail Motor"}</DrawerTitle>
           <DrawerDescription>
