@@ -16,33 +16,11 @@ import { useEffect, useState } from "react"
 import { StatusMotor } from "@/components/forms/motor-drawer"
 import { StatusTransaksi } from "@/components/forms/transaction-drawer"
 import { formatPrice } from "@/lib/utils"
+import { LoadingOverlay } from "@/components/loading-overlay"
+import { DashboardDataDTO } from "@/lib/api-client"
+import { info } from "console"
 
-export function SectionCardsDasboard() {
-
-  const [info, setInfo] = useState({
-    motorAvailable: 0,
-    motorRented: 0,
-    orderOngoing: 0,
-    income: 0
-  })
-
-  const apiService = ApiService.getInstance()
-
-  const refresh = async () => {
-    var motors = await apiService.motorApi.apiMotorGet()
-    var transaction = await apiService.transaksiApi.apiTransaksiGet()
-
-    setInfo({
-      motorAvailable: motors.filter(m => m.statusMotor === StatusMotor.Available).length,
-      motorRented: motors.filter(m => m.statusMotor === StatusMotor.Rented).length,
-      orderOngoing: transaction.filter(t => t.status === StatusTransaksi.Ongoing).length,
-      income: transaction.filter(t => t.status === StatusTransaksi.Finished).map(t => t.totalHarga).reduce((p, i) => p! + i!, 0)!
-    })
-  }
-
-  useEffect(() => {
-    refresh()
-  }, [])
+export function SectionCardsDasboard({ data } : { data: DashboardDataDTO }) {
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
@@ -50,7 +28,7 @@ export function SectionCardsDasboard() {
         <CardHeader>
           <CardDescription>Motors Available</CardDescription>
           <CardTitle className="mt-8 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {info.motorAvailable} Motors
+            {data.availableMotorCount} Motors
           </CardTitle>
         </CardHeader>
         <CardFooter className="mt-8 flex-col items-start gap-1.5 text-sm">
@@ -61,14 +39,14 @@ export function SectionCardsDasboard() {
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Motors Rented</CardDescription>
+          <CardDescription>Motors Filed</CardDescription>
           <CardTitle className="mt-6 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {info.motorRented} Motors
+            {data.filedMotorCount} Motors
           </CardTitle>
         </CardHeader>
         <CardFooter className="mt-8 flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Motorcycles that are actively rented by current users
+            Motorcycles that are filed, awaiting approval
           </div>
         </CardFooter>
       </Card>
@@ -76,7 +54,7 @@ export function SectionCardsDasboard() {
         <CardHeader>
           <CardDescription>Ongoing Order</CardDescription>
           <CardTitle className="mt-6 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {info.orderOngoing} Orders
+            {data.transaksiOngoing} Orders
           </CardTitle>
         </CardHeader>
         <CardFooter className="mt-8 flex-col items-start gap-1.5 text-sm">
@@ -89,7 +67,7 @@ export function SectionCardsDasboard() {
         <CardHeader>
           <CardDescription>Income</CardDescription>
           <CardTitle className="mt-6 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {info.income ? formatPrice(info.income) : 0}
+            {data.totalIncome ? formatPrice(data.totalIncome) : 0}
           </CardTitle>
           <CardAction>
             {/* <Badge variant="outline">

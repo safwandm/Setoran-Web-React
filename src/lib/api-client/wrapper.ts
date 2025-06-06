@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config()
 
 import { Configuration } from './runtime';
-import { AuthApi, DiskonApi, MitraApi, MotorApi, MotorImageApi, NotifikasiApi, PelangganApi, PenggunaApi, SetoranAPINETApi, StorageApi, TransaksiApi } from './apis';
+import { AuthApi, DiskonApi, MitraApi, MotorApi, MotorImageApi, NotifikasiApi, PelangganApi, PenggunaApi, ReactApi, SetoranAPINETApi, StorageApi, TransaksiApi } from './apis';
 import { VoucherApi } from './apis';
 // register api lain kalau butuh
 
@@ -25,6 +25,7 @@ class ApiService {
   public diskonApi!: DiskonApi;
   public storageApi!: StorageApi;
   public motorImageApi!: MotorImageApi;
+  public reactApi!: ReactApi;
 
   private constructor(config?: Configuration) {
     if (config == undefined)
@@ -51,6 +52,7 @@ class ApiService {
     this.diskonApi = new DiskonApi(this.config);
     this.storageApi = new StorageApi(this.config);
     this.motorImageApi = new MotorImageApi(this.config);
+    this.reactApi = new ReactApi(this.config);
   }
 
   public static getInstance(): ApiService {

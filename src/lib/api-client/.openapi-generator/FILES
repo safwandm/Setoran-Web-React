@@ -8,6 +8,7 @@ apis/NotifikasiApi.ts
 apis/PelangganApi.ts
 apis/PembayaranApi.ts
 apis/PenggunaApi.ts
+apis/ReactApi.ts
 apis/SetoranAPINETApi.ts
 apis/StorageApi.ts
 apis/TransaksiApi.ts
@@ -17,6 +18,7 @@ apis/index.ts
 index.ts
 models/AccessTokenResponse.ts
 models/CheckVoucherDTO.ts
+models/DashboardDataDTO.ts
 models/DeviceToken.ts
 models/Diskon.ts
 models/ForgotPasswordRequest.ts

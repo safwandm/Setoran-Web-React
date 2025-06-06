@@ -10,6 +10,7 @@ export * from './NotifikasiApi';
 export * from './PelangganApi';
 export * from './PembayaranApi';
 export * from './PenggunaApi';
+export * from './ReactApi';
 export * from './SetoranAPINETApi';
 export * from './StorageApi';
 export * from './TransaksiApi';

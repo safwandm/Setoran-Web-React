@@ -30,7 +30,7 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 import ApiService from "@/lib/api-client/wrapper"
-import { Transaksi } from "@/lib/api-client"
+import { DashboardDataDTO, Transaksi } from "@/lib/api-client"
 import { StatusTransaksi } from "@/components/forms/transaction-drawer"
 import { formatDateToLongDate } from "@/lib/utils"
 
@@ -43,19 +43,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartAreaDashboard() {
+export function ChartAreaDashboard({ data } : { data: DashboardDataDTO }) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
-  const [transaksi, setTransaksi] = React.useState<Transaksi[]>([])
 
-  const apiService = ApiService.getInstance()
-
-  const refresh = async () => {
-    apiService.transaksiApi.apiTransaksiGet().then(res => setTransaksi(res))
-  }
+  const transaksi = React.useMemo(() => data.chartTransaksi || [], [data])
 
   React.useEffect(() => {
-    refresh()
     if (isMobile) {
       setTimeRange("7d")
     }

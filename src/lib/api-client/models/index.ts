@@ -2,6 +2,7 @@
 /* eslint-disable */
 export * from './AccessTokenResponse';
 export * from './CheckVoucherDTO';
+export * from './DashboardDataDTO';
 export * from './DeviceToken';
 export * from './Diskon';
 export * from './ForgotPasswordRequest';
