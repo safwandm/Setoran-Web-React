@@ -34,6 +34,13 @@ import {
     DiskonToJSON,
     DiskonToJSONTyped,
 } from './Diskon';
+import type { Ulasan } from './Ulasan';
+import {
+    UlasanFromJSON,
+    UlasanFromJSONTyped,
+    UlasanToJSON,
+    UlasanToJSONTyped,
+} from './Ulasan';
 
 /**
  * 
@@ -121,6 +128,12 @@ export interface Motor {
     diskon?: Array<Diskon> | null;
     /**
      * 
+     * @type {Array<Ulasan>}
+     * @memberof Motor
+     */
+    ulasan?: Array<Ulasan> | null;
+    /**
+     * 
      * @type {number}
      * @memberof Motor
      */
@@ -169,6 +182,7 @@ export function MotorFromJSONTyped(json: any, ignoreDiscriminator: boolean): Mot
         'statusMotor': json['statusMotor'] == null ? undefined : json['statusMotor'],
         'hargaHarian': json['hargaHarian'] == null ? undefined : json['hargaHarian'],
         'diskon': json['diskon'] == null ? undefined : ((json['diskon'] as Array<any>).map(DiskonFromJSON)),
+        'ulasan': json['ulasan'] == null ? undefined : ((json['ulasan'] as Array<any>).map(UlasanFromJSON)),
         'idMotorImage': json['idMotorImage'] == null ? undefined : json['idMotorImage'],
         'mitra': json['mitra'] == null ? undefined : MitraFromJSON(json['mitra']),
         'motorImage': json['motorImage'] == null ? undefined : MotorImageFromJSON(json['motorImage']),
@@ -199,6 +213,7 @@ export function MotorToJSONTyped(value?: Motor | null, ignoreDiscriminator: bool
         'statusMotor': value['statusMotor'],
         'hargaHarian': value['hargaHarian'],
         'diskon': value['diskon'] == null ? undefined : ((value['diskon'] as Array<any>).map(DiskonToJSON)),
+        'ulasan': value['ulasan'] == null ? undefined : ((value['ulasan'] as Array<any>).map(UlasanToJSON)),
         'idMotorImage': value['idMotorImage'],
         'mitra': MitraToJSON(value['mitra']),
         'motorImage': MotorImageToJSON(value['motorImage']),

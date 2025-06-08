@@ -45,6 +45,12 @@ export interface PostTransaksiDTO {
     tanggalSelesai: Date;
     /**
      * 
+     * @type {string}
+     * @memberof PostTransaksiDTO
+     */
+    metodePembayaran: string;
+    /**
+     * 
      * @type {number}
      * @memberof PostTransaksiDTO
      */
@@ -65,6 +71,7 @@ export function instanceOfPostTransaksiDTO(value: object): value is PostTransaks
     if (!('idPelanggan' in value) || value['idPelanggan'] === undefined) return false;
     if (!('tanggalMulai' in value) || value['tanggalMulai'] === undefined) return false;
     if (!('tanggalSelesai' in value) || value['tanggalSelesai'] === undefined) return false;
+    if (!('metodePembayaran' in value) || value['metodePembayaran'] === undefined) return false;
     return true;
 }
 
@@ -82,6 +89,7 @@ export function PostTransaksiDTOFromJSONTyped(json: any, ignoreDiscriminator: bo
         'idPelanggan': json['idPelanggan'],
         'tanggalMulai': (new Date(json['tanggalMulai'])),
         'tanggalSelesai': (new Date(json['tanggalSelesai'])),
+        'metodePembayaran': json['metodePembayaran'],
         'idVoucher': json['idVoucher'] == null ? undefined : json['idVoucher'],
         'idDiscount': json['idDiscount'] == null ? undefined : json['idDiscount'],
     };
@@ -102,6 +110,7 @@ export function PostTransaksiDTOToJSONTyped(value?: PostTransaksiDTO | null, ign
         'idPelanggan': value['idPelanggan'],
         'tanggalMulai': ((value['tanggalMulai']).toISOString()),
         'tanggalSelesai': ((value['tanggalSelesai']).toISOString()),
+        'metodePembayaran': value['metodePembayaran'],
         'idVoucher': value['idVoucher'],
         'idDiscount': value['idDiscount'],
     };

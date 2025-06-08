@@ -33,6 +33,7 @@ export * from './PostUlasanDTO';
 export * from './PostVoucherDTO';
 export * from './PutDiskonDTO';
 export * from './PutMotorDTO';
+export * from './PutMotorImageDTO';
 export * from './PutPembayaranDTO';
 export * from './RefreshRequest';
 export * from './RegisterForm';

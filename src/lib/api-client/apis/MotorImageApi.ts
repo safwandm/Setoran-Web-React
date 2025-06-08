@@ -17,12 +17,15 @@ import * as runtime from '../runtime';
 import type {
   MotorImage,
   PostMotorImageDTO,
+  PutMotorImageDTO,
 } from '../models/index';
 import {
     MotorImageFromJSON,
     MotorImageToJSON,
     PostMotorImageDTOFromJSON,
     PostMotorImageDTOToJSON,
+    PutMotorImageDTOFromJSON,
+    PutMotorImageDTOToJSON,
 } from '../models/index';
 
 export interface ApiMotorImageIdGetRequest {
@@ -31,6 +34,10 @@ export interface ApiMotorImageIdGetRequest {
 
 export interface ApiMotorImagePostRequest {
     postMotorImageDTO?: PostMotorImageDTO;
+}
+
+export interface ApiMotorImagePutRequest {
+    putMotorImageDTO?: PutMotorImageDTO;
 }
 
 /**
@@ -109,6 +116,41 @@ export class MotorImageApi extends runtime.BaseAPI {
      */
     async apiMotorImagePost(requestParameters: ApiMotorImagePostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MotorImage> {
         const response = await this.apiMotorImagePostRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async apiMotorImagePutRaw(requestParameters: ApiMotorImagePutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MotorImage>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json-patch+json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/MotorImage`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PutMotorImageDTOToJSON(requestParameters['putMotorImageDTO']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MotorImageFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async apiMotorImagePut(requestParameters: ApiMotorImagePutRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MotorImage> {
+        const response = await this.apiMotorImagePutRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

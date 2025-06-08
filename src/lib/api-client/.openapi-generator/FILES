@@ -49,6 +49,7 @@ models/PostUlasanDTO.ts
 models/PostVoucherDTO.ts
 models/PutDiskonDTO.ts
 models/PutMotorDTO.ts
+models/PutMotorImageDTO.ts
 models/PutPembayaranDTO.ts
 models/RefreshRequest.ts
 models/RegisterForm.ts

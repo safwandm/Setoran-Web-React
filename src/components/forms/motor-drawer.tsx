@@ -116,6 +116,39 @@ export default function EditMotorDrawer({
       .catch(() => setLoading(false));
   };
 
+  const handleImageUpdate = async (event, side) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setIsLoading(true);
+    const toBase64 = (file) =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(",")[1]); // remove data:image/...;base64,
+        reader.onerror = (error) => reject(error);
+      });
+    try {
+      const updatedMotorImage = await apiService.motorImageApi.apiMotorImagePut(
+        {
+          putMotorImageDTO: {
+            idMotor: motor.idMotor!,
+            [side]: await toBase64(file),
+          },
+        }
+      );
+
+      setMotor((prev) => ({
+        ...prev,
+        motorImage: updatedMotorImage,
+      }));
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update image.");
+    }
+  };
+
   const handleChange = (key: keyof Motor, value: any) => {
     setMotor((prev) => ({ ...prev, [key]: value }));
   };
@@ -170,91 +203,59 @@ export default function EditMotorDrawer({
           </DrawerDescription>
         </DrawerHeader>
         <LoadingOverlay loading={loading}>
-          {motor.motorImage && (
-            <div className="w-full flex justify-center">
-              <Carousel className="w-[60%]">
-                <CarouselContent>
-                  {/* {Array.from({ length: 5 }).map((_, index) => (
-                  <CarouselItem key={index}>
+        {motor.motorImage && (
+          <div className="w-full flex justify-center">
+            <Carousel className="w-[60%]">
+              <CarouselContent>
+                {['right', 'front', 'left', 'rear'].map((side) => (
+                  <CarouselItem key={side}>
                     <div className="p-1">
                       <Card>
-                        <CardContent className="flex aspect-square items-center justify-center p-6">
-                          <span className="text-4xl font-semibold">{index + 1}</span>
+                        <CardContent className="relative aspect-square flex items-center justify-center p-6 group">
+                          <label
+                            htmlFor={`update-${side}`}
+                            className="cursor-pointer w-full h-full relative block"
+                          >
+                            {motor.motorImage![side] ? (
+                              <>
+                                <img
+                                  src={`${BASE_PATH}/storage/fetch/${motor.motorImage![side]}`}
+                                  alt={side}
+                                  className="w-full h-full object-contain transition-transform group-hover:scale-105 group-hover:brightness-75"
+                                />
+                              </>
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-400 border border-dashed border-gray-300 transition-transform group-hover:scale-105 group-hover:brightness-75">
+                                No image
+                              </div>
+                            )}
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                              <span className="text-white text-sm bg-black bg-opacity-50 px-2 py-1 rounded">
+                                Click to update
+                              </span>
+                            </div>
+                          </label>
+                          <input
+                            type="file"
+                            id={`update-${side}`}
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => handleImageUpdate(e, side)}
+                          />
                         </CardContent>
+                        <CardFooter className="flex justify-center">
+                          <Label className="capitalize">{side}</Label>
+                        </CardFooter>
                       </Card>
                     </div>
                   </CarouselItem>
-                ))} */}
-                  <CarouselItem>
-                    {motor.motorImage.right && (
-                      <div className="p-1">
-                        <Card>
-                          <CardContent className="flex aspect-square items-center justify-center p-6">
-                            <img
-                              src={`${BASE_PATH}/storage/fetch/${motor.motorImage?.right}`}
-                            />
-                          </CardContent>
-                          <CardFooter className="flex justify-center">
-                            <Label>Right</Label>
-                          </CardFooter>
-                        </Card>
-                      </div>
-                    )}
-                  </CarouselItem>
-                  <CarouselItem>
-                    {motor.motorImage.front && (
-                      <div className="p-1">
-                        <Card>
-                          <CardContent className="flex aspect-square items-center justify-center p-6">
-                            <img
-                              src={`${BASE_PATH}/storage/fetch/${motor.motorImage?.front}`}
-                            />
-                          </CardContent>
-                          <CardFooter className="flex justify-center">
-                            <Label>Front</Label>
-                          </CardFooter>
-                        </Card>
-                      </div>
-                    )}
-                  </CarouselItem>
-                  <CarouselItem>
-                    {motor.motorImage.left && (
-                      <div className="p-1">
-                        <Card>
-                          <CardContent className="flex aspect-square items-center justify-center p-6">
-                            <img
-                              src={`${BASE_PATH}/storage/fetch/${motor.motorImage?.left}`}
-                            />
-                          </CardContent>
-                          <CardFooter className="flex justify-center">
-                            <Label>Left</Label>
-                          </CardFooter>
-                        </Card>
-                      </div>
-                    )}
-                  </CarouselItem>
-                  <CarouselItem>
-                    {motor.motorImage.rear && (
-                      <div className="p-1">
-                        <Card>
-                          <CardContent className="flex aspect-square items-center justify-center p-6">
-                            <img
-                              src={`${BASE_PATH}/storage/fetch/${motor.motorImage?.rear}`}
-                            />
-                          </CardContent>
-                          <CardFooter className="flex justify-center">
-                            <Label>Rear</Label>
-                          </CardFooter>
-                        </Card>
-                      </div>
-                    )}
-                  </CarouselItem>
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-              </Carousel>
-            </div>
-          )}
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          </div>
+        )}
           <div className="p-4 space-y-4 overflow-y-auto max-h-[70vh]">
             <InputField
               name="platNomor"
