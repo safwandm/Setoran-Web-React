@@ -108,6 +108,7 @@ import ApiService from "@/lib/api-client/wrapper";
 import Link from "next/link";
 import { LoadingOverlay } from "@/components/loading-overlay";
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page";
+import { formatFilterString, matchesSearch } from "@/lib/utils";
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -157,6 +158,11 @@ function DraggableRow({ row }: { row: Row<MitraMotorDTO> }) {
 export function TableMitra() {
   const [loading, setLoading] = React.useState(true);
   const [data, setData] = React.useState<MitraMotorDTO[]>([]);
+  const [filter, setFilter] = React.useState({
+    search: "",
+    status: "All"
+  })
+
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -189,37 +195,6 @@ export function TableMitra() {
   }
 
   const columns: ColumnDef<MitraMotorDTO>[] = [
-    // {
-    //   id: "drag",
-    //   header: () => null,
-    //   cell: ({ row }) => <DragHandle id={row.original.mitra!.idMitra!} />,
-    // },
-    // {
-    //   id: "select",
-    //   header: ({ table }) => (
-    //     <div className="flex items-center justify-center">
-    //       <Checkbox
-    //         checked={
-    //           table.getIsAllPageRowsSelected() ||
-    //           (table.getIsSomePageRowsSelected() && "indeterminate")
-    //         }
-    //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //         aria-label="Select all"
-    //       />
-    //     </div>
-    //   ),
-    //   cell: ({ row }) => (
-    //     <div className="flex items-center justify-center">
-    //       <Checkbox
-    //         checked={row.getIsSelected()}
-    //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //         aria-label="Select row"
-    //       />
-    //     </div>
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
       accessorKey: "mitraId",
       header: () => <div className="w-20 text-left">Mitra ID</div>,
@@ -282,8 +257,20 @@ export function TableMitra() {
     },
   ];
 
+  const filteredData: MitraMotorDTO[] = React.useMemo(() => {
+    if (!filter.search && filter.status == "All") return data;
+  
+    const lowerSearch = filter.search.toLowerCase();
+  
+    return data.filter((row) => 
+      (filter.status === "All" || row.mitra!.status == filter.status) && Object.values(row).some((value) =>
+        matchesSearch(value, lowerSearch)
+      )
+    );
+  }, [data, filter]);
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     state: {
       sorting,
@@ -330,26 +317,41 @@ export function TableMitra() {
       className="w-full flex-col justify-start gap-6"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
-        <Select defaultValue="outline"></Select>
+        {/* <Select defaultValue="outline"></Select>
         <div className="flex items-center">
           <Select defaultValue="outline"></Select>
-        </div>
-        <div className="flex items-center">
-          <div className="ml-auto">
-            {/* <div className="relative">
+        </div> */}
+        <div className="flex items-center gap-2">
+            <div className="relative">
               <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search by Id .."
+                placeholder="Search .."
                 value={
-                  (table.getColumn("mitraId")?.getFilterValue() as string) ?? ""
+                  filter.search
                 }
                 onChange={(event) =>
-                  table.getColumn("mitraId")?.setFilterValue(event.target.value)
+                  setFilter({ ...filter, search: event.target.value })
                 }
                 className="h-9 w-[150px] lg:w-[250px] pl-8"
               />
-            </div> */}
-          </div>
+            </div>
+            <Select
+              defaultValue="All"
+              onValueChange={(e) => {
+                setFilter( { ...filter, status: e })
+              }}
+            >
+              <SelectTrigger className="flex w-fit" size="sm" id="view-selector">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={"All"}>Status: All</SelectItem>
+                <SelectItem value={"Aktif"}>Status: Aktif</SelectItem>
+                <SelectItem value={"NonAktif"}>
+                  Status: Non Aktif
+                </SelectItem>
+              </SelectContent>
+            </Select>
         </div>
       </div>
       <TabsContent

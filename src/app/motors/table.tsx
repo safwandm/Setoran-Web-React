@@ -104,7 +104,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApiMotorGetRequest, Motor, Pengguna } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
-import { formatMotorName } from "@/lib/utils";
+import { formatMotorName, matchesSearch } from "@/lib/utils";
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page";
 import { LoadingOverlay } from "@/components/loading-overlay";
 import EditMotorDrawer, { StatusMotor } from "@/components/forms/motor-drawer";
@@ -312,24 +312,15 @@ export function TableMotors({
   const apiService = ApiService.getInstance();
 
   const filteredData: Motor[] = React.useMemo(() => {
-    if (!filter.search) return data;
+    if (!filter.search && filter.status == "All") return data;
 
     const lowerSearch = filter.search.toLowerCase();
 
-    return data.filter((row) => {
-      console.log(
-        filter.status,
-        row.statusMotor,
-        filter.status == "All" || row.statusMotor == filter.status
-      );
-      return (
-        (filter.status === "All" || row.statusMotor == filter.status) &&
-        Object.values(row).some((value) => {
-          console.log(value);
-          return String(value).toLowerCase().includes(lowerSearch);
-        })
-      );
-    });
+    return data.filter((row) => 
+      (filter.status === "All" || row.statusMotor == filter.status) && Object.values(row).some((value) =>
+        matchesSearch(value, lowerSearch)
+      )
+    );
   }, [data, filter]);
 
   const table = useReactTable({
@@ -394,7 +385,7 @@ export function TableMotors({
               className="h-9 w-[150px] lg:w-[250px] pl-8"
             />
           </div>}
-          {/* <div className="relative">
+          <div className="relative">
             <Select 
                 defaultValue="All"
                 value={filter.status || ""} 
@@ -410,7 +401,7 @@ export function TableMotors({
                 ))}
               </SelectContent>
             </Select>
-          </div> */}
+          </div>
         </div>
       </div>
       <TabsContent

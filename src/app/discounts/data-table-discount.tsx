@@ -109,7 +109,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { Diskon, StatusDiskon } from "@/lib/api-client"
-import { formatDateToLongDate, formatMotorName } from "@/lib/utils"
+import { formatDateToLongDate, formatFilterString, formatMotorName, matchesSearch } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import EditDiskonDrawer from "@/components/forms/discount-drawer"
 import { TambahDiskonDialog } from "./diskon-dialog"
@@ -341,18 +341,14 @@ export function DataTableDiscount() {
   )
 
   const filteredData: Diskon[] = React.useMemo(() => {
-    if (!filter.search) return data;
+    if (!filter.search && filter.status === "All") return data;
   
     const lowerSearch = filter.search.toLowerCase();
   
-    return data.filter((row) => {
-      console.log(filter.status, row.statusDiskon, (filter.status == "All" || row.statusDiskon == filter.status))
-      return (filter.status === "All" || row.statusDiskon == filter.status) && Object.values(row).some((value) =>{
-        if (value.idMotor !== undefined)
-          return formatMotorName(value).toLowerCase().includes(lowerSearch)
-        return String(value).toLowerCase().includes(lowerSearch)
-      })
-    }
+    return data.filter((row) =>
+      (filter.status === "All" || row.statusDiskon == filter.status) && Object.values(row).some((value) =>
+        matchesSearch(value, lowerSearch)
+      )
     );
   }, [data, filter]);
 
@@ -450,7 +446,7 @@ export function DataTableDiscount() {
               className="h-9 w-[150px] lg:w-[250px] pl-8"
             />
           </div>
-          {/* <Select
+          <Select
             defaultValue="All"
             onValueChange={(e) => {
               setFilter( { ...filter, status: e })
@@ -466,7 +462,7 @@ export function DataTableDiscount() {
                 Status: Non Aktif
               </SelectItem>
             </SelectContent>
-          </Select> */}
+          </Select>
           <TambahDiskonDialog refresh={refresh}/>
         </div>
       </div>

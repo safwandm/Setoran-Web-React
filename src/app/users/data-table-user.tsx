@@ -113,6 +113,7 @@ import { Pelanggan, Pengguna } from "@/lib/api-client"
 import ApiService from "@/lib/api-client/wrapper"
 import { LoadingOverlay } from "@/components/loading-overlay"
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page"
+import { formatDateToLongDate, formatFilterString, matchesSearch } from "@/lib/utils"
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -135,42 +136,11 @@ function DragHandle({ id }: { id: number }) {
 }
 
 const columns: ColumnDef<Pengguna>[] = [
-  // {
-  //   id: "drag",
-  //   header: () => null,
-  //   cell: ({ row }) => <DragHandle id={row.original.pelanggan?.idPelanggan!} />,
-  // },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: "userId",
     header: "User ID",
     cell: ({ row }) => {
-      return <PenggunaInfoLink idPengguna={row.original.id!} buttonText={row.original.id!} onSave={() => window.location.reload()} />
+      return <PenggunaInfoLink idPengguna={row.original.id!} buttonText={row.original.id!} />
     },
     enableHiding: false,
   },
@@ -195,6 +165,16 @@ const columns: ColumnDef<Pengguna>[] = [
     ),
   },
   {
+    accessorKey: "dateOfBirth",
+    header: "Date of Birth",
+  
+    cell: ({ row }) => (
+      <div className="w-">
+          {formatDateToLongDate(row.original.tanggalLahir)}
+      </div>
+    ),
+  },
+  {
     accessorKey: "sim",
     header: "SIM Number",
   
@@ -214,80 +194,6 @@ const columns: ColumnDef<Pengguna>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "status",
-  //   header: () => <div className="w-0.5 text-left">Status</div>,
-  //   cell: ({ row }) => (
-  //     <Badge variant="outline" className="text-muted-foreground px-1.5">
-  //       {row.original.status === "Active" ? (
-  //         <IconCircle className="fill-green-500" />
-  //       ) : row.original.status === "Blocked" ? (
-  //         <IconBan className="dark:fill-red-400" />
-  //       ) : (
-  //         <IconCircle/>
-  //       )}
-  //       {row.original.status}
-  //     </Badge>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "registration",
-  //   header: () => <div className="w-full text-left">Registration </div>,
-  //   cell: ({ row }) => (
-  //     <div className="w-9">
-  //         {row.original.registration}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "verification",
-  //   header: () => <div className="w-10 text-left">Verification</div>,
-  //   cell: ({ row }) => (
-  //     <Badge variant="outline" className="text-muted-foreground px-1.5">
-  //       {row.original.verification === "Verified" ? (
-  //         <IconCircleCheckFilled className="fill-blue-500 dark:fill-blue-400" />
-  //       ) : row.original.verification === "Canceled" ? (
-  //         <IconArrowsCross className="fill-red-500 dark:fill-red-400" />
-  //       ) : (
-  //         <IconLoader className="animate-spin text-muted-foreground" />
-  //       )}
-  //       {row.original.verification}
-  //     </Badge>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "transaction",
-  //   header: () => <div className="text-left">Transaction</div>,
-  //   cell: ({ row }) => (
-  //     <div className="w-4">
-  //         {row.original.transaction}
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   id: "actions",
-  //   cell: () => (
-  //     <DropdownMenu>
-  //       <DropdownMenuTrigger asChild>
-  //         <Button
-  //           variant="ghost"
-  //           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-  //           size="icon"
-  //         >
-  //           <IconDotsVertical />
-  //           <span className="sr-only">Open menu</span>
-  //         </Button>
-  //       </DropdownMenuTrigger>
-  //       <DropdownMenuContent align="end" className="w-32">
-  //         <DropdownMenuItem>Edit</DropdownMenuItem>
-  //         <DropdownMenuItem>Make a copy</DropdownMenuItem>
-  //         <DropdownMenuItem>Favorite</DropdownMenuItem>
-  //         <DropdownMenuSeparator />
-  //         <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-  //       </DropdownMenuContent>
-  //     </DropdownMenu>
-  //   ),
-  // },
 ]
 
 function DraggableRow({ row }: { row: Row<Pengguna> }) {
@@ -318,6 +224,10 @@ function DraggableRow({ row }: { row: Row<Pengguna> }) {
 export function DataTableUser() {
   const [loading, setLoading] = React.useState(true)
   const [data, setData] = React.useState<Pengguna[]>([])
+  const [filter, setFilter] = React.useState({
+    search: "",
+  })
+
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -341,8 +251,20 @@ export function DataTableUser() {
     [data]
   )
 
+  const filteredData: Pengguna[] = React.useMemo(() => {
+    if (!filter.search) return data;
+  
+    const lowerSearch = filter.search.toLowerCase();
+  
+    return data.filter((row) => 
+      Object.values(row).some((value) =>
+        matchesSearch(value, lowerSearch)
+      )
+    );
+  }, [data, filter]);
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     state: {
       sorting,
@@ -393,26 +315,22 @@ export function DataTableUser() {
       className="w-full flex-col justify-start gap-6"
     >
        <div className="flex items-center justify-between px-4 lg:px-6">
-        <Select defaultValue="outline">
-        </Select>
-         <div className="flex items-center">
-            <Select defaultValue="outline">
-            </Select>
-          </div>
         <div className="flex items-center">
-          {/* <div className="ml-auto">
+          <div className="ml-auto">
             <div className="relative">
               <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-              placeholder="Search by Id .."
-              value={(table.getColumn("userId")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("userId")?.setFilterValue(event.target.value)
-              }
-              className="h-9 w-[150px] lg:w-[250px] pl-8"
-            />
+                placeholder="Search .."
+                value={
+                  filter.search
+                }
+                onChange={(event) =>
+                  setFilter({ ...filter, search: event.target.value })
+                }
+                className="h-9 w-[150px] lg:w-[250px] pl-8"
+              />
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
       <TabsContent

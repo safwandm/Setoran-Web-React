@@ -200,41 +200,7 @@ export function DataTableVoucher({}) {
     [data]
   );
 
-  const apiService = ApiService.getInstance();
-  const controller = new AbortController();
-
   const columns: ColumnDef<Voucher>[] = [
-    // {
-    //   id: "drag",
-    //   header: () => null,
-    //   cell: ({ row }) => <DragHandle id={row.original.idVoucher!} />,
-    // },
-    // {
-    //   id: "select",
-    //   header: ({ table }) => (
-    //     <div className="flex items-center justify-center">
-    //       <Checkbox
-    //         checked={
-    //           table.getIsAllPageRowsSelected() ||
-    //           (table.getIsSomePageRowsSelected() && "indeterminate")
-    //         }
-    //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //         aria-label="Select all"
-    //       />
-    //     </div>
-    //   ),
-    //   cell: ({ row }) => (
-    //     <div className="flex items-center justify-center">
-    //       <Checkbox
-    //         checked={row.getIsSelected()}
-    //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //         aria-label="Select row"
-    //       />
-    //     </div>
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
       accessorKey: "voucherCode",
       header: () => <div className="w-full text-left">Voucher Code</div>,
@@ -266,15 +232,6 @@ export function DataTableVoucher({}) {
         </div>
       ),
     },
-    // {
-    //   accessorKey: "usage",
-    //   header: () => <div className="w-full text-left">Usage</div>,
-    //   cell: ({ row }) => (
-    //     <div className="w-9">
-    //         {row.original.usage}
-    //     </div>
-    //   ),
-    // },
     {
       accessorKey: "status",
       header: () => <div className="w-full text-left">Status</div>,
@@ -291,47 +248,6 @@ export function DataTableVoucher({}) {
         </Badge>
       ),
     },
-    // {
-    //   id: "actions",
-    //   cell: ({ row }) => (
-    //     <DropdownMenu>
-    //       <DropdownMenuTrigger asChild>
-    //         <Button
-    //           variant="ghost"
-    //           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-    //           size="icon"
-    //         >
-    //           <IconDotsVertical />
-    //           <span className="sr-only">Open menu</span>
-    //         </Button>
-    //       </DropdownMenuTrigger>
-    //       <DropdownMenuContent align="end" className="w-32">
-    //         <DropdownMenuItem>Edit</DropdownMenuItem>
-    //         <DropdownMenuSeparator />
-    //         <DropdownMenuItem
-    //           variant="destructive"
-    //           onClick={() => {
-    //             setLoading(true);
-    //             ApiService.getInstance()
-    //               .voucherApi.voucherGenericIdDelete({
-    //                 id: row.original.idVoucher!,
-    //               })
-    //               .then(() => {
-    //                 toast("Voucher deleted");
-    //                 refresh()
-    //               })
-    //               .catch(() => {
-    //                 setLoading(false);
-    //                 toast.error("Failed to delete Voucher");
-    //               });
-    //           }}
-    //         >
-    //           Delete
-    //         </DropdownMenuItem>
-    //       </DropdownMenuContent>
-    //     </DropdownMenu>
-    //   ),
-    // },
   ];
 
   const table = useReactTable({
@@ -359,19 +275,34 @@ export function DataTableVoucher({}) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  React.useEffect(() => {
-    refresh();
-  }, [query]);
+  const apiService = ApiService.getInstance();
+  const abortControllerRef = React.useRef<AbortController | null>(null);
 
   function refresh() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setLoading(true);
+
     apiService.voucherApi
       .voucherFilteredGet(query, { signal: controller.signal })
       .then((res) => {
         setData(res);
         setLoading(false);
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') return;
+        console.error(err);
+        setLoading(false);
       });
   }
+
+  React.useEffect(() => {
+    refresh();
+  }, [query]);
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;

@@ -32,7 +32,7 @@ import {
 import ApiService from "@/lib/api-client/wrapper"
 import { DashboardDataDTO, Transaksi } from "@/lib/api-client"
 import { StatusTransaksi } from "@/components/forms/transaction-drawer"
-import { formatDateToLongDate } from "@/lib/utils"
+import { formatDateToLongDate, formatPrice } from "@/lib/utils"
 
 export const description = "An interactive area chart"
 
@@ -167,7 +167,7 @@ export function ChartAreaDashboard({ data } : { data: DashboardDataDTO }) {
                     // }}
                     formatter={(value, name) => {
                       if (name === "totalHarga") {
-                        return `Income ${value}`
+                        return `Income ${formatPrice(value)}`
                       }
                       return `${name} ${value}`
                     }}
