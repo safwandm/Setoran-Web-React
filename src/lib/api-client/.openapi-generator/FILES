@@ -32,6 +32,7 @@ models/MitraMotorDTO.ts
 models/Motor.ts
 models/MotorForm.ts
 models/MotorImage.ts
+models/MotorTableDTO.ts
 models/Notifikasi.ts
 models/Pelanggan.ts
 models/Pembayaran.ts

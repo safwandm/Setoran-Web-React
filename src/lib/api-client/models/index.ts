@@ -16,6 +16,7 @@ export * from './MitraMotorDTO';
 export * from './Motor';
 export * from './MotorForm';
 export * from './MotorImage';
+export * from './MotorTableDTO';
 export * from './Notifikasi';
 export * from './Pelanggan';
 export * from './Pembayaran';
