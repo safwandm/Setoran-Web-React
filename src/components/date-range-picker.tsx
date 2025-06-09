@@ -4,6 +4,11 @@ import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { DateRange } from "react-day-picker"
 
+function parseUtcDate(dateString: string): Date {
+  const [year, month, day] = dateString.split("-").map(Number)
+  return new Date(Date.UTC(year, month - 1, day)) // UTC midnight
+}
+
 interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> {
   date: DateRange | undefined
   setDate: (range: DateRange | undefined) => void
@@ -17,7 +22,8 @@ export function DatePickerWithRange({
   const handleChange = (type: "from" | "to") => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const selected = e.target.value ? parseISO(e.target.value) : undefined
+    const selected = e.target.value ? parseUtcDate(e.target.value) : undefined
+    console.log(selected, date)
     if (type === "from") {
       setDate({ from: selected, to: date?.to })
     } else {
