@@ -215,6 +215,11 @@ export function DataTableVoucher({}) {
       cell: ({ row }) => <div className="w-9">{row.original.namaVoucher}</div>,
     },
     {
+      accessorKey: "voucherPercentage",
+      header: () => <div className="w-30 text-left">Voucher Percentage (%)</div>,
+      cell: ({ row }) => <div className="w-9">{row.original.persenVoucher}%</div>,
+    },
+    {
       accessorKey: "startDate",
       header: () => <div className="w-50 text text-left">Start Date</div>,
       cell: ({ row }) => (
