@@ -74,15 +74,27 @@ export function ChartAreaDashboard({ data } : { data: DashboardDataDTO }) {
     }).sort((a, b) => new Date(a.tanggalSelesai!).getTime() - new Date(b.tanggalSelesai!).getTime())
   }, [transaksi, timeRange])
 
+  const timeRangeText = React.useMemo(() => {
+    switch (timeRange) {
+      case "7d":
+        return "Last 7 days"
+      case "30d":
+        return "Last 30 days"
+      case "90d":
+      default:
+        return "Last 3 months"
+    }
+  }, [timeRange])
+
   return (
     <Card className="@container/card">
       <CardHeader>
         <CardTitle>Total Income</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
-            Total for the last 3 months
+            Total for the {timeRangeText.toLowerCase()}
           </span>
-          <span className="@[540px]/card:hidden">Last 3 months</span>
+          <span className="@[540px]/card:hidden">{timeRangeText}</span>
         </CardDescription>
         <CardAction>
           <ToggleGroup
@@ -158,13 +170,6 @@ export function ChartAreaDashboard({ data } : { data: DashboardDataDTO }) {
               defaultIndex={isMobile ? -1 : 10}
               content={
                 <ChartTooltipContent
-                    // labelFormatter={(value) => {
-                    //   console.log(value)
-                    //   return new Date(value).toLocaleDateString("en-US", {
-                    //     month: "short",
-                    //     day: "numeric",
-                    //   })
-                    // }}
                     formatter={(value, name) => {
                       if (name === "totalHarga") {
                         return `Income ${formatPrice(value)}`
