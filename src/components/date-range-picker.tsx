@@ -1,18 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { addDays, format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
+import { format, parseISO } from "date-fns"
 import { DateRange } from "react-day-picker"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 
 interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> {
   date: DateRange | undefined
@@ -24,51 +14,34 @@ export function DatePickerWithRange({
   date,
   setDate,
 }: DatePickerWithRangeProps) {
+  const handleChange = (type: "from" | "to") => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selected = e.target.value ? parseISO(e.target.value) : undefined
+    if (type === "from") {
+      setDate({ from: selected, to: date?.to })
+    } else {
+      setDate({ from: date?.from, to: selected })
+    }
+  }
+
   return (
-    <div className={cn("grid gap-2", className)}>
-      <Popover modal={true}>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
-                <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
-                </>
-              ) : (
-                format(date.from, "LLL dd, y")
-              )
-            ) : (
-              <span>Pick a date</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            initialFocus
-            mode="range"
-            selected={date}
-            onSelect={(newRange) => {
-              if (
-                newRange?.from?.getTime() !== date?.from?.getTime() ||
-                newRange?.to?.getTime() !== date?.to?.getTime() &&
-                newRange?.from?.getTime() !== newRange?.to?.getTime()
-              ) {
-                setDate(newRange)
-              }
-            }}
-            numberOfMonths={2}
-          />
-        </PopoverContent>
-      </Popover>
+    <div className={className}>
+      <input
+        type="date"
+        value={date?.from ? format(date.from, "yyyy-MM-dd") : ""}
+        onChange={handleChange("from")}
+        max={date?.to ? format(date.to, "yyyy-MM-dd") : undefined}
+        className="border px-2 py-1 rounded w-[160px]"
+      />
+      <span className="mx-2">-</span>
+      <input
+        type="date"
+        value={date?.to ? format(date.to, "yyyy-MM-dd") : ""}
+        onChange={handleChange("to")}
+        min={date?.from ? format(date.from, "yyyy-MM-dd") : undefined}
+        className="border px-2 py-1 rounded w-[160px]"
+      />
     </div>
   )
 }
