@@ -94,7 +94,7 @@ import {
   TabsContent,
 } from "@/components/ui/tabs"
 import { ApiTransaksiGetRequest, StatusTransaksi, Transaksi } from "@/lib/api-client"
-import { formatDateToLongDate, formatFilterString, formatMotorName, formatPrice, matchesSearch } from "@/lib/utils"
+import { formatDateToLongDate, formatFilterString, formatMotorName, formatPrice, matchesSearch, translateEnum } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import EditTransactionDrawer from "@/components/forms/transaction-drawer"
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page"
@@ -263,7 +263,7 @@ export function DataTableTransaction({
           ) : (
             <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
           )}
-          {row.original.status}
+          {translateEnum(row.original.status)}
         </Badge>
       ),
     },
@@ -354,7 +354,7 @@ export function DataTableTransaction({
                 <SelectContent>
                   <SelectItem value={"All"}>Status: All</SelectItem>
                   {Object.keys(StatusTransaksi).map((key, index) => (
-                    <SelectItem key={StatusTransaksi[key]} value={StatusTransaksi[key]}>Status: {StatusTransaksi[key]}</SelectItem>
+                    <SelectItem key={StatusTransaksi[key]} value={StatusTransaksi[key]}>Status: {translateEnum(StatusTransaksi[key])}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

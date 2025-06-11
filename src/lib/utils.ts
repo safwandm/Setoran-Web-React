@@ -55,3 +55,21 @@ export function matchesSearch(value: any, lowerSearch: string): boolean {
 
   return formatFilterString(value).includes(lowerSearch);
 }
+
+const translateTable = {
+  "Diajukan": 'Submitted',
+  "Tersedia": 'Available',
+  "Disewa": 'Rented',
+  "DalamPerbaikan": 'Under Repair',
+  "TidakTersedia": 'Unavailable',
+  "Dibuat": 'Created',
+  "Berlangsung": 'In Progress',
+  "Batal": 'Cancelled',
+  "Selesai": 'Completed'
+};
+
+export function translateEnum(
+ value?: string
+): string {
+  return value ? translateTable[value] : "";
+}

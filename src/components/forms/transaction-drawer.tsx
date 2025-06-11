@@ -27,7 +27,7 @@ import { IconLoader } from "@tabler/icons-react";
 import { LoadingOverlay } from "../loading-overlay";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { Pengguna, StatusTransaksi } from "@/lib/api-client";
-import { formatDateToLongDate, formatMotorName, formatPrice } from "@/lib/utils";
+import { formatDateToLongDate, formatMotorName, formatPrice, translateEnum } from "@/lib/utils";
 
 const InputField = ({
   name,
@@ -185,7 +185,7 @@ export default function EditTransactionDrawer({
                 </SelectTrigger>
                 <SelectContent>
                   {Object.keys(StatusTransaksi).map((key, index) => (
-                    <SelectItem key={StatusTransaksi[key]} value={StatusTransaksi[key]}>{StatusTransaksi[key]}</SelectItem>
+                    <SelectItem key={StatusTransaksi[key]} value={StatusTransaksi[key]}>{translateEnum(StatusTransaksi[key])}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

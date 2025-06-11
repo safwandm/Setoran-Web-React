@@ -13,8 +13,6 @@ import {
 } from "@/components/ui/card"
 import ApiService from "@/lib/api-client/wrapper"
 import { useEffect, useState } from "react"
-import { StatusMotor } from "@/components/forms/motor-drawer"
-import { StatusTransaksi } from "@/components/forms/transaction-drawer"
 import { formatPrice } from "@/lib/utils"
 import { LoadingOverlay } from "@/components/loading-overlay"
 import { DashboardDataDTO } from "@/lib/api-client"

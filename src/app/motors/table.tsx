@@ -104,7 +104,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApiMotorGetRequest, Motor, Pengguna, StatusMotor } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
-import { formatMotorName, matchesSearch } from "@/lib/utils";
+import { formatMotorName, matchesSearch, translateEnum } from "@/lib/utils";
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page";
 import { LoadingOverlay } from "@/components/loading-overlay";
 import EditMotorDrawer from "@/components/forms/motor-drawer";
@@ -234,7 +234,7 @@ const columns: ColumnDef<Motor>[] = [
         ) : row.original.statusMotor === StatusMotor.Diajukan ? (
           <IconClipboard className="" />
         ) : null}
-        {row.original.statusMotor}
+        {translateEnum(row.original.statusMotor!)}
       </Badge>
     ),
   },
@@ -395,7 +395,7 @@ export function TableMotors({
               <SelectContent>
                 <SelectItem value={"All"}>Status: All</SelectItem>
                 {Object.keys(StatusMotor).map((key, index) => (
-                  <SelectItem key={StatusMotor[key]} value={StatusMotor[key]}>Status: {StatusMotor[key]}</SelectItem>
+                  <SelectItem key={StatusMotor[key]} value={StatusMotor[key]}>Status: {translateEnum(StatusMotor[key])}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

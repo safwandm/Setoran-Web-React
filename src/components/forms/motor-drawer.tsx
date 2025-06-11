@@ -35,6 +35,7 @@ import { IconLoader } from "@tabler/icons-react";
 import { LoadingOverlay } from "../loading-overlay";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { PutMotorDTO, StatusMotor, TransmisiMotor } from "@/lib/api-client";
+import { translateEnum } from "@/lib/utils";
 
 const InputField = ({
   name,
@@ -336,7 +337,7 @@ export default function EditMotorDrawer({
                 <SelectContent>
                   {Object.keys(StatusMotor).map((key, index) => (
                     <SelectItem key={StatusMotor[key]} value={StatusMotor[key]}>
-                      {StatusMotor[key]}
+                      {translateEnum(StatusMotor[key])}
                     </SelectItem>
                   ))}
                 </SelectContent>
