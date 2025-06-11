@@ -65,7 +65,10 @@ const translateTable = {
   "Dibuat": 'Created',
   "Berlangsung": 'In Progress',
   "Batal": 'Cancelled',
-  "Selesai": 'Completed'
+  "Selesai": 'Completed',  
+  "BelumLunas": 'Unpaid',
+  "Lunas": 'Paid',
+  "Gagal": 'Failed'
 };
 
 export function translateEnum(

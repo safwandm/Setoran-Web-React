@@ -26,7 +26,7 @@ import { Button } from "../ui/button";
 import { IconLoader } from "@tabler/icons-react";
 import { LoadingOverlay } from "../loading-overlay";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
-import { Pengguna, StatusTransaksi } from "@/lib/api-client";
+import { Pembayaran, Pengguna, StatusPembayaran, StatusTransaksi } from "@/lib/api-client";
 import { formatDateToLongDate, formatMotorName, formatPrice, translateEnum } from "@/lib/utils";
 
 const InputField = ({
@@ -69,6 +69,7 @@ export default function EditTransactionDrawer({
 }) {
   const isMobile = useIsMobile();
   const [transaksi, setTransaksi] = useState<Transaksi>(initialData);
+  const [pembayaran, setPembayaran] = useState<Pembayaran | null>(null)
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<any>({});
@@ -84,7 +85,10 @@ export default function EditTransactionDrawer({
         res.forEach(itm => {
           if (itm.idTransaksi == idTransaksi) {
             setTransaksi(itm);
-            setLoading(false);
+            apiService.pembayaranApi.apiPembayaranTransaksiIdGet({ id: itm.idTransaksi }).then(res => {
+              setPembayaran(res)
+              setLoading(false);
+            }).catch(() => setLoading(false));
           }
         })
       })
@@ -190,6 +194,34 @@ export default function EditTransactionDrawer({
                 </SelectContent>
               </Select>
             </div>
+            { pembayaran ? <div className="space-y-2">
+              <h3 className="text-lg font-medium">Payment information</h3>
+              <InputField
+                name="metodePembayaran"
+                label="Metode Pembayaran"
+                value={pembayaran.metodePembayaran ?? "-"}
+                disabled
+              />
+            <div className="space-y-1">
+              <Label htmlFor="status">Status</Label>
+              <Select value={pembayaran.statusPembayaran ?? ""} disabled={!editing}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.keys(StatusPembayaran).map((key, index) => (
+                    <SelectItem key={StatusPembayaran[key]} value={StatusPembayaran[key]}>{translateEnum(StatusPembayaran[key])}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+              <InputField
+                name="tanggalPembayaran"
+                label="Tanggal Pembayaran"
+                value={pembayaran.tanggalPembayaran ? formatDateToLongDate(pembayaran.tanggalPembayaran) : "-"}
+                disabled
+              />
+            </div> : ""}
           </div>
         </LoadingOverlay>
         <DrawerFooter>
