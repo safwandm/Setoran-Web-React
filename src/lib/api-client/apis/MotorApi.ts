@@ -19,6 +19,8 @@ import type {
   Motor,
   MotorForm,
   PutMotorDTO,
+  StatusMotor,
+  TransmisiMotor,
   Ulasan,
 } from '../models/index';
 import {
@@ -30,6 +32,10 @@ import {
     MotorFormToJSON,
     PutMotorDTOFromJSON,
     PutMotorDTOToJSON,
+    StatusMotorFromJSON,
+    StatusMotorToJSON,
+    TransmisiMotorFromJSON,
+    TransmisiMotorToJSON,
     UlasanFromJSON,
     UlasanToJSON,
 } from '../models/index';
@@ -39,9 +45,9 @@ export interface ApiMotorGetRequest {
     withDiskon?: boolean;
     withUlasan?: boolean;
     idMitra?: string;
-    status?: string;
+    status?: StatusMotor;
     model?: string;
-    transmisi?: string;
+    transmisi?: TransmisiMotor;
 }
 
 export interface ApiMotorIdDeleteRequest {

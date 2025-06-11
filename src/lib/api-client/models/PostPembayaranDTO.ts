@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { MetodePembayaran } from './MetodePembayaran';
+import {
+    MetodePembayaranFromJSON,
+    MetodePembayaranFromJSONTyped,
+    MetodePembayaranToJSON,
+    MetodePembayaranToJSONTyped,
+} from './MetodePembayaran';
+
 /**
  * 
  * @export
@@ -27,11 +35,13 @@ export interface PostPembayaranDTO {
     idTransaksi: number;
     /**
      * 
-     * @type {string}
+     * @type {MetodePembayaran}
      * @memberof PostPembayaranDTO
      */
-    metodePembayaran: string;
+    metodePembayaran: MetodePembayaran;
 }
+
+
 
 /**
  * Check if a given object implements the PostPembayaranDTO interface.
@@ -53,7 +63,7 @@ export function PostPembayaranDTOFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'idTransaksi': json['idTransaksi'],
-        'metodePembayaran': json['metodePembayaran'],
+        'metodePembayaran': MetodePembayaranFromJSON(json['metodePembayaran']),
     };
 }
 
@@ -69,7 +79,7 @@ export function PostPembayaranDTOToJSONTyped(value?: PostPembayaranDTO | null, i
     return {
         
         'idTransaksi': value['idTransaksi'],
-        'metodePembayaran': value['metodePembayaran'],
+        'metodePembayaran': MetodePembayaranToJSON(value['metodePembayaran']),
     };
 }
 

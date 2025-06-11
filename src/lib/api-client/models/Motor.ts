@@ -13,6 +13,20 @@
  */
 
 import { mapValues } from '../runtime';
+import type { TransmisiMotor } from './TransmisiMotor';
+import {
+    TransmisiMotorFromJSON,
+    TransmisiMotorFromJSONTyped,
+    TransmisiMotorToJSON,
+    TransmisiMotorToJSONTyped,
+} from './TransmisiMotor';
+import type { StatusMotor } from './StatusMotor';
+import {
+    StatusMotorFromJSON,
+    StatusMotorFromJSONTyped,
+    StatusMotorToJSON,
+    StatusMotorToJSONTyped,
+} from './StatusMotor';
 import type { Mitra } from './Mitra';
 import {
     MitraFromJSON,
@@ -104,16 +118,16 @@ export interface Motor {
     tahun?: number;
     /**
      * 
-     * @type {string}
+     * @type {TransmisiMotor}
      * @memberof Motor
      */
-    transmisi?: string | null;
+    transmisi?: TransmisiMotor;
     /**
      * 
-     * @type {string}
+     * @type {StatusMotor}
      * @memberof Motor
      */
-    statusMotor?: string | null;
+    statusMotor?: StatusMotor;
     /**
      * 
      * @type {number}
@@ -152,6 +166,8 @@ export interface Motor {
     motorImage?: MotorImage;
 }
 
+
+
 /**
  * Check if a given object implements the Motor interface.
  */
@@ -178,8 +194,8 @@ export function MotorFromJSONTyped(json: any, ignoreDiscriminator: boolean): Mot
         'brand': json['brand'] == null ? undefined : json['brand'],
         'tipe': json['tipe'] == null ? undefined : json['tipe'],
         'tahun': json['tahun'] == null ? undefined : json['tahun'],
-        'transmisi': json['transmisi'] == null ? undefined : json['transmisi'],
-        'statusMotor': json['statusMotor'] == null ? undefined : json['statusMotor'],
+        'transmisi': json['transmisi'] == null ? undefined : TransmisiMotorFromJSON(json['transmisi']),
+        'statusMotor': json['statusMotor'] == null ? undefined : StatusMotorFromJSON(json['statusMotor']),
         'hargaHarian': json['hargaHarian'] == null ? undefined : json['hargaHarian'],
         'diskon': json['diskon'] == null ? undefined : ((json['diskon'] as Array<any>).map(DiskonFromJSON)),
         'ulasan': json['ulasan'] == null ? undefined : ((json['ulasan'] as Array<any>).map(UlasanFromJSON)),
@@ -209,8 +225,8 @@ export function MotorToJSONTyped(value?: Motor | null, ignoreDiscriminator: bool
         'brand': value['brand'],
         'tipe': value['tipe'],
         'tahun': value['tahun'],
-        'transmisi': value['transmisi'],
-        'statusMotor': value['statusMotor'],
+        'transmisi': TransmisiMotorToJSON(value['transmisi']),
+        'statusMotor': StatusMotorToJSON(value['statusMotor']),
         'hargaHarian': value['hargaHarian'],
         'diskon': value['diskon'] == null ? undefined : ((value['diskon'] as Array<any>).map(DiskonToJSON)),
         'ulasan': value['ulasan'] == null ? undefined : ((value['ulasan'] as Array<any>).map(UlasanToJSON)),

@@ -26,7 +26,7 @@ import { Button } from "../ui/button";
 import { IconLoader } from "@tabler/icons-react";
 import { LoadingOverlay } from "../loading-overlay";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
-import { Pengguna } from "@/lib/api-client";
+import { Pengguna, StatusTransaksi } from "@/lib/api-client";
 import { formatDateToLongDate, formatMotorName, formatPrice } from "@/lib/utils";
 
 const InputField = ({
@@ -51,13 +51,6 @@ const InputField = ({
     {error && <p className="text-sm text-red-600">{error}</p>}
   </div>
 );
-
-export const StatusTransaksi = {
-  Created: 'dibuat',
-  Ongoing: 'berlangsung',
-  Cancelled: 'batal',
-  Finished: 'selesai'
-} as const;
 
 export default function EditTransactionDrawer({
   idTransaksi,

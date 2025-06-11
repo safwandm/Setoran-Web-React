@@ -30,8 +30,7 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 import ApiService from "@/lib/api-client/wrapper"
-import { DashboardDataDTO, Transaksi } from "@/lib/api-client"
-import { StatusTransaksi } from "@/components/forms/transaction-drawer"
+import { DashboardDataDTO, StatusTransaksi, Transaksi } from "@/lib/api-client"
 import { formatDateToLongDate, formatPrice } from "@/lib/utils"
 
 export const description = "An interactive area chart"
@@ -57,7 +56,7 @@ export function ChartAreaDashboard({ data } : { data: DashboardDataDTO }) {
 
   const filteredData = React.useMemo(() => {
     return transaksi.filter((item) => {
-      if (item.status !== StatusTransaksi.Finished) 
+      if (item.status !== StatusTransaksi.Selesai) 
         return false
 
       const date = new Date(item.tanggalSelesai!)

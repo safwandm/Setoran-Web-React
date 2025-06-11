@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { MetodePembayaran } from './MetodePembayaran';
+import {
+    MetodePembayaranFromJSON,
+    MetodePembayaranFromJSONTyped,
+    MetodePembayaranToJSON,
+    MetodePembayaranToJSONTyped,
+} from './MetodePembayaran';
+
 /**
  * 
  * @export
@@ -45,10 +53,10 @@ export interface PostTransaksiDTO {
     tanggalSelesai: Date;
     /**
      * 
-     * @type {string}
+     * @type {MetodePembayaran}
      * @memberof PostTransaksiDTO
      */
-    metodePembayaran: string;
+    metodePembayaran: MetodePembayaran;
     /**
      * 
      * @type {number}
@@ -62,6 +70,8 @@ export interface PostTransaksiDTO {
      */
     idDiscount?: number | null;
 }
+
+
 
 /**
  * Check if a given object implements the PostTransaksiDTO interface.
@@ -89,7 +99,7 @@ export function PostTransaksiDTOFromJSONTyped(json: any, ignoreDiscriminator: bo
         'idPelanggan': json['idPelanggan'],
         'tanggalMulai': (new Date(json['tanggalMulai'])),
         'tanggalSelesai': (new Date(json['tanggalSelesai'])),
-        'metodePembayaran': json['metodePembayaran'],
+        'metodePembayaran': MetodePembayaranFromJSON(json['metodePembayaran']),
         'idVoucher': json['idVoucher'] == null ? undefined : json['idVoucher'],
         'idDiscount': json['idDiscount'] == null ? undefined : json['idDiscount'],
     };
@@ -110,7 +120,7 @@ export function PostTransaksiDTOToJSONTyped(value?: PostTransaksiDTO | null, ign
         'idPelanggan': value['idPelanggan'],
         'tanggalMulai': ((value['tanggalMulai']).toISOString()),
         'tanggalSelesai': ((value['tanggalSelesai']).toISOString()),
-        'metodePembayaran': value['metodePembayaran'],
+        'metodePembayaran': MetodePembayaranToJSON(value['metodePembayaran']),
         'idVoucher': value['idVoucher'],
         'idDiscount': value['idDiscount'],
     };

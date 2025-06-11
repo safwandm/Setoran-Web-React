@@ -93,10 +93,10 @@ import {
   Tabs,
   TabsContent,
 } from "@/components/ui/tabs"
-import { ApiTransaksiGetRequest, Transaksi } from "@/lib/api-client"
+import { ApiTransaksiGetRequest, StatusTransaksi, Transaksi } from "@/lib/api-client"
 import { formatDateToLongDate, formatFilterString, formatMotorName, formatPrice, matchesSearch } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
-import EditTransactionDrawer, { StatusTransaksi } from "@/components/forms/transaction-drawer"
+import EditTransactionDrawer from "@/components/forms/transaction-drawer"
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page"
 import EditMotorDrawer from "@/components/forms/motor-drawer"
 import { LoadingOverlay } from "@/components/loading-overlay"
@@ -254,11 +254,11 @@ export function DataTableTransaction({
       header: () => <div className="w-full text text-left">Status</div>,
       cell: ({ row }) => (
         <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.status === StatusTransaksi.Created ? (
+          {row.original.status === StatusTransaksi.Dibuat ? (
             <IconCircleCheckFilled className="" />
-          ) : row.original.status === StatusTransaksi.Ongoing ? (
+          ) : row.original.status === StatusTransaksi.Berlangsung ? (
             <IconLoader className="animate-spin" />
-          ) : row.original.status === StatusTransaksi.Cancelled ? (
+          ) : row.original.status === StatusTransaksi.Batal ? (
             <IconX className="text-muted-foreground fill-red-400" />
           ) : (
             <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />

@@ -20,6 +20,13 @@ import {
     MotorToJSON,
     MotorToJSONTyped,
 } from './Motor';
+import type { StatusTransaksi } from './StatusTransaksi';
+import {
+    StatusTransaksiFromJSON,
+    StatusTransaksiFromJSONTyped,
+    StatusTransaksiToJSON,
+    StatusTransaksiToJSONTyped,
+} from './StatusTransaksi';
 import type { Pelanggan } from './Pelanggan';
 import {
     PelangganFromJSON,
@@ -72,10 +79,10 @@ export interface Transaksi {
     totalHarga?: number;
     /**
      * 
-     * @type {string}
+     * @type {StatusTransaksi}
      * @memberof Transaksi
      */
-    status?: string | null;
+    status?: StatusTransaksi;
     /**
      * 
      * @type {Motor}
@@ -89,6 +96,8 @@ export interface Transaksi {
      */
     pelanggan?: Pelanggan;
 }
+
+
 
 /**
  * Check if a given object implements the Transaksi interface.
@@ -113,7 +122,7 @@ export function TransaksiFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'tanggalMulai': json['tanggalMulai'] == null ? undefined : (new Date(json['tanggalMulai'])),
         'tanggalSelesai': json['tanggalSelesai'] == null ? undefined : (new Date(json['tanggalSelesai'])),
         'totalHarga': json['totalHarga'] == null ? undefined : json['totalHarga'],
-        'status': json['status'] == null ? undefined : json['status'],
+        'status': json['status'] == null ? undefined : StatusTransaksiFromJSON(json['status']),
         'motor': json['motor'] == null ? undefined : MotorFromJSON(json['motor']),
         'pelanggan': json['pelanggan'] == null ? undefined : PelangganFromJSON(json['pelanggan']),
     };
@@ -136,7 +145,7 @@ export function TransaksiToJSONTyped(value?: Transaksi | null, ignoreDiscriminat
         'tanggalMulai': value['tanggalMulai'] == null ? undefined : ((value['tanggalMulai']).toISOString()),
         'tanggalSelesai': value['tanggalSelesai'] == null ? undefined : ((value['tanggalSelesai']).toISOString()),
         'totalHarga': value['totalHarga'],
-        'status': value['status'],
+        'status': StatusTransaksiToJSON(value['status']),
         'motor': MotorToJSON(value['motor']),
         'pelanggan': PelangganToJSON(value['pelanggan']),
     };

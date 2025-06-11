@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { MetodePembayaran } from './MetodePembayaran';
+import {
+    MetodePembayaranFromJSON,
+    MetodePembayaranFromJSONTyped,
+    MetodePembayaranToJSON,
+    MetodePembayaranToJSONTyped,
+} from './MetodePembayaran';
 import type { Transaksi } from './Transaksi';
 import {
     TransaksiFromJSON,
@@ -20,6 +27,13 @@ import {
     TransaksiToJSON,
     TransaksiToJSONTyped,
 } from './Transaksi';
+import type { StatusPembayaran } from './StatusPembayaran';
+import {
+    StatusPembayaranFromJSON,
+    StatusPembayaranFromJSONTyped,
+    StatusPembayaranToJSON,
+    StatusPembayaranToJSONTyped,
+} from './StatusPembayaran';
 
 /**
  * 
@@ -41,16 +55,16 @@ export interface Pembayaran {
     idTransaksi?: number;
     /**
      * 
-     * @type {string}
+     * @type {MetodePembayaran}
      * @memberof Pembayaran
      */
-    metodePembayaran?: string | null;
+    metodePembayaran?: MetodePembayaran;
     /**
      * 
-     * @type {string}
+     * @type {StatusPembayaran}
      * @memberof Pembayaran
      */
-    statusPembayaran?: string | null;
+    statusPembayaran?: StatusPembayaran;
     /**
      * 
      * @type {Date}
@@ -64,6 +78,8 @@ export interface Pembayaran {
      */
     transaksi?: Transaksi;
 }
+
+
 
 /**
  * Check if a given object implements the Pembayaran interface.
@@ -84,8 +100,8 @@ export function PembayaranFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'idPembayaran': json['idPembayaran'] == null ? undefined : json['idPembayaran'],
         'idTransaksi': json['idTransaksi'] == null ? undefined : json['idTransaksi'],
-        'metodePembayaran': json['metodePembayaran'] == null ? undefined : json['metodePembayaran'],
-        'statusPembayaran': json['statusPembayaran'] == null ? undefined : json['statusPembayaran'],
+        'metodePembayaran': json['metodePembayaran'] == null ? undefined : MetodePembayaranFromJSON(json['metodePembayaran']),
+        'statusPembayaran': json['statusPembayaran'] == null ? undefined : StatusPembayaranFromJSON(json['statusPembayaran']),
         'tanggalPembayaran': json['tanggalPembayaran'] == null ? undefined : (new Date(json['tanggalPembayaran'])),
         'transaksi': json['transaksi'] == null ? undefined : TransaksiFromJSON(json['transaksi']),
     };
@@ -104,8 +120,8 @@ export function PembayaranToJSONTyped(value?: Pembayaran | null, ignoreDiscrimin
         
         'idPembayaran': value['idPembayaran'],
         'idTransaksi': value['idTransaksi'],
-        'metodePembayaran': value['metodePembayaran'],
-        'statusPembayaran': value['statusPembayaran'],
+        'metodePembayaran': MetodePembayaranToJSON(value['metodePembayaran']),
+        'statusPembayaran': StatusPembayaranToJSON(value['statusPembayaran']),
         'tanggalPembayaran': value['tanggalPembayaran'] == null ? undefined : ((value['tanggalPembayaran'] as any).toISOString()),
         'transaksi': TransaksiToJSON(value['transaksi']),
     };

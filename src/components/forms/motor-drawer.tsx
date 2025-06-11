@@ -34,7 +34,7 @@ import { Button } from "../ui/button";
 import { IconLoader } from "@tabler/icons-react";
 import { LoadingOverlay } from "../loading-overlay";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
-import { PutMotorDTO } from "@/lib/api-client";
+import { PutMotorDTO, StatusMotor, TransmisiMotor } from "@/lib/api-client";
 
 const InputField = ({
   name,
@@ -58,20 +58,6 @@ const InputField = ({
     {error && <p className="text-sm text-red-600">{error}</p>}
   </div>
 );
-
-export const StatusMotor = {
-  Available: "Tersedia",
-  Rented: "Disewa",
-  Reserved: "Dipesan",
-  UnderMaintenance: "Dalam Perbaikan",
-  NotAvailable: "Tidak Tersedia",
-  Filed: "Diajukan",
-} as const;
-
-export const TransmisiMotor = {
-  Automatic: "Matic",
-  Manual: "Manual",
-} as const;
 
 export default function EditMotorDrawer({
   idMotor,

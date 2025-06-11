@@ -27,6 +27,7 @@ models/HttpValidationProblemDetails.ts
 models/InfoRequest.ts
 models/InfoResponse.ts
 models/LoginRequest.ts
+models/MetodePembayaran.ts
 models/Mitra.ts
 models/MitraMotorDTO.ts
 models/Motor.ts
@@ -59,9 +60,13 @@ models/ResendConfirmationEmailRequest.ts
 models/ResetPasswordRequest.ts
 models/StatusDiskon.ts
 models/StatusMitra.ts
+models/StatusMotor.ts
+models/StatusPembayaran.ts
+models/StatusTransaksi.ts
 models/StatusVoucher.ts
 models/TargetNavigasi.ts
 models/Transaksi.ts
+models/TransmisiMotor.ts
 models/TwoFactorRequest.ts
 models/TwoFactorResponse.ts
 models/Ulasan.ts

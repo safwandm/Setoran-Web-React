@@ -13,6 +13,21 @@
  */
 
 import { mapValues } from '../runtime';
+import type { MetodePembayaran } from './MetodePembayaran';
+import {
+    MetodePembayaranFromJSON,
+    MetodePembayaranFromJSONTyped,
+    MetodePembayaranToJSON,
+    MetodePembayaranToJSONTyped,
+} from './MetodePembayaran';
+import type { StatusPembayaran } from './StatusPembayaran';
+import {
+    StatusPembayaranFromJSON,
+    StatusPembayaranFromJSONTyped,
+    StatusPembayaranToJSON,
+    StatusPembayaranToJSONTyped,
+} from './StatusPembayaran';
+
 /**
  * 
  * @export
@@ -21,16 +36,16 @@ import { mapValues } from '../runtime';
 export interface PutPembayaranDTO {
     /**
      * 
-     * @type {string}
+     * @type {MetodePembayaran}
      * @memberof PutPembayaranDTO
      */
-    metodePembayaran?: string | null;
+    metodePembayaran?: MetodePembayaran;
     /**
      * 
-     * @type {string}
+     * @type {StatusPembayaran}
      * @memberof PutPembayaranDTO
      */
-    statusPembayaran?: string | null;
+    statusPembayaran?: StatusPembayaran;
     /**
      * 
      * @type {Date}
@@ -38,6 +53,8 @@ export interface PutPembayaranDTO {
      */
     tanggalPembayaran?: Date | null;
 }
+
+
 
 /**
  * Check if a given object implements the PutPembayaranDTO interface.
@@ -56,8 +73,8 @@ export function PutPembayaranDTOFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'metodePembayaran': json['metodePembayaran'] == null ? undefined : json['metodePembayaran'],
-        'statusPembayaran': json['statusPembayaran'] == null ? undefined : json['statusPembayaran'],
+        'metodePembayaran': json['metodePembayaran'] == null ? undefined : MetodePembayaranFromJSON(json['metodePembayaran']),
+        'statusPembayaran': json['statusPembayaran'] == null ? undefined : StatusPembayaranFromJSON(json['statusPembayaran']),
         'tanggalPembayaran': json['tanggalPembayaran'] == null ? undefined : (new Date(json['tanggalPembayaran'])),
     };
 }
@@ -73,8 +90,8 @@ export function PutPembayaranDTOToJSONTyped(value?: PutPembayaranDTO | null, ign
 
     return {
         
-        'metodePembayaran': value['metodePembayaran'],
-        'statusPembayaran': value['statusPembayaran'],
+        'metodePembayaran': MetodePembayaranToJSON(value['metodePembayaran']),
+        'statusPembayaran': StatusPembayaranToJSON(value['statusPembayaran']),
         'tanggalPembayaran': value['tanggalPembayaran'] == null ? undefined : ((value['tanggalPembayaran'] as any).toISOString()),
     };
 }

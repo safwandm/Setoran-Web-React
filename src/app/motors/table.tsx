@@ -102,12 +102,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ApiMotorGetRequest, Motor, Pengguna } from "@/lib/api-client";
+import { ApiMotorGetRequest, Motor, Pengguna, StatusMotor } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
 import { formatMotorName, matchesSearch } from "@/lib/utils";
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page";
 import { LoadingOverlay } from "@/components/loading-overlay";
-import EditMotorDrawer, { StatusMotor } from "@/components/forms/motor-drawer";
+import EditMotorDrawer from "@/components/forms/motor-drawer";
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -223,17 +223,15 @@ const columns: ColumnDef<Motor>[] = [
     header: () => <div className="w-30 text-left">Status Motor</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.statusMotor === StatusMotor.Available ? (
+        {row.original.statusMotor === StatusMotor.Tersedia ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-blue-400" />
-        ) : row.original.statusMotor === StatusMotor.Rented ? (
-          <IconUser className="" />
-        ) : row.original.statusMotor === StatusMotor.Reserved ? (
-          <IconBuildingWarehouse className=" text-muted-foreground" />
-        ) : row.original.statusMotor === StatusMotor.UnderMaintenance ? (
+        ) : row.original.statusMotor === StatusMotor.Disewa ? (
+          <IconUser className="" /> 
+        ) : row.original.statusMotor === StatusMotor.DalamPerbaikan ? (
           <IconCircleCheckFilled className=" text-blue-500" />
-        ) : row.original.statusMotor === StatusMotor.NotAvailable ? (
+        ) : row.original.statusMotor === StatusMotor.TidakTersedia ? (
           <IconCircleCheckFilled className=" text-red-500" />
-        ) : row.original.statusMotor === StatusMotor.Filed ? (
+        ) : row.original.statusMotor === StatusMotor.Diajukan ? (
           <IconClipboard className="" />
         ) : null}
         {row.original.statusMotor}
