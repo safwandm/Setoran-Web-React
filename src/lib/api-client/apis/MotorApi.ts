@@ -51,6 +51,7 @@ export interface ApiMotorGetRequest {
     withImage?: boolean;
     withDiskon?: boolean;
     withUlasan?: boolean;
+    withPengguna?: boolean;
     idMitra?: string;
     status?: StatusMotor;
     model?: string;
@@ -143,6 +144,10 @@ export class MotorApi extends runtime.BaseAPI {
 
         if (requestParameters['withUlasan'] != null) {
             queryParameters['WithUlasan'] = requestParameters['withUlasan'];
+        }
+
+        if (requestParameters['withPengguna'] != null) {
+            queryParameters['WithPengguna'] = requestParameters['withPengguna'];
         }
 
         if (requestParameters['idMitra'] != null) {

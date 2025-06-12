@@ -93,7 +93,7 @@ import {
   Tabs,
   TabsContent,
 } from "@/components/ui/tabs"
-import { ApiTransaksiGetRequest, StatusTransaksi, Transaksi } from "@/lib/api-client"
+import { ApiTransaksiGetRequest, StatusPembayaran, StatusTransaksi, Transaksi } from "@/lib/api-client"
 import { formatDateToLongDate, formatFilterString, formatMotorName, formatPrice, matchesSearch, translateEnum } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import EditTransactionDrawer from "@/components/forms/transaction-drawer"
@@ -158,7 +158,8 @@ export function DataTableTransaction({
   const transactionQuery = initQuery ?? {}
   const [filter, setFilter] = React.useState({
     search: "",
-    status: "All"
+    status: "All",
+    paymentStatus: "All"
   })
 
   const [rowSelection, setRowSelection] = React.useState({})
@@ -240,13 +241,38 @@ export function DataTableTransaction({
         </div>
       ),
     },
-        {
+      {
       accessorKey: "totalHarga",
       header: () => <div className="w-30 text-left">Total Price</div>,
       cell: ({ row }) => (
         <div className="w-8">
             {formatPrice(row.original.totalHarga!)}
         </div>
+      ),
+    },
+    {
+      accessorKey: "paymentMethod",
+      header: () => <div className="w-30 text-left">Payment Method</div>,
+      cell: ({ row }) => (
+        <div className="w-8">
+            {translateEnum(row.original.pembayaran?.metodePembayaran)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "paymentStatus",
+      header: () => <div className="w-full text text-left">Payment Status</div>,
+      cell: ({ row }) => (
+        <Badge variant="outline" className="text-muted-foreground px-1.5">
+          {row.original.pembayaran?.statusPembayaran === StatusPembayaran.BelumLunas ? (
+            <IconCircleCheckFilled className="" />
+          ) : row.original.pembayaran?.statusPembayaran === StatusPembayaran.MenungguKonfirmasi ? (
+            <IconLoader className="animate-spin" />
+          ) : (
+            <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+          )}
+          {translateEnum(row.original.pembayaran?.statusPembayaran)}
+        </Badge>
       ),
     },
     {
@@ -270,12 +296,12 @@ export function DataTableTransaction({
   ]
 
   const filteredData: Transaksi[] = React.useMemo(() => {
-    if (!filter.search && filter.status === "All") return data;
+    if (!filter.search && filter.status === "All" && filter.paymentStatus == "All") return data;
   
     const lowerSearch = filter.search.toLowerCase();
   
     return data.filter((row) => 
-      (filter.status === "All" || row.status == filter.status) && Object.values(row).some((value) =>
+      (filter.paymentStatus === "All" || row.pembayaran?.statusPembayaran == filter.paymentStatus) && (filter.status === "All" || row.status == filter.status) && Object.values(row).some((value) =>
         matchesSearch(value, lowerSearch)
       )
     );
@@ -355,6 +381,21 @@ export function DataTableTransaction({
                   <SelectItem value={"All"}>Status: All</SelectItem>
                   {Object.keys(StatusTransaksi).map((key, index) => (
                     <SelectItem key={StatusTransaksi[key]} value={StatusTransaksi[key]}>Status: {translateEnum(StatusTransaksi[key])}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select 
+                defaultValue="All"
+                value={filter.status ?? ""} 
+                onValueChange={(value) => setFilter({ ...filter, paymentStatus: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={"All"}>Payment Status: All</SelectItem>
+                  {Object.keys(StatusPembayaran).map((key, index) => (
+                    <SelectItem key={StatusPembayaran[key]} value={StatusPembayaran[key]}>Payment Status: {translateEnum(StatusPembayaran[key])}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

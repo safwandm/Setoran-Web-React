@@ -68,7 +68,12 @@ const translateTable = {
   "Selesai": 'Completed',  
   "BelumLunas": 'Unpaid',
   "Lunas": 'Paid',
-  "Gagal": 'Failed'
+  "Gagal": 'Failed',
+  "MenungguKonfirmasi": "Waiting Confirmation",
+  "TransferBank": "Bank Transfer",
+  "KartuKredit": "Credit Card",
+  "DompetDigital": "E-Wallet",
+  "Tunai": "Cash"
 };
 
 export function translateEnum(

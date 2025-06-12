@@ -16,13 +16,10 @@
 import * as runtime from '../runtime';
 import type {
   DashboardDataDTO,
-  MotorTableDTO,
 } from '../models/index';
 import {
     DashboardDataDTOFromJSON,
     DashboardDataDTOToJSON,
-    MotorTableDTOFromJSON,
-    MotorTableDTOToJSON,
 } from '../models/index';
 
 /**
@@ -59,38 +56,6 @@ export class ReactApi extends runtime.BaseAPI {
      */
     async apiReactDashboardDataGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DashboardDataDTO> {
         const response = await this.apiReactDashboardDataGetRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async apiReactMotorTableDataGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<MotorTableDTO>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("Bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/React/motorTableData`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(MotorTableDTOFromJSON));
-    }
-
-    /**
-     */
-    async apiReactMotorTableDataGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<MotorTableDTO>> {
-        const response = await this.apiReactMotorTableDataGetRaw(initOverrides);
         return await response.value();
     }
 

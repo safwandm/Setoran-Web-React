@@ -144,6 +144,20 @@ const columns: ColumnDef<Motor>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "idMitra",
+    header: () => <div className="w-30 text-left">Mitra Name</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="w-9">
+            <PenggunaInfoLink
+              idPengguna={row.original.mitra?.pengguna?.id!}
+              buttonText={row.original.mitra?.pengguna?.nama!}
+            />
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "platNomor",
     header: () => <div className="w-30 text-left">Plat Nomor</div>,
     cell: ({ row }) => <div className="w-9">{row.original.platNomor}</div>,
@@ -182,41 +196,6 @@ const columns: ColumnDef<Motor>[] = [
     accessorKey: "transmisi",
     header: () => <div className="w-30 text-left">Transmisi</div>,
     cell: ({ row }) => <div className="w-9">{row.original.transmisi}</div>,
-  },
-  {
-    accessorKey: "idMitra",
-    header: () => <div className="w-30 text-left">ID Mitra</div>,
-    cell: ({ row }) => {
-      // TODO: agak boros request mungkin bikin dto + nama langsung
-      // const [pengguna, setPengguna] = React.useState<Pengguna>({});
-      // const [loading, setLoading] = React.useState(true);
-
-      // React.useEffect(() => {
-      //   ApiService.getInstance()
-      //     .penggunaApi.penggunaFromMitraGet({ idMitra: row.original.idMitra! })
-      //     .then((res) => {
-      //       setPengguna(res);
-      //       setLoading(false);
-      //     });
-      // }, []);
-
-      return (
-        <div className="w-9">
-          {/* <LoadingOverlay loading={loading}>
-            {pengguna.id ? (
-              <PenggunaInfoLink
-                idPengguna={pengguna.id}
-                buttonText={pengguna.nama!}
-                editing={false}
-              />
-            ) : (
-              ""
-            )}
-          </LoadingOverlay> */}
-          {row.original.idMitra}
-        </div>
-      );
-    },
   },
   {
     accessorKey: "statusMotor",
@@ -359,7 +338,7 @@ export function TableMotors({
 
   React.useEffect(() => {
     setLoading(true);
-    apiService.motorApi.apiMotorGet(motorQuery).then((res) => {
+    apiService.motorApi.apiMotorGet({ ...motorQuery, withPengguna: true }).then((res) => {
       setData(res);
       setLoading(false);
     });
