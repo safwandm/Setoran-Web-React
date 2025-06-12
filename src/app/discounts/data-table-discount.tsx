@@ -109,7 +109,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { Diskon, StatusDiskon } from "@/lib/api-client"
-import { formatDateToLongDate, formatFilterString, formatMotorName, matchesSearch } from "@/lib/utils"
+import { formatDateToLongDate, formatFilterString, formatMotorName, formatPrice, matchesSearch } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
 import EditDiskonDrawer from "@/components/forms/discount-drawer"
 import { TambahDiskonDialog } from "./diskon-dialog"
@@ -214,13 +214,13 @@ const columns: ColumnDef<Diskon>[] = [
     header: () => <div className="w-30 text-left">Discount Amount</div>,
     cell: ({ row }) => (
       <div className="w-9">
-          {row.original.jumlahDiskon}
+          {formatPrice(row.original.jumlahDiskon)}
       </div>
     ),
   },
   {
     accessorKey: "startDate",
-    header: () => <div className="w-50 text text-left">Start Date</div>,
+    header: () => <div className="w-40 text text-left">Start Date</div>,
     cell: ({ row }) => (
       <div className="w-9">
           {formatDateToLongDate(row.original.tanggalMulai)}
@@ -229,7 +229,7 @@ const columns: ColumnDef<Diskon>[] = [
   },
   {
     accessorKey: "endDate",
-    header: () => <div className="w-full text-left">End Date</div>,
+    header: () => <div className="w-40 text-left">End Date</div>,
     cell: ({ row }) => (
       <div className="w-9">
           {formatDateToLongDate(row.original.tanggalAkhir)}
