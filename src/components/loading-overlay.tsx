@@ -5,6 +5,7 @@ interface LoadingOverlayProps {
   children: React.ReactNode;
   message?: string;
   fadeDuration?: number; // milliseconds
+  mode?: 'spinner' | 'pulse'
 }
 
 type LoadingContextType = {
@@ -26,6 +27,7 @@ export function LoadingOverlay({
   children,
   message = 'Loading...',
   fadeDuration = 300,
+  mode = "spinner"
 }: LoadingOverlayProps) {
   const [showOverlay, setShowOverlay] = useState(loading);
   const [visible, setVisible] = useState(loading);
@@ -48,12 +50,14 @@ export function LoadingOverlay({
         <div
           className={`absolute inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${
             visible ? 'opacity-100' : 'opacity-0'
-          } bg-white/50 backdrop-blur-md`}
+          } ${mode === "pulse" && "loading-pulse"} bg-white/50 backdrop-blur-md`}
         >
-          <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
-            <span className="text-sm text-gray-700">{message}</span>
-          </div>
+          { mode === "spinner" && (
+            <div className="flex flex-col items-center gap-2">
+              <div className="h-8 w-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+              <span className="text-sm text-gray-700">{message}</span>
+            </div>
+          )}
         </div>
       )}
     </div>

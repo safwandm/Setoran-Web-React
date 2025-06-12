@@ -1,8 +1,20 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ApiService from "@/lib/api-client/wrapper";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { IconLock } from "@tabler/icons-react";
 
 export default function SignInForm() {
   const router = useRouter();
@@ -12,7 +24,7 @@ export default function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  let apiService = ApiService.getInstance()
+  let apiService = ApiService.getInstance();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,68 +35,84 @@ export default function SignInForm() {
     setError("");
     setIsLoading(true);
 
-    apiService.setoranApi.loginPost({
-      loginRequest: {
-        email: emailOrUsername,
-        password: password
-      }
-    }).then(res => {
-      localStorage.setItem("access_token", res.accessToken!)
-      window.dispatchEvent(new Event("access_token_updated"));
-      setIsLoading(false);
-      router.push("/dashboard"); 
-    }).catch(err => {
-      setError("Incorrect credentials");
-      setIsLoading(false);
-    })
+    apiService.setoranApi
+      .loginPost({
+        loginRequest: {
+          email: emailOrUsername,
+          password: password,
+        },
+      })
+      .then((res) => {
+        localStorage.setItem("access_token", res.accessToken!);
+        window.dispatchEvent(new Event("access_token_updated"));
+        setIsLoading(false);
+        router.push("/dashboard");
+      })
+      .catch((err) => {
+        setError("Incorrect credentials");
+        setIsLoading(false);
+      });
   };
 
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md p-6 bg-white rounded-lg shadow-md space-y-4"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center">Sign In</h2>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader className="space-y-1 text-center">
+          <div className="flex justify-center mb-4">
+            <div className="rounded-full bg-primary/10 p-3">
+              <IconLock className="h-6 w-6 text-primary" />
+            </div>
+          </div>
 
-        <input
-          type="text"
-          placeholder="Email or Username"
-          className="w-full p-2 border rounded"
-          value={emailOrUsername}
-          onChange={(e) => setEmailOrUsername(e.target.value)}
-        />
+          <CardTitle className="text-2xl font-semibold">Welcome back</CardTitle>
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 border rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <CardDescription>
+            Enter your email and password to sign in
+          </CardDescription>
+        </CardHeader>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-          disabled={isLoading}
-        >
-          {isLoading ? "Signing in..." : "Sign In"}
-        </button>
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                value={emailOrUsername}
+                onChange={(e) =>
+                  setEmailOrUsername(e.target.value)
+                }
+              />
+            </div>
 
-        {/* <div className="w-full text-center text-sm">
-          Don’t have an account?{" "}
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="text-blue-600 underline hover:text-blue-800"
-          >
-            Sign Up
-          </button>
-        </div> */}
-      </form>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
+              />
+            </div>
+
+            {error && (
+              <p className="text-sm font-medium text-destructive">{error}</p>
+            )}
+          </CardContent>
+
+          <CardFooter className="flex flex-col gap-6 py-6">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign in"}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
     </div>
   );
 }

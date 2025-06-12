@@ -102,12 +102,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ApiMotorGetRequest, Motor, Pengguna } from "@/lib/api-client";
+import { ApiMotorGetRequest, Motor, Pengguna, StatusMotor } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
-import { formatMotorName } from "@/lib/utils";
+import { formatMotorName, matchesSearch, translateEnum } from "@/lib/utils";
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page";
 import { LoadingOverlay } from "@/components/loading-overlay";
-import EditMotorDrawer, { StatusMotor } from "@/components/forms/motor-drawer";
+import EditMotorDrawer from "@/components/forms/motor-drawer";
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
@@ -223,20 +223,18 @@ const columns: ColumnDef<Motor>[] = [
     header: () => <div className="w-30 text-left">Status Motor</div>,
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.statusMotor === StatusMotor.Available ? (
+        {row.original.statusMotor === StatusMotor.Tersedia ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-blue-400" />
-        ) : row.original.statusMotor === StatusMotor.Rented ? (
-          <IconUser className="" />
-        ) : row.original.statusMotor === StatusMotor.Reserved ? (
-          <IconBuildingWarehouse className=" text-muted-foreground" />
-        ) : row.original.statusMotor === StatusMotor.UnderMaintenance ? (
+        ) : row.original.statusMotor === StatusMotor.Disewa ? (
+          <IconUser className="" /> 
+        ) : row.original.statusMotor === StatusMotor.DalamPerbaikan ? (
           <IconCircleCheckFilled className=" text-blue-500" />
-        ) : row.original.statusMotor === StatusMotor.NotAvailable ? (
+        ) : row.original.statusMotor === StatusMotor.TidakTersedia ? (
           <IconCircleCheckFilled className=" text-red-500" />
-        ) : row.original.statusMotor === StatusMotor.Filed ? (
+        ) : row.original.statusMotor === StatusMotor.Diajukan ? (
           <IconClipboard className="" />
         ) : null}
-        {row.original.statusMotor}
+        {translateEnum(row.original.statusMotor!)}
       </Badge>
     ),
   },
@@ -312,24 +310,15 @@ export function TableMotors({
   const apiService = ApiService.getInstance();
 
   const filteredData: Motor[] = React.useMemo(() => {
-    if (!filter.search) return data;
+    if (!filter.search && filter.status == "All") return data;
 
     const lowerSearch = filter.search.toLowerCase();
 
-    return data.filter((row) => {
-      console.log(
-        filter.status,
-        row.statusMotor,
-        filter.status == "All" || row.statusMotor == filter.status
-      );
-      return (
-        (filter.status === "All" || row.statusMotor == filter.status) &&
-        Object.values(row).some((value) => {
-          console.log(value);
-          return String(value).toLowerCase().includes(lowerSearch);
-        })
-      );
-    });
+    return data.filter((row) => 
+      (filter.status === "All" || row.statusMotor == filter.status) && Object.values(row).some((value) =>
+        matchesSearch(value, lowerSearch)
+      )
+    );
   }, [data, filter]);
 
   const table = useReactTable({
@@ -394,7 +383,7 @@ export function TableMotors({
               className="h-9 w-[150px] lg:w-[250px] pl-8"
             />
           </div>}
-          {/* <div className="relative">
+          <div className="relative">
             <Select 
                 defaultValue="All"
                 value={filter.status || ""} 
@@ -406,11 +395,11 @@ export function TableMotors({
               <SelectContent>
                 <SelectItem value={"All"}>Status: All</SelectItem>
                 {Object.keys(StatusMotor).map((key, index) => (
-                  <SelectItem key={StatusMotor[key]} value={StatusMotor[key]}>Status: {StatusMotor[key]}</SelectItem>
+                  <SelectItem key={StatusMotor[key]} value={StatusMotor[key]}>Status: {translateEnum(StatusMotor[key])}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </div> */}
+          </div>
         </div>
       </div>
       <TabsContent

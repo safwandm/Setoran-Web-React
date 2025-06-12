@@ -34,3 +34,45 @@ export function formatPrice(price) {
   const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
   return formatter.format(price);
 }
+
+export function formatFilterString(value) {
+  if (value instanceof Date) 
+    value = formatDateToLongDate(value)
+  return String(value).toLowerCase()
+}
+
+export function matchesSearch(value: any, lowerSearch: string): boolean {
+  if (value == null) return false;
+
+  if (value instanceof Date)
+    value = formatFilterString(value)
+
+  if (typeof value === 'object') {
+    return Object.values(value).some((nestedValue) =>
+      matchesSearch(nestedValue, lowerSearch)
+    );
+  }
+
+  return formatFilterString(value).includes(lowerSearch);
+}
+
+const translateTable = {
+  "Diajukan": 'Submitted',
+  "Tersedia": 'Available',
+  "Disewa": 'Rented',
+  "DalamPerbaikan": 'Under Repair',
+  "TidakTersedia": 'Unavailable',
+  "Dibuat": 'Created',
+  "Berlangsung": 'In Progress',
+  "Batal": 'Cancelled',
+  "Selesai": 'Completed',  
+  "BelumLunas": 'Unpaid',
+  "Lunas": 'Paid',
+  "Gagal": 'Failed'
+};
+
+export function translateEnum(
+ value?: string
+): string {
+  return value ? translateTable[value] : "";
+}

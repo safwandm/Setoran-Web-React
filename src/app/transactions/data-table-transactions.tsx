@@ -93,10 +93,10 @@ import {
   Tabs,
   TabsContent,
 } from "@/components/ui/tabs"
-import { ApiTransaksiGetRequest, Transaksi } from "@/lib/api-client"
-import { formatDateToLongDate, formatMotorName, formatPrice } from "@/lib/utils"
+import { ApiTransaksiGetRequest, StatusTransaksi, Transaksi } from "@/lib/api-client"
+import { formatDateToLongDate, formatFilterString, formatMotorName, formatPrice, matchesSearch, translateEnum } from "@/lib/utils"
 import ApiService from "@/lib/api-client/wrapper"
-import EditTransactionDrawer, { StatusTransaksi } from "@/components/forms/transaction-drawer"
+import EditTransactionDrawer from "@/components/forms/transaction-drawer"
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page"
 import EditMotorDrawer from "@/components/forms/motor-drawer"
 import { LoadingOverlay } from "@/components/loading-overlay"
@@ -156,6 +156,11 @@ export function DataTableTransaction({
   const [loading, setLoading] = React.useState(true)
   const [data, setData] = React.useState<Transaksi[]>([])
   const transactionQuery = initQuery ?? {}
+  const [filter, setFilter] = React.useState({
+    search: "",
+    status: "All"
+  })
+
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -249,24 +254,35 @@ export function DataTableTransaction({
       header: () => <div className="w-full text text-left">Status</div>,
       cell: ({ row }) => (
         <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.status === StatusTransaksi.Created ? (
+          {row.original.status === StatusTransaksi.Dibuat ? (
             <IconCircleCheckFilled className="" />
-          ) : row.original.status === StatusTransaksi.Ongoing ? (
+          ) : row.original.status === StatusTransaksi.Berlangsung ? (
             <IconLoader className="animate-spin" />
-          ) : row.original.status === StatusTransaksi.Cancelled ? (
+          ) : row.original.status === StatusTransaksi.Batal ? (
             <IconX className="text-muted-foreground fill-red-400" />
           ) : (
             <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
           )}
-          {row.original.status}
+          {translateEnum(row.original.status)}
         </Badge>
       ),
     },
   ]
 
+  const filteredData: Transaksi[] = React.useMemo(() => {
+    if (!filter.search && filter.status === "All") return data;
+  
+    const lowerSearch = filter.search.toLowerCase();
+  
+    return data.filter((row) => 
+      (filter.status === "All" || row.status == filter.status) && Object.values(row).some((value) =>
+        matchesSearch(value, lowerSearch)
+      )
+    );
+  }, [data, filter]);
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     state: {
       sorting,
@@ -313,27 +329,36 @@ export function DataTableTransaction({
       className="w-full flex-col justify-start gap-6"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
-        <Select defaultValue="outline">
-        </Select>
-         <div className="flex items-center">
-            <Select defaultValue="outline">
-            </Select>
-          </div>
-        <div className="flex items-center">
-          <div className="ml-auto">
-            {/* { hidePanel || <div className="relative">
-              <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-              placeholder="Search by Id .."
-              value={(table.getColumn("transactionId")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("transactionId")?.setFilterValue(event.target.value)
-              }
-              className="h-9 w-[150px] lg:w-[250px] pl-8"
-            />
-            </div>} */}
-          </div>
-        </div>
+        { hidePanel || <div className="flex items-center gap-2">
+              <div className="relative">
+                <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search .."
+                  value={
+                    filter.search
+                  }
+                  onChange={(event) =>
+                    setFilter({ ...filter, search: event.target.value })
+                  }
+                  className="h-9 w-[150px] lg:w-[250px] pl-8"
+                />
+              </div>
+              <Select 
+                defaultValue="All"
+                value={filter.status ?? ""} 
+                onValueChange={(value) => setFilter({ ...filter, status: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={"All"}>Status: All</SelectItem>
+                  {Object.keys(StatusTransaksi).map((key, index) => (
+                    <SelectItem key={StatusTransaksi[key]} value={StatusTransaksi[key]}>Status: {translateEnum(StatusTransaksi[key])}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+        </div>}
       </div>
       <TabsContent
         value="outline"
