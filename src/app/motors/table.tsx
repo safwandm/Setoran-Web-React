@@ -338,7 +338,7 @@ export function TableMotors({
 
   React.useEffect(() => {
     setLoading(true);
-    apiService.motorApi.apiMotorGet({ ...motorQuery, withPengguna: true }).then((res) => {
+    apiService.motorApi.apiMotorGet({ ...motorQuery, withPengguna: true, amountPerPage: 999999999 }).then((res) => {
       setData(res);
       setLoading(false);
     });
