@@ -104,7 +104,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApiMotorGetRequest, Motor, Pengguna, StatusMotor } from "@/lib/api-client";
 import ApiService from "@/lib/api-client/wrapper";
-import { formatMotorName, matchesSearch, translateEnum } from "@/lib/utils";
+import { formatMotorName, formatPrice, matchesSearch, translateEnum } from "@/lib/utils";
 import { PenggunaInfoLink } from "@/app/users/[idPengguna]/page";
 import { LoadingOverlay } from "@/components/loading-overlay";
 import EditMotorDrawer from "@/components/forms/motor-drawer";
@@ -220,7 +220,7 @@ const columns: ColumnDef<Motor>[] = [
   {
     accessorKey: "hargaHarian",
     header: () => <div className="w-30 text-left">Harga Harian</div>,
-    cell: ({ row }) => <div className="w-9">{row.original.hargaHarian}</div>,
+    cell: ({ row }) => <div className="w-9">{formatPrice(row.original.hargaHarian)}</div>,
   },
 ];
 
