@@ -103,6 +103,14 @@ export default function EditMotorDrawer({
       .catch(() => setLoading(false));
   };
 
+  const handleAcceptApplication = () => {
+    setLoading(true);
+    apiService.motorApi.apiMotorAcceptMotorIdMotorGet({ idMotor: idMotor }).then(res => {
+      refresh()
+      toast.success("Motor application successfully accepted!")
+    })
+  }
+
   const handleImageUpdate = async (event, side) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -186,10 +194,22 @@ export default function EditMotorDrawer({
         <DrawerHeader>
           <DrawerTitle>{editing ? "Edit Motor" : "Detail Motor"}</DrawerTitle>
           <DrawerDescription>
-            {editing && `Make changes to Motor ID: ${idMotor}`}
+            {editing && `Make changes to Motor ID: ${idMotor}`} 
+            {motor.statusMotor === StatusMotor.Diajukan && (<><br/> This motorcycle is pending approval. Make sure all details are correct before confirming.</>)}
           </DrawerDescription>
         </DrawerHeader>
         <LoadingOverlay loading={loading}>
+        {motor.statusMotor === StatusMotor.Diajukan && (
+          <div className="px-4 pb-4">
+            <Button
+              variant="default"
+              onClick={handleAcceptApplication}
+              className="w-full"
+            >
+              Confirm Motor Application
+            </Button>
+          </div>
+        )}
         {motor.motorImage && (
           <div className="w-full flex justify-center">
             <Carousel className="w-[60%]">
@@ -329,7 +349,8 @@ export default function EditMotorDrawer({
               <Select
                 value={motor.statusMotor || ""}
                 onValueChange={(value) => handleChange("statusMotor", value)}
-                disabled={!editing}
+                // disabled={!editing}
+                disabled={true}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />

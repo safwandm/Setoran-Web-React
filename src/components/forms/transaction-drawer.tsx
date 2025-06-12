@@ -69,7 +69,6 @@ export default function EditTransactionDrawer({
 }) {
   const isMobile = useIsMobile();
   const [transaksi, setTransaksi] = useState<Transaksi>(initialData);
-  const [pembayaran, setPembayaran] = useState<Pembayaran | null>(null)
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<any>({});
@@ -79,21 +78,32 @@ export default function EditTransactionDrawer({
   const refresh = () => {
     setLoading(true);
     // TODO: tidak efisien tapi endpoint ini yang load data motor dan pengguna
-    apiService.transaksiApi
-      .apiTransaksiGet()
-      .then((res) => {
-        res.forEach(itm => {
-          if (itm.idTransaksi == idTransaksi) {
-            setTransaksi(itm);
-            apiService.pembayaranApi.apiPembayaranTransaksiIdGet({ id: itm.idTransaksi }).then(res => {
-              setPembayaran(res)
-              setLoading(false);
-            }).catch(() => setLoading(false));
-          }
-        })
-      })
-      .catch(() => setLoading(false));
+    // apiService.transaksiApi
+    //   .apiTransaksiGet()
+    //   .then((res) => {
+    //     res.forEach(itm => {
+    //       if (itm.idTransaksi == idTransaksi) {
+    //         setTransaksi(itm);
+    //         apiService.pembayaranApi.apiPembayaranTransaksiIdGet({ id: itm.idTransaksi }).then(res => {
+    //           setPembayaran(res)
+    //           setLoading(false);
+    //         }).catch(() => setLoading(false));
+    //       }
+    //     })
+    //   })
+    //   .catch(() => setLoading(false));
+    apiService.transaksiApi.apiTransaksiIdGet({ id: idTransaksi }).then(res => {
+      setTransaksi(res)
+      setLoading(false);
+    }).catch(() => setLoading(false));
   };
+
+  const handleConfirmPayment = () => {
+    setLoading(true);
+    apiService.pembayaranApi.apiPembayaranConfirmPaymentIdPembayaranGet({ idPembayaran: transaksi.pembayaran?.idPembayaran! }).then(res => {
+      refresh()
+    })
+  }
 
   const handleChange = (key: keyof Transaksi, value: any) => {
     setTransaksi((prev) => ({ ...prev, [key]: value }));
@@ -127,10 +137,24 @@ export default function EditTransactionDrawer({
       <DrawerContent className="sm:max-w-[500px]">
         <DrawerHeader>
           <DrawerTitle>{editing ? "Edit Transaction" : "Detail Transaction"}</DrawerTitle>
-          <DrawerDescription>{editing && `Make changes to Transaction ID: ${idTransaksi}`}</DrawerDescription>
+          <DrawerDescription>
+            {editing && `Make changes to Transaction ID: ${idTransaksi}`}
+            {transaksi.pembayaran?.statusPembayaran === StatusPembayaran.MenungguKonfirmasi && (<><br/> This transaksi payment is pending approval.</>)}
+          </DrawerDescription>
         </DrawerHeader>
+        {transaksi.pembayaran?.statusPembayaran === StatusPembayaran.MenungguKonfirmasi && (
+          <div className="px-4 pb-4">
+            <Button
+              variant="default"
+              onClick={handleConfirmPayment}
+              className="w-full"
+            >
+              Confirm Payment
+            </Button>
+          </div>
+        )}
         <LoadingOverlay loading={loading}>
-          <div className="p-4 space-y-4 overflow-y-auto max-h-[70vh]">
+          <div className="p-4 space-y-4 overflow-y-auto max-h-[90vh]">
             <InputField
               name="userName"
               label="User Name"
@@ -140,7 +164,7 @@ export default function EditTransactionDrawer({
             />
             <InputField
               name="mitraName"
-              label="Motor owner anme"
+              label="Motor Owner Name"
               value={transaksi.motor?.mitra?.pengguna?.nama ?? ""}
               error={errors?.pelanggan?.pengguna?.nama}
               disabled={true}
@@ -183,7 +207,7 @@ export default function EditTransactionDrawer({
             />
             <div className="space-y-1">
               <Label htmlFor="status">Status</Label>
-              <Select value={transaksi.status ?? ""} onValueChange={(value) => handleChange("status", value)} disabled={!editing}>
+              <Select value={transaksi.status ?? ""} onValueChange={(value) => handleChange("status", value)} disabled={true}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
@@ -194,17 +218,17 @@ export default function EditTransactionDrawer({
                 </SelectContent>
               </Select>
             </div>
-            { pembayaran ? <div className="space-y-2">
+            { transaksi.pembayaran ? <div className="space-y-2">
               <h3 className="text-lg font-medium">Payment information</h3>
               <InputField
                 name="metodePembayaran"
-                label="Metode Pembayaran"
-                value={pembayaran.metodePembayaran ?? "-"}
+                label="Payment Method"
+                value={transaksi.pembayaran.metodePembayaran ?? "-"}
                 disabled
               />
             <div className="space-y-1">
               <Label htmlFor="status">Status</Label>
-              <Select value={pembayaran.statusPembayaran ?? ""} disabled={!editing}>
+              <Select value={transaksi.pembayaran.statusPembayaran ?? ""} disabled={true}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
@@ -217,15 +241,15 @@ export default function EditTransactionDrawer({
             </div>
               <InputField
                 name="tanggalPembayaran"
-                label="Tanggal Pembayaran"
-                value={pembayaran.tanggalPembayaran ? formatDateToLongDate(pembayaran.tanggalPembayaran) : "-"}
+                label="Payment Date"
+                value={transaksi.pembayaran.tanggalPembayaran ? formatDateToLongDate(transaksi.pembayaran.tanggalPembayaran) : "-"}
                 disabled
               />
             </div> : ""}
           </div>
         </LoadingOverlay>
         <DrawerFooter>
-          <Button onClick={handleSave} disabled={isLoading}>
+          {/* <Button onClick={handleSave} disabled={isLoading}>
             {isLoading ? (
               <>
                 <IconLoader className="mr-2 h-4 w-4 animate-spin" />
@@ -234,7 +258,7 @@ export default function EditTransactionDrawer({
             ) : (
               "Save changes"
             )}
-          </Button>
+          </Button> */}
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
           </DrawerClose>
