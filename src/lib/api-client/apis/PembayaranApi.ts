@@ -28,6 +28,10 @@ import {
     PutPembayaranDTOToJSON,
 } from '../models/index';
 
+export interface ApiPembayaranConfirmPaymentIdPembayaranGetRequest {
+    idPembayaran: number;
+}
+
 export interface ApiPembayaranIdGetRequest {
     id: number;
 }
@@ -49,6 +53,44 @@ export interface ApiPembayaranTransaksiIdGetRequest {
  * 
  */
 export class PembayaranApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async apiPembayaranConfirmPaymentIdPembayaranGetRaw(requestParameters: ApiPembayaranConfirmPaymentIdPembayaranGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['idPembayaran'] == null) {
+            throw new runtime.RequiredError(
+                'idPembayaran',
+                'Required parameter "idPembayaran" was null or undefined when calling apiPembayaranConfirmPaymentIdPembayaranGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/Pembayaran/confirmPayment/{idPembayaran}`.replace(`{${"idPembayaran"}}`, encodeURIComponent(String(requestParameters['idPembayaran']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async apiPembayaranConfirmPaymentIdPembayaranGet(requestParameters: ApiPembayaranConfirmPaymentIdPembayaranGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiPembayaranConfirmPaymentIdPembayaranGetRaw(requestParameters, initOverrides);
+    }
 
     /**
      */

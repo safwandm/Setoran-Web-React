@@ -16,11 +16,14 @@
 import * as runtime from '../runtime';
 import type {
   PostTransaksiDTO,
+  StatusTransaksi,
   Transaksi,
 } from '../models/index';
 import {
     PostTransaksiDTOFromJSON,
     PostTransaksiDTOToJSON,
+    StatusTransaksiFromJSON,
+    StatusTransaksiToJSON,
     TransaksiFromJSON,
     TransaksiToJSON,
 } from '../models/index';
@@ -29,7 +32,7 @@ export interface ApiTransaksiGetRequest {
     idMotor?: string;
     idPelanggan?: string;
     idMitra?: string;
-    status?: string;
+    status?: StatusTransaksi;
 }
 
 export interface ApiTransaksiIdGetRequest {
@@ -38,7 +41,7 @@ export interface ApiTransaksiIdGetRequest {
 
 export interface ApiTransaksiIdPutRequest {
     id: number;
-    status?: string;
+    status?: StatusTransaksi;
 }
 
 export interface ApiTransaksiPostRequest {

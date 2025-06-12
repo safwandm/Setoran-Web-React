@@ -59,127 +59,139 @@ import {
 /**
  * 
  * @export
- * @interface Motor
+ * @interface MotorTableDTO
  */
-export interface Motor {
+export interface MotorTableDTO {
     /**
      * 
      * @type {number}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     idMotor?: number;
     /**
      * 
      * @type {string}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     platNomor?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     idMitra?: number;
     /**
      * 
      * @type {string}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     nomorSTNK?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     nomorBPKB?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     model?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     brand?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     tipe?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     tahun?: number;
     /**
      * 
      * @type {TransmisiMotor}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     transmisi?: TransmisiMotor;
     /**
      * 
      * @type {StatusMotor}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     statusMotor?: StatusMotor;
     /**
      * 
      * @type {number}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     hargaHarian?: number;
     /**
      * 
      * @type {Array<Diskon>}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     diskon?: Array<Diskon> | null;
     /**
      * 
      * @type {Array<Ulasan>}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     ulasan?: Array<Ulasan> | null;
     /**
      * 
      * @type {number}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     idMotorImage?: number | null;
     /**
      * 
      * @type {Mitra}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     mitra?: Mitra;
     /**
      * 
      * @type {MotorImage}
-     * @memberof Motor
+     * @memberof MotorTableDTO
      */
     motorImage?: MotorImage;
+    /**
+     * 
+     * @type {string}
+     * @memberof MotorTableDTO
+     */
+    ownerId?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof MotorTableDTO
+     */
+    ownerName?: string | null;
 }
 
 
 
 /**
- * Check if a given object implements the Motor interface.
+ * Check if a given object implements the MotorTableDTO interface.
  */
-export function instanceOfMotor(value: object): value is Motor {
+export function instanceOfMotorTableDTO(value: object): value is MotorTableDTO {
     return true;
 }
 
-export function MotorFromJSON(json: any): Motor {
-    return MotorFromJSONTyped(json, false);
+export function MotorTableDTOFromJSON(json: any): MotorTableDTO {
+    return MotorTableDTOFromJSONTyped(json, false);
 }
 
-export function MotorFromJSONTyped(json: any, ignoreDiscriminator: boolean): Motor {
+export function MotorTableDTOFromJSONTyped(json: any, ignoreDiscriminator: boolean): MotorTableDTO {
     if (json == null) {
         return json;
     }
@@ -202,14 +214,16 @@ export function MotorFromJSONTyped(json: any, ignoreDiscriminator: boolean): Mot
         'idMotorImage': json['idMotorImage'] == null ? undefined : json['idMotorImage'],
         'mitra': json['mitra'] == null ? undefined : MitraFromJSON(json['mitra']),
         'motorImage': json['motorImage'] == null ? undefined : MotorImageFromJSON(json['motorImage']),
+        'ownerId': json['ownerId'] == null ? undefined : json['ownerId'],
+        'ownerName': json['ownerName'] == null ? undefined : json['ownerName'],
     };
 }
 
-export function MotorToJSON(json: any): Motor {
-    return MotorToJSONTyped(json, false);
+export function MotorTableDTOToJSON(json: any): MotorTableDTO {
+    return MotorTableDTOToJSONTyped(json, false);
 }
 
-export function MotorToJSONTyped(value?: Motor | null, ignoreDiscriminator: boolean = false): any {
+export function MotorTableDTOToJSONTyped(value?: MotorTableDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -233,6 +247,8 @@ export function MotorToJSONTyped(value?: Motor | null, ignoreDiscriminator: bool
         'idMotorImage': value['idMotorImage'],
         'mitra': MitraToJSON(value['mitra']),
         'motorImage': MotorImageToJSON(value['motorImage']),
+        'ownerId': value['ownerId'],
+        'ownerName': value['ownerName'],
     };
 }
 

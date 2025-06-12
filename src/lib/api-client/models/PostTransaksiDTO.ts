@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { MetodePembayaran } from './MetodePembayaran';
+import {
+    MetodePembayaranFromJSON,
+    MetodePembayaranFromJSONTyped,
+    MetodePembayaranToJSON,
+    MetodePembayaranToJSONTyped,
+} from './MetodePembayaran';
+
 /**
  * 
  * @export
@@ -45,6 +53,12 @@ export interface PostTransaksiDTO {
     tanggalSelesai: Date;
     /**
      * 
+     * @type {MetodePembayaran}
+     * @memberof PostTransaksiDTO
+     */
+    metodePembayaran: MetodePembayaran;
+    /**
+     * 
      * @type {number}
      * @memberof PostTransaksiDTO
      */
@@ -57,6 +71,8 @@ export interface PostTransaksiDTO {
     idDiscount?: number | null;
 }
 
+
+
 /**
  * Check if a given object implements the PostTransaksiDTO interface.
  */
@@ -65,6 +81,7 @@ export function instanceOfPostTransaksiDTO(value: object): value is PostTransaks
     if (!('idPelanggan' in value) || value['idPelanggan'] === undefined) return false;
     if (!('tanggalMulai' in value) || value['tanggalMulai'] === undefined) return false;
     if (!('tanggalSelesai' in value) || value['tanggalSelesai'] === undefined) return false;
+    if (!('metodePembayaran' in value) || value['metodePembayaran'] === undefined) return false;
     return true;
 }
 
@@ -82,6 +99,7 @@ export function PostTransaksiDTOFromJSONTyped(json: any, ignoreDiscriminator: bo
         'idPelanggan': json['idPelanggan'],
         'tanggalMulai': (new Date(json['tanggalMulai'])),
         'tanggalSelesai': (new Date(json['tanggalSelesai'])),
+        'metodePembayaran': MetodePembayaranFromJSON(json['metodePembayaran']),
         'idVoucher': json['idVoucher'] == null ? undefined : json['idVoucher'],
         'idDiscount': json['idDiscount'] == null ? undefined : json['idDiscount'],
     };
@@ -102,6 +120,7 @@ export function PostTransaksiDTOToJSONTyped(value?: PostTransaksiDTO | null, ign
         'idPelanggan': value['idPelanggan'],
         'tanggalMulai': ((value['tanggalMulai']).toISOString()),
         'tanggalSelesai': ((value['tanggalSelesai']).toISOString()),
+        'metodePembayaran': MetodePembayaranToJSON(value['metodePembayaran']),
         'idVoucher': value['idVoucher'],
         'idDiscount': value['idDiscount'],
     };

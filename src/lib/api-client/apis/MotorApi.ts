@@ -15,28 +15,57 @@
 
 import * as runtime from '../runtime';
 import type {
+  Diskon,
   Motor,
   MotorForm,
+  MotorSorting,
   PutMotorDTO,
+  StatusMotor,
+  TransmisiMotor,
   Ulasan,
 } from '../models/index';
 import {
+    DiskonFromJSON,
+    DiskonToJSON,
     MotorFromJSON,
     MotorToJSON,
     MotorFormFromJSON,
     MotorFormToJSON,
+    MotorSortingFromJSON,
+    MotorSortingToJSON,
     PutMotorDTOFromJSON,
     PutMotorDTOToJSON,
+    StatusMotorFromJSON,
+    StatusMotorToJSON,
+    TransmisiMotorFromJSON,
+    TransmisiMotorToJSON,
     UlasanFromJSON,
     UlasanToJSON,
 } from '../models/index';
 
+export interface ApiMotorAcceptMotorIdMotorGetRequest {
+    idMotor: number;
+}
+
 export interface ApiMotorGetRequest {
     withImage?: boolean;
+    withDiskon?: boolean;
+    withUlasan?: boolean;
     idMitra?: string;
-    status?: string;
+    status?: StatusMotor;
     model?: string;
-    transmisi?: string;
+    transmisi?: TransmisiMotor;
+    amountPerPage?: number;
+    page?: number;
+    sorting?: MotorSorting;
+}
+
+export interface ApiMotorIdDeleteRequest {
+    id: number;
+}
+
+export interface ApiMotorIdDiskonsGetRequest {
+    id: number;
 }
 
 export interface ApiMotorIdGetRequest {
@@ -63,11 +92,57 @@ export class MotorApi extends runtime.BaseAPI {
 
     /**
      */
+    async apiMotorAcceptMotorIdMotorGetRaw(requestParameters: ApiMotorAcceptMotorIdMotorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['idMotor'] == null) {
+            throw new runtime.RequiredError(
+                'idMotor',
+                'Required parameter "idMotor" was null or undefined when calling apiMotorAcceptMotorIdMotorGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/Motor/acceptMotor/{idMotor}`.replace(`{${"idMotor"}}`, encodeURIComponent(String(requestParameters['idMotor']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async apiMotorAcceptMotorIdMotorGet(requestParameters: ApiMotorAcceptMotorIdMotorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiMotorAcceptMotorIdMotorGetRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
     async apiMotorGetRaw(requestParameters: ApiMotorGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Motor>>> {
         const queryParameters: any = {};
 
         if (requestParameters['withImage'] != null) {
             queryParameters['WithImage'] = requestParameters['withImage'];
+        }
+
+        if (requestParameters['withDiskon'] != null) {
+            queryParameters['WithDiskon'] = requestParameters['withDiskon'];
+        }
+
+        if (requestParameters['withUlasan'] != null) {
+            queryParameters['WithUlasan'] = requestParameters['withUlasan'];
         }
 
         if (requestParameters['idMitra'] != null) {
@@ -84,6 +159,18 @@ export class MotorApi extends runtime.BaseAPI {
 
         if (requestParameters['transmisi'] != null) {
             queryParameters['Transmisi'] = requestParameters['transmisi'];
+        }
+
+        if (requestParameters['amountPerPage'] != null) {
+            queryParameters['AmountPerPage'] = requestParameters['amountPerPage'];
+        }
+
+        if (requestParameters['page'] != null) {
+            queryParameters['Page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['sorting'] != null) {
+            queryParameters['Sorting'] = requestParameters['sorting'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -110,6 +197,83 @@ export class MotorApi extends runtime.BaseAPI {
      */
     async apiMotorGet(requestParameters: ApiMotorGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Motor>> {
         const response = await this.apiMotorGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async apiMotorIdDeleteRaw(requestParameters: ApiMotorIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling apiMotorIdDelete().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/Motor/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async apiMotorIdDelete(requestParameters: ApiMotorIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiMotorIdDeleteRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
+    async apiMotorIdDiskonsGetRaw(requestParameters: ApiMotorIdDiskonsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Diskon>>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling apiMotorIdDiskonsGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("Bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/Motor/{id}/diskons`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DiskonFromJSON));
+    }
+
+    /**
+     */
+    async apiMotorIdDiskonsGet(requestParameters: ApiMotorIdDiskonsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Diskon>> {
+        const response = await this.apiMotorIdDiskonsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

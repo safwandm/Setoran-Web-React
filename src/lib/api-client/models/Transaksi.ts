@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { Pembayaran } from './Pembayaran';
+import {
+    PembayaranFromJSON,
+    PembayaranFromJSONTyped,
+    PembayaranToJSON,
+    PembayaranToJSONTyped,
+} from './Pembayaran';
 import type { Motor } from './Motor';
 import {
     MotorFromJSON,
@@ -20,6 +27,13 @@ import {
     MotorToJSON,
     MotorToJSONTyped,
 } from './Motor';
+import type { StatusTransaksi } from './StatusTransaksi';
+import {
+    StatusTransaksiFromJSON,
+    StatusTransaksiFromJSONTyped,
+    StatusTransaksiToJSON,
+    StatusTransaksiToJSONTyped,
+} from './StatusTransaksi';
 import type { Pelanggan } from './Pelanggan';
 import {
     PelangganFromJSON,
@@ -72,10 +86,10 @@ export interface Transaksi {
     totalHarga?: number;
     /**
      * 
-     * @type {string}
+     * @type {StatusTransaksi}
      * @memberof Transaksi
      */
-    status?: string | null;
+    status?: StatusTransaksi;
     /**
      * 
      * @type {Motor}
@@ -88,7 +102,15 @@ export interface Transaksi {
      * @memberof Transaksi
      */
     pelanggan?: Pelanggan;
+    /**
+     * 
+     * @type {Pembayaran}
+     * @memberof Transaksi
+     */
+    pembayaran?: Pembayaran;
 }
+
+
 
 /**
  * Check if a given object implements the Transaksi interface.
@@ -113,9 +135,10 @@ export function TransaksiFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'tanggalMulai': json['tanggalMulai'] == null ? undefined : (new Date(json['tanggalMulai'])),
         'tanggalSelesai': json['tanggalSelesai'] == null ? undefined : (new Date(json['tanggalSelesai'])),
         'totalHarga': json['totalHarga'] == null ? undefined : json['totalHarga'],
-        'status': json['status'] == null ? undefined : json['status'],
+        'status': json['status'] == null ? undefined : StatusTransaksiFromJSON(json['status']),
         'motor': json['motor'] == null ? undefined : MotorFromJSON(json['motor']),
         'pelanggan': json['pelanggan'] == null ? undefined : PelangganFromJSON(json['pelanggan']),
+        'pembayaran': json['pembayaran'] == null ? undefined : PembayaranFromJSON(json['pembayaran']),
     };
 }
 
@@ -136,9 +159,10 @@ export function TransaksiToJSONTyped(value?: Transaksi | null, ignoreDiscriminat
         'tanggalMulai': value['tanggalMulai'] == null ? undefined : ((value['tanggalMulai']).toISOString()),
         'tanggalSelesai': value['tanggalSelesai'] == null ? undefined : ((value['tanggalSelesai']).toISOString()),
         'totalHarga': value['totalHarga'],
-        'status': value['status'],
+        'status': StatusTransaksiToJSON(value['status']),
         'motor': MotorToJSON(value['motor']),
         'pelanggan': PelangganToJSON(value['pelanggan']),
+        'pembayaran': PembayaranToJSON(value['pembayaran']),
     };
 }
 

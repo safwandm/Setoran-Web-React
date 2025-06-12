@@ -13,6 +13,21 @@
  */
 
 import { mapValues } from '../runtime';
+import type { TransmisiMotor } from './TransmisiMotor';
+import {
+    TransmisiMotorFromJSON,
+    TransmisiMotorFromJSONTyped,
+    TransmisiMotorToJSON,
+    TransmisiMotorToJSONTyped,
+} from './TransmisiMotor';
+import type { StatusMotor } from './StatusMotor';
+import {
+    StatusMotorFromJSON,
+    StatusMotorFromJSONTyped,
+    StatusMotorToJSON,
+    StatusMotorToJSONTyped,
+} from './StatusMotor';
+
 /**
  * 
  * @export
@@ -69,16 +84,16 @@ export interface MotorForm {
     tahun: number;
     /**
      * 
-     * @type {string}
+     * @type {TransmisiMotor}
      * @memberof MotorForm
      */
-    transmisi: string;
+    transmisi: TransmisiMotor;
     /**
      * 
-     * @type {string}
+     * @type {StatusMotor}
      * @memberof MotorForm
      */
-    statusMotor: string;
+    statusMotor: StatusMotor;
     /**
      * 
      * @type {number}
@@ -86,6 +101,8 @@ export interface MotorForm {
      */
     hargaHarian: number;
 }
+
+
 
 /**
  * Check if a given object implements the MotorForm interface.
@@ -123,8 +140,8 @@ export function MotorFormFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'brand': json['brand'],
         'tipe': json['tipe'],
         'tahun': json['tahun'],
-        'transmisi': json['transmisi'],
-        'statusMotor': json['statusMotor'],
+        'transmisi': TransmisiMotorFromJSON(json['transmisi']),
+        'statusMotor': StatusMotorFromJSON(json['statusMotor']),
         'hargaHarian': json['hargaHarian'],
     };
 }
@@ -148,8 +165,8 @@ export function MotorFormToJSONTyped(value?: MotorForm | null, ignoreDiscriminat
         'brand': value['brand'],
         'tipe': value['tipe'],
         'tahun': value['tahun'],
-        'transmisi': value['transmisi'],
-        'statusMotor': value['statusMotor'],
+        'transmisi': TransmisiMotorToJSON(value['transmisi']),
+        'statusMotor': StatusMotorToJSON(value['statusMotor']),
         'hargaHarian': value['hargaHarian'],
     };
 }
