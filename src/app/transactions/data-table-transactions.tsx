@@ -216,7 +216,7 @@ export function DataTableTransaction({
     },
     {
       accessorKey: "motorName",
-      header: () => <div className="w-30 text-left">Motor Name</div>,
+      header: () => <div className="w-60 text-left">Motor Name</div>,
       cell: ({ row }) => (
         <div className="w-8">
             <EditMotorDrawer idMotor={row.original.motor!.idMotor!} buttonText={formatMotorName(row.original.motor!)} editing={false} />
