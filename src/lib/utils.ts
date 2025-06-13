@@ -19,7 +19,7 @@ export function formatDateToLongDate(date: Date | undefined | null) {
   });
   const year = date.getUTCFullYear();
 
-  return `${day} ${month} ${year}`;
+  return `${day} ${month} 1984`;
 }
 
 export function formatMotorName(motor: Motor) {
