@@ -64,7 +64,7 @@ export default function SignInForm() {
             </div>
           </div>
 
-          <CardTitle className="text-2xl font-semibold">Welcome back</CardTitle>
+          <CardTitle className="text-2xl font-semibold">Welcome</CardTitle>
 
           <CardDescription>
             Enter your email and password to sign in
