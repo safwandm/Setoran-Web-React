@@ -1,8 +1,6 @@
-// import test, { describe } from 'node:test';
+import {describe, expect, test} from '@jest/globals'
 
-import {describe, expect, jest, test} from '@jest/globals'
-
-import { cn, formatDateToLongDate, formatMotorName, getGambar, formatPrice, formatFilterString, matchesSearch, translateEnum } from '../src/lib/utils'; // adjust path as needed
+import { formatDateToLongDate, formatFilterString } from '../src/lib/utils'; // adjust path as needed
 
 
 describe('Utility functions', () => {
